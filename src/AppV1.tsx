@@ -67,7 +67,7 @@ function getInstances(): Map<string, tile> {
 const tiles = getInstances()
 
 
-function App() {
+export default function AppOne() {
     const viewerRef = React.useRef<{ cesiumElement: CesiumViewer }>(null);
 
     useEffect(() => {
@@ -111,4 +111,3 @@ function App() {
     );
 }
 
-export default App;
