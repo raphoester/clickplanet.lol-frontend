@@ -1,12 +1,13 @@
 import './App.css'
 
-import {Primitive, Viewer} from "resium";
+import {Viewer} from "resium";
 import {
     Cartesian2,
     Cartesian3,
     Color,
     ColorGeometryInstanceAttribute,
     GeometryInstance,
+    Primitive,
     PerInstanceColorAppearance,
     PolygonGeometry,
     PolygonHierarchy,
@@ -30,10 +31,10 @@ const generateColor = (index: number): Color => {
 };
 
 type tile = {
-    instance: GeometryInstance
+    primitive: Primitive
 }
 
-function getInstances(): Map<string, tile> {
+function getTiles(): Map<string, tile> {
     const tiles = new Map<string, tile>()
     for (let lat = startLat; lat < endLat; lat += step) {
         for (let lon = startLon; lon < endLon; lon += step) {
@@ -56,16 +57,24 @@ function getInstances(): Map<string, tile> {
                 id: id,
             })
 
+            const primitive = new Primitive({
+                geometryInstances: [instance],
+                appearance: new PerInstanceColorAppearance({
+                    closed: true,
+                    translucent: true
+                }),
+                releaseGeometryInstances: false,
+            })
+
             tiles.set(id, {
-                instance: instance,
+                primitive: primitive
             });
         }
     }
     return tiles
 }
 
-const tiles = getInstances()
-
+const tiles = getTiles()
 
 function App() {
     const viewerRef = React.useRef<{ cesiumElement: CesiumViewer }>(null);
@@ -89,22 +98,18 @@ function App() {
                     console.log("picked object", pickedObject)
                 }
             }, ScreenSpaceEventType.LEFT_UP)
+
+            tiles.forEach((tile) => {
+                viewerRef.current!.cesiumElement.scene.primitives.add(tile.primitive)
+            })
         }, 10)
     }, [])
+
+    console.log()
 
     return (
         <div className="App">
             <Viewer full ref={viewerRef as MutableRefObject<null>} timeline={false} animation={false}>
-                <Primitive
-                    geometryInstances={Array.from(tiles.values()).map(tile => {
-                        return tile.instance
-                    })}
-                    appearance={new PerInstanceColorAppearance({
-                        closed: true,
-                        translucent: true
-                    })}
-                    releaseGeometryInstances={false}
-                />
             </Viewer>
         </div>
     );
