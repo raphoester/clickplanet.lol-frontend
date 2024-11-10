@@ -1,13 +1,12 @@
 import './App.css'
 
-import {Viewer} from "resium";
+import {Primitive, Viewer} from "resium";
 import {
     Cartesian2,
     Cartesian3,
     Color,
     ColorGeometryInstanceAttribute,
     GeometryInstance,
-    Primitive,
     PerInstanceColorAppearance,
     PolygonGeometry,
     PolygonHierarchy,
@@ -31,10 +30,10 @@ const generateColor = (index: number): Color => {
 };
 
 type tile = {
-    primitive: Primitive
+    instance: GeometryInstance
 }
 
-function getTiles(): Map<string, tile> {
+function getInstances(): Map<string, tile> {
     const tiles = new Map<string, tile>()
     for (let lat = startLat; lat < endLat; lat += step) {
         for (let lon = startLon; lon < endLon; lon += step) {
@@ -57,24 +56,16 @@ function getTiles(): Map<string, tile> {
                 id: id,
             })
 
-            const primitive = new Primitive({
-                geometryInstances: [instance],
-                appearance: new PerInstanceColorAppearance({
-                    closed: true,
-                    translucent: true
-                }),
-                releaseGeometryInstances: false,
-            })
-
             tiles.set(id, {
-                primitive: primitive
+                instance: instance,
             });
         }
     }
     return tiles
 }
 
-const tiles = getTiles()
+const tiles = getInstances()
+
 
 function App() {
     const viewerRef = React.useRef<{ cesiumElement: CesiumViewer }>(null);
@@ -99,17 +90,22 @@ function App() {
                 }
             }, ScreenSpaceEventType.LEFT_UP)
 
-            tiles.forEach((tile) => {
-                viewerRef.current!.cesiumElement.scene.primitives.add(tile.primitive)
-            })
         }, 10)
     }, [])
-
-    console.log()
 
     return (
         <div className="App">
             <Viewer full ref={viewerRef as MutableRefObject<null>} timeline={false} animation={false}>
+                <Primitive
+                    geometryInstances={Array.from(tiles.values()).map(tile => {
+                        return tile.instance
+                    })}
+                    appearance={new PerInstanceColorAppearance({
+                        closed: true,
+                        translucent: true
+                    })}
+                    releaseGeometryInstances={false}
+                />
             </Viewer>
         </div>
     );
