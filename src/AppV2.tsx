@@ -6,11 +6,11 @@ import {
     Color,
     ColorGeometryInstanceAttribute,
     GeometryInstance, PerInstanceColorAppearance,
-    PolygonGeometry,
-    PolygonHierarchy,
     ScreenSpaceEventHandler,
     ScreenSpaceEventType,
     Viewer as CesiumViewer,
+    RectangleGeometry,
+    Rectangle,
 } from "cesium";
 import React, {MutableRefObject, useEffect, useState} from "react";
 import {generateTilesGrid, Tile} from "./tile.ts";
@@ -18,12 +18,13 @@ import {generateTilesGrid, Tile} from "./tile.ts";
 function tilesGridToGeometryInstances(tiles: Tile[], colorMap: Map<string, Color>): GeometryInstance[] {
     return tiles.map((tile: Tile) => {
         return new GeometryInstance({
-            geometry: new PolygonGeometry({
-                polygonHierarchy: new PolygonHierarchy(
+            geometry: new RectangleGeometry({
+                rectangle: Rectangle.fromCartesianArray(
                     Cartesian3.fromDegreesArray(tile.getBoundaries().map(coordinates => {
                         return [coordinates.lon, coordinates.lat]
                     }).flat())
                 ),
+                granularity: 1,
             }),
             attributes: {
                 color: ColorGeometryInstanceAttribute.fromColor(colorMap.get(tile.id()) as Color)
@@ -31,7 +32,6 @@ function tilesGridToGeometryInstances(tiles: Tile[], colorMap: Map<string, Color
             id: tile.id(),
         })
     })
-
 }
 
 function defaultColorMap(tiles: Tile[], defaultColor: Color): Map<string, Color> {
@@ -42,18 +42,18 @@ function defaultColorMap(tiles: Tile[], defaultColor: Color): Map<string, Color>
     return colorMap
 }
 
-const tiles = generateTilesGrid(500, 4)
+const tiles = generateTilesGrid(50, 1)
 console.log(tiles.length)
 
 export default function AppTwo() {
-    const [colorMap, setColorMap] = useState<Map<string, Color>>(defaultColorMap(tiles, Color.fromRandom({alpha: 0.7})))
+    const [colorMap, setColorMap] = useState<Map<string, Color>>(defaultColorMap(tiles, Color.fromRgba(0x67ADDFFF)))
 
     const start = performance.now()
     const geometryInstances = tilesGridToGeometryInstances(tiles, colorMap)
     const end = performance.now()
 
     console.log(`geometryInstances generated in ${end - start}ms`)
-    
+
     const viewerRef = React.useRef<{ cesiumElement: CesiumViewer }>(null);
 
     useEffect(() => {
@@ -89,6 +89,7 @@ export default function AppTwo() {
                         closed: true,
                         translucent: true
                     })}
+                    releaseGeometryInstances={true}
                 />
             </Viewer>
         </div>
