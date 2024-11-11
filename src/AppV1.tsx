@@ -20,7 +20,7 @@ const startLat = -90.0;
 const endLat = 90.0;
 const startLon = -180.0;
 const endLon = 180.0;
-const step = 3; // Taille de chaque cellule du maillage
+const step = 3;
 
 const generateColor = (index: number): Color => {
     const r = ((index * 97) % 255) / 255;
@@ -38,7 +38,6 @@ function getInstances(): Map<string, tile> {
     for (let lat = startLat; lat < endLat; lat += step) {
         for (let lon = startLon; lon < endLon; lon += step) {
             const id = `${lat};${lon}`
-
             const instance = new GeometryInstance({
                 geometry: new PolygonGeometry({
                     polygonHierarchy: new PolygonHierarchy(

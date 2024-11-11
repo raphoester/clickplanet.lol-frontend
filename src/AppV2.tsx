@@ -20,7 +20,9 @@ function tilesGridToGeometryInstances(tiles: Tile[], colorMap: Map<string, Color
         return new GeometryInstance({
             geometry: new PolygonGeometry({
                 polygonHierarchy: new PolygonHierarchy(
-                    Cartesian3.fromDegreesArray(tile.getBoundaries().map(coord => [coord.lon, coord.lat]).flat())
+                    Cartesian3.fromDegreesArray(tile.getBoundaries().map(coordinates => {
+                        return [coordinates.lon, coordinates.lat]
+                    }).flat())
                 ),
             }),
             attributes: {
@@ -29,6 +31,7 @@ function tilesGridToGeometryInstances(tiles: Tile[], colorMap: Map<string, Color
             id: tile.id(),
         })
     })
+
 }
 
 function defaultColorMap(tiles: Tile[], defaultColor: Color): Map<string, Color> {
@@ -39,11 +42,18 @@ function defaultColorMap(tiles: Tile[], defaultColor: Color): Map<string, Color>
     return colorMap
 }
 
-export default function AppTwo() {
-    const tiles = generateTilesGrid(3)
-    const [colorMap, setColorMap] = useState<Map<string, Color>>(defaultColorMap(tiles, Color.fromRandom({alpha: 0.7})))
-    const geometryInstances = tilesGridToGeometryInstances(tiles, colorMap)
+const tiles = generateTilesGrid(500, 4)
+console.log(tiles.length)
 
+export default function AppTwo() {
+    const [colorMap, setColorMap] = useState<Map<string, Color>>(defaultColorMap(tiles, Color.fromRandom({alpha: 0.7})))
+
+    const start = performance.now()
+    const geometryInstances = tilesGridToGeometryInstances(tiles, colorMap)
+    const end = performance.now()
+
+    console.log(`geometryInstances generated in ${end - start}ms`)
+    
     const viewerRef = React.useRef<{ cesiumElement: CesiumViewer }>(null);
 
     useEffect(() => {
@@ -67,7 +77,7 @@ export default function AppTwo() {
                     setColorMap(new Map(colorMap))
                 }
             }, ScreenSpaceEventType.LEFT_UP)
-        }, 10)
+        }, 5)
     }, [viewerRef, colorMap])
 
     return (
@@ -79,7 +89,6 @@ export default function AppTwo() {
                         closed: true,
                         translucent: true
                     })}
-                    releaseGeometryInstances={false}
                 />
             </Viewer>
         </div>

@@ -3,37 +3,77 @@ const endLat = 90.0;
 const startLon = -180.0;
 const endLon = 180.0;
 
-export function generateTilesGrid(step: number): Tile[] {
-    // TODO: reduce density of tiles near poles
+const absDiff = (a: number, b: number): number => {
+    if (a < b) {
+        return Math.abs(b - a)
+    }
+    return Math.abs(a - b)
+}
+
+export function generateTilesGrid(
+    rows: number,
+    density: number,
+): Tile[] {
+    const latitudeStep = absDiff(startLat, endLat) / rows
     const tiles = []
-    for (let lat = startLat; lat < endLat; lat += step) {
-        for (let lon = startLon; lon < endLon; lon += step) {
-            const tile = new Tile({lat, lon}, step)
+
+    for (let i = 0; i < rows; i++) {
+        const southBorderLatitude = startLat + (i * latitudeStep)
+        const absCenterLatitude = Math.abs(southBorderLatitude + (latitudeStep / 2))
+        const squaresCount = Math.round(180 - (0.00023 * Math.pow(absCenterLatitude, 3))) * density
+
+        const longitudeStep = absDiff(startLon, endLon) / squaresCount
+
+        for (let j = 0; j < squaresCount; j++) {
+            const tile = new Tile(startLon + (j * longitudeStep), southBorderLatitude, longitudeStep, latitudeStep)
             tiles.push(tile)
         }
+
     }
     return tiles
 }
 
-export type Coordinates = {
-    lat: number,
-    lon: number,
+const approximationTolerance = 0.0001
+
+function round(float: number, ...targets: number[]): number {
+    for (const target of targets) {
+        if (absDiff(float, target) < approximationTolerance) {
+            return target
+        }
+    }
+    return float
+}
+
+export class Coordinates {
+    constructor(public lon: number, public lat: number) {
+        lon = round(lon, startLon, endLon)
+        lat = round(lat, startLat, endLat)
+
+        if (lon < startLon || lon > endLon) {
+            throw new Error(`longitude must be between ${startLon} and ${endLon}, got ${lon}`)
+        }
+
+        if (lat < startLat || lat > endLat) {
+            throw new Error(`latitude must be between ${endLat} and ${startLat}, got ${lat}`)
+        }
+    }
+
+    public toString(): string {
+        return `(${this.lon};${this.lat})`
+    }
 }
 
 export class Tile {
-    constructor(southWestCorner: Coordinates, step: number) {
-        if (southWestCorner.lat < -90 || southWestCorner.lat + step > 90) {
-            throw new Error("latitude must be between -90 and 90")
-        }
+    constructor(southWestLon: number, southWestLat: number, lonStep: number, latStep: number) {
+        const southWest = new Coordinates(southWestLon, southWestLat)
+        const southEast = new Coordinates(southWestLon + lonStep, southWestLat)
+        const northEast = new Coordinates(southWestLon + lonStep, southWestLat + latStep)
+        const northWest = new Coordinates(southWestLon, southWestLat + latStep)
 
-        if (southWestCorner.lon < -180 || southWestCorner.lon + step > 180) {
-            throw new Error("longitude must be between -180 and 180")
-        }
-
-        this.southWest = southWestCorner
-        this.southEast = {lat: southWestCorner.lat, lon: southWestCorner.lon + step}
-        this.northEast = {lat: southWestCorner.lat + step, lon: southWestCorner.lon + step}
-        this.northWest = {lat: southWestCorner.lat + step, lon: southWestCorner.lon}
+        this.southWest = southWest
+        this.southEast = southEast
+        this.northEast = northEast
+        this.northWest = northWest
     }
 
     private readonly southWest: Coordinates
@@ -46,6 +86,6 @@ export class Tile {
     }
 
     public id(): string {
-        return `${this.southWest.lat};${this.southWest.lon}`
+        return `${this.southWest.lon};${this.southWest.lat}`
     }
 }
