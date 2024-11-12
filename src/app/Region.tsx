@@ -6,6 +6,7 @@ import {ForwardedRef, forwardRef, useImperativeHandle, useState} from "react";
 
 type RegionProps = {
     tiles: Tile[];
+    defaultColor: number
 }
 
 export interface RegionHandle {
@@ -19,7 +20,7 @@ export default forwardRef<RegionHandle, RegionProps>(
         props: RegionProps,
         ref: ForwardedRef<RegionHandle>
     ) {
-        const [colorMap, setColorMap] = useState<ColorMap>(defaultColorMap(props.tiles));
+        const [colorMap, setColorMap] = useState<ColorMap>(defaultColorMap(props.tiles, props.defaultColor));
         const geometryInstances = tilesToGeometryInstances(props.tiles, colorMap);
 
         useImperativeHandle(ref, () => ({

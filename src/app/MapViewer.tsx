@@ -13,6 +13,7 @@ import Hover, {HoverHandle} from "./Hover.tsx";
 
 type MapViewerProps = {
     tileGroups: TileGroup[]
+    defaultColor: number
 }
 
 
@@ -83,6 +84,7 @@ export default function MapViewer(props: MapViewerProps) {
                     key={index}
                     tiles={tileGroup}
                     ref={regionRefs.current[index]}
+                    defaultColor={props.defaultColor}
                 />
             ))}
         </Viewer>
