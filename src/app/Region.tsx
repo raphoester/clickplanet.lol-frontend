@@ -11,7 +11,7 @@ type RegionProps = {
 export interface RegionHandle {
     updateTileColor(tileId: string, color: Color): void;
 
-    hasTile(tileId: string): boolean;
+    getTile(tileId: string): Tile | undefined;
 }
 
 export default forwardRef<RegionHandle, RegionProps>(
@@ -27,9 +27,7 @@ export default forwardRef<RegionHandle, RegionProps>(
                 colorMap.set(tileId, color);
                 setColorMap(colorMap.copy());
             },
-            hasTile: (tileId: string) => {
-                return colorMap.get(tileId) !== undefined
-            }
+            getTile: (tileId: string): Tile | undefined => props.tiles.find(tile => tile.id() === tileId)
         }))
 
         return (

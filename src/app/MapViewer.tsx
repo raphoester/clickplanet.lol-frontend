@@ -1,4 +1,4 @@
-import React, {createRef, MutableRefObject, RefObject, useEffect, useRef} from "react";
+import React, {createRef, MutableRefObject, RefObject, useEffect, useMemo, useRef} from "react";
 import {Viewer} from "resium";
 import {
     ScreenSpaceEventHandler,
@@ -9,10 +9,12 @@ import {
 
 import Region, {RegionHandle} from "./Region.tsx";
 import {TileGroup} from "../model/tiles.ts";
+import Hover, {HoverHandle} from "./Hover.tsx";
 
 type MapViewerProps = {
     tileGroups: TileGroup[]
 }
+
 
 export default function MapViewer(props: MapViewerProps) {
     const viewerRef = React.useRef<{ cesiumElement: CesiumViewer }>(null);
@@ -21,35 +23,61 @@ export default function MapViewer(props: MapViewerProps) {
         (_, i) => regionRefs.current[i] ?? createRef<RegionHandle>()
     );
 
-    useEffect(() => {
-        if (!viewerRef.current) return;
+    const hoverRef = useRef<HoverHandle>(null);
 
+    const groupsPerTile = useMemo(() => {
+        const ret: Map<string, number> = new Map();
+        props.tileGroups.forEach((group, index) => {
+            group.forEach(tile => {
+                ret.set(tile.id(), index);
+            });
+        });
+        return ret
+    }, [props.tileGroups]);
+
+
+    useEffect(() => {
         setTimeout(() => {
-            const canvas = viewerRef.current!.cesiumElement.scene.canvas;
-            const eventHandler = new ScreenSpaceEventHandler(canvas);
+            if (!viewerRef.current) return;
+            const eventHandler = new ScreenSpaceEventHandler(viewerRef.current.cesiumElement.scene.canvas);
+
+            eventHandler.setInputAction((movement: { endPosition: Cartesian2 }) => {
+                const pickedObject = viewerRef.current!.cesiumElement.scene.pick(movement.endPosition);
+                if (!pickedObject) return
+
+                const groupIndex = groupsPerTile.get(pickedObject.id);
+                if (!groupIndex) return
+
+                const tile = regionRefs.current[groupIndex]!.current!.getTile(pickedObject.id);
+                hoverRef.current!.updateHoverTile(tile!);
+            }, ScreenSpaceEventType.MOUSE_MOVE);
 
             eventHandler.setInputAction((movement: { position: Cartesian2 }) => {
                 const pickedObject = viewerRef.current?.cesiumElement.scene.pick(movement.position);
                 if (!pickedObject) {
                     return
                 }
+                console.log(`clicked object`, pickedObject);
 
-                // TODO: check if search is not too long
-                const tileGroup = regionRefs.current!.find(
-                    (regionRef, index) => {
-                        if (!regionRef) {
-                            throw new Error(`RegionRef not found at index ${index}`);
-                        }
-                        return regionRef.current!.hasTile(pickedObject.id);
-                    }
-                );
-                tileGroup!.current!.updateTileColor(pickedObject.id, Color.BLUE);
+                const groupIndex = groupsPerTile.get(pickedObject.id);
+                if (!groupIndex) {
+                    console.log(`no group index found for id ${pickedObject.id}`);
+                    return
+                }
+
+                const regionRef = regionRefs.current[groupIndex];
+                if (!regionRef) {
+                    throw new Error(`RegionRef not found at index ${groupIndex}`);
+                }
+
+                regionRef.current!.updateTileColor(pickedObject.id, Color.BLUE);
             }, ScreenSpaceEventType.LEFT_UP);
         }, 10)
-    }, [props]);
+    }, [groupsPerTile, props]);
 
     return (
         <Viewer full ref={viewerRef as MutableRefObject<null>} timeline={false} animation={false}>
+            <Hover ref={hoverRef}/>
             {props.tileGroups.map((tileGroup, index) => (
                 <Region
                     key={index}
@@ -60,4 +88,5 @@ export default function MapViewer(props: MapViewerProps) {
         </Viewer>
     );
 }
+
 
