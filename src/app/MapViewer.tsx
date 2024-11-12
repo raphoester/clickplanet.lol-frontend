@@ -1,22 +1,21 @@
-import React, {MutableRefObject, useEffect} from "react";
-import {Primitive, Viewer} from "resium";
+import React, {MutableRefObject, useEffect, useRef} from "react";
+import {Viewer} from "resium";
 import {
     ScreenSpaceEventHandler,
     ScreenSpaceEventType,
     Cartesian2,
-    Viewer as CesiumViewer,
-    PerInstanceColorAppearance,
-    GeometryInstance
+    Viewer as CesiumViewer, Color,
 } from "cesium";
+import Region, {RegionHandle} from "./Region.tsx";
+import {Tile} from "../model/tiles.ts";
 
-interface MapViewerProps {
-    geometryInstances: GeometryInstance[];
-    onTileClick: (tileId: string) => void;
+type MapViewerProps = {
+    tiles: Tile[]
 }
 
 export default function MapViewer(props: MapViewerProps) {
     const viewerRef = React.useRef<{ cesiumElement: CesiumViewer }>(null);
-
+    const regionRef = useRef<RegionHandle | null>(null)
     useEffect(() => {
         if (!viewerRef.current) return;
 
@@ -27,22 +26,17 @@ export default function MapViewer(props: MapViewerProps) {
             eventHandler.setInputAction((movement: { position: Cartesian2 }) => {
                 const pickedObject = viewerRef.current?.cesiumElement.scene.pick(movement.position);
                 if (pickedObject) {
-                    props.onTileClick(pickedObject.id);
+                    regionRef.current!.updateTileColor(pickedObject.id, Color.BLUE);
                 }
             }, ScreenSpaceEventType.LEFT_UP);
-            return () => eventHandler.destroy();
         }, 10)
-    }, [props, props.onTileClick]);
+    }, [props]);
 
     return (
         <Viewer full ref={viewerRef as MutableRefObject<null>} timeline={false} animation={false}>
-            <Primitive
-                geometryInstances={props.geometryInstances}
-                appearance={new PerInstanceColorAppearance({
-                    closed: true,
-                    translucent: true
-                })}
-                releaseGeometryInstances={true}
+            <Region
+                tiles={props.tiles}
+                ref={regionRef}
             />
         </Viewer>
     );
