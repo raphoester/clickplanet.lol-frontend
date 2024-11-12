@@ -10,6 +10,8 @@ type RegionProps = {
 
 export interface RegionHandle {
     updateTileColor(tileId: string, color: Color): void;
+
+    hasTile(tileId: string): boolean;
 }
 
 export default forwardRef<RegionHandle, RegionProps>(
@@ -24,6 +26,9 @@ export default forwardRef<RegionHandle, RegionProps>(
             updateTileColor: (tileId: string, color: Color) => {
                 colorMap.set(tileId, color);
                 setColorMap(colorMap.copy());
+            },
+            hasTile: (tileId: string) => {
+                return colorMap.get(tileId) !== undefined
             }
         }))
 

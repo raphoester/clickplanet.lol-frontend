@@ -1,14 +1,17 @@
-import {generateTilesGrid} from "../model/tiles";
+import {generateTilesGrid, groupTiles} from "../model/tiles";
 import MapViewer from "./MapViewer";
 
 const tiles = generateTilesGrid(150, 2);
 console.log(`tiles count: ${tiles.length}`);
 
+const groups = groupTiles(tiles, 10);
+console.log(`${groups.length} groups, ${groups[0].length} tiles per group`);
+
 export default function App() {
     return (
         <div className="App">
             <MapViewer
-                tiles={tiles}
+                tileGroups={groups}
             />
         </div>
     );
