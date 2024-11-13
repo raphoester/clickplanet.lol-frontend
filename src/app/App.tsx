@@ -13,7 +13,7 @@ type config = {
 
 const devConfig: config = {
     defaultColor: 0x888888FF,
-    regionDensityIndex: 300,
+    regionDensityIndex: 1000,
     tilesHorizontalDensity: 2,
     tilesRows: 150
 }

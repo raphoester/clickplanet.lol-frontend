@@ -46,6 +46,8 @@ export function tilesToGeometryInstances(tiles: Tile[], colorMap: ColorMap): Geo
 
 export function defaultColorMap(tiles: Tile[], defaultColor: number): ColorMap {
     const defaultColorObject = Color.fromRgba(defaultColor)
+    // Use this line to see the colors region by region
+    // const defaultColorObject = Color.fromRandom({alpha: 0.6})
     const colorMap = new Map<string, Color>()
     tiles.map(tile => {
         colorMap.set(tile.id(), defaultColorObject)
