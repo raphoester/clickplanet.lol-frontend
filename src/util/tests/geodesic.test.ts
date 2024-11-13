@@ -1,5 +1,5 @@
 import {describe, expect, test} from "vitest"
-import {Coordinates, Triangle} from "../geodesic.ts";
+import {Coordinates} from "../geodesic.ts";
 
 describe('Coordinates', () => {
     test('constructor should assign correct values', () => {
@@ -35,53 +35,21 @@ describe('Coordinates', () => {
     })
 })
 
-describe('triangle', () => {
-    test('contains should return true if coordinates are inside triangle', () => {
-        const triangle = new Triangle(
-            new Coordinates(0, 0),
-            new Coordinates(1, 0),
-            new Coordinates(0, 1)
-        )
-
-        expect(triangle.contains(new Coordinates(0.5, 0.5))).toBeTruthy()
-        expect(triangle.contains(new Coordinates(0.1, 0.1))).toBeTruthy()
-        expect(triangle.contains(new Coordinates(0, 0.5))).toBeTruthy()
+describe('haversineDistanceTo', () => {
+    test('should return 0 when coordinates are the same', () => {
+        const coordinates = new Coordinates(1, 2)
+        expect(coordinates.haversineDistanceTo(new Coordinates(1, 2))).toEqual(0)
     })
 
-    test('contains should return false if coordinates are outside triangle', () => {
-        const triangle = new Triangle(
-            new Coordinates(0, 0),
-            new Coordinates(1, 0),
-            new Coordinates(0, 1)
-        )
-
-        expect(triangle.contains(new Coordinates(0.5, 1.5))).toBeFalsy()
-        expect(triangle.contains(new Coordinates(0.5, -0.5))).toBeFalsy()
+    test('should return correct distance', () => {
+        const coordinates = new Coordinates(0, 0)
+        const other = new Coordinates(0, 1)
+        expect(coordinates.haversineDistanceTo(other)).toBeCloseTo(111.195, 3)
     })
 
-    test('contains should return true if coordinates are on the edge of the triangle', () => {
-        const triangle = new Triangle(
-            new Coordinates(0, 0),
-            new Coordinates(1, 0),
-            new Coordinates(0, 1)
-        )
-
-        expect(triangle.contains(new Coordinates(0, 0))).toBeTruthy()
-        expect(triangle.contains(new Coordinates(1, 0))).toBeTruthy()
-        expect(triangle.contains(new Coordinates(0, 1))).toBeTruthy()
-    })
-
-    test('contains should work even with negative coordinates', () => {
-        const triangle = new Triangle(
-            new Coordinates(-1, -1),
-            new Coordinates(1, -1),
-            new Coordinates(0, 1)
-        )
-
-        expect(triangle.contains(new Coordinates(0, 0))).toBeTruthy()
-        expect(triangle.contains(new Coordinates(1, -1))).toBeTruthy()
-        expect(triangle.contains(new Coordinates(-1, -1))).toBeTruthy()
-        expect(triangle.contains(new Coordinates(0, -1))).toBeTruthy()
-        expect(triangle.contains(new Coordinates(0, -2))).toBeFalsy()
+    test('should return correct distance when coordinates are far apart', () => {
+        const coordinates = new Coordinates(0, 0)
+        const other = new Coordinates(180, 90)
+        expect(coordinates.haversineDistanceTo(other)).toBeCloseTo(10007.543398, 5)
     })
 })

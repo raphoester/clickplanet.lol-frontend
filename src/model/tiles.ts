@@ -19,13 +19,13 @@ export function generateTilesGrid(
             const tile = new Tile(startLon + (j * longitudeStep), southBorderLatitude, longitudeStep, latitudeStep)
             tiles.push(tile)
         }
-
     }
     return tiles
 }
 
-
 export class Tile {
+    private _epicenter: Coordinates | null = null
+
     constructor(southWestLon: number, southWestLat: number, lonStep: number, latStep: number) {
         const southWest = new Coordinates(southWestLon, southWestLat)
         const southEast = new Coordinates(southWestLon + lonStep, southWestLat)
@@ -45,6 +45,16 @@ export class Tile {
 
     public getBoundaries(): Coordinates[] {
         return [this.southWest, this.southEast, this.northEast, this.northWest]
+    }
+
+    public epicenter(): Coordinates {
+        if (!this._epicenter) {
+            this._epicenter = new Coordinates(
+                (this.southWest.lon + this.southEast.lon + this.northEast.lon + this.northWest.lon) / 4,
+                (this.southWest.lat + this.southEast.lat + this.northEast.lat + this.northWest.lat) / 4
+            )
+        }
+        return this._epicenter
     }
 
     public id(): string {

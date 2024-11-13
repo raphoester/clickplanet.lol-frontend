@@ -31,6 +31,20 @@ export class Coordinates {
     public toString(): string {
         return `(${this.lon};${this.lat})`
     }
+
+    public haversineDistanceTo(other: Coordinates): number {
+        const R = 6371; // Earth radius in km
+        const dLat = (other.lat - this.lat) * Math.PI / 180;
+        const dLon = (other.lon - this.lon) * Math.PI / 180;
+        const lat1 = this.lat * Math.PI / 180;
+        const lat2 = other.lat * Math.PI / 180;
+
+        const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+        return R * c; // Distance in km
+    }
 }
 
 const approximationTolerance = 0.0001
@@ -43,35 +57,4 @@ function round(float: number, ...targets: number[]): number {
         }
     }
     return float
-}
-
-export class Triangle {
-    constructor(
-        public a: Coordinates,
-        public b: Coordinates,
-        public c: Coordinates
-    ) {
-    }
-
-    public contains3OrMore(coordinates: Coordinates[]): boolean {
-        return coordinates.filter(coordinates => this.contains(coordinates)).length >= 3
-    }
-
-    // contains checks if a point is inside the triangle using barycentric coordinates
-    public contains(coordinates: Coordinates): boolean {
-        const {lon: x, lat: y} = coordinates;
-
-        const {lon: x1, lat: y1} = this.a;
-        const {lon: x2, lat: y2} = this.b;
-        const {lon: x3, lat: y3} = this.c;
-
-        // compute barycentric coordinates
-        const denominator = (y2 - y3) * (x1 - x3) + (x3 - x2) * (y1 - y3);
-        const alpha = ((y2 - y3) * (x - x3) + (x3 - x2) * (y - y3)) / denominator;
-        const beta = ((y3 - y1) * (x - x3) + (x1 - x3) * (y - y3)) / denominator;
-        const gamma = 1 - alpha - beta;
-
-        // the dot is inside the triangle if all the barycentric coordinates are positive
-        return alpha >= 0 && beta >= 0 && gamma >= 0;
-    }
 }

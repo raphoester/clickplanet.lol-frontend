@@ -1,6 +1,7 @@
 import {generateTilesGrid} from "../model/tiles";
 import MapViewer from "./MapViewer";
-import {generateRegionTriangles, Region} from "../model/regions";
+import {AssignTilesToRegions, Region} from "../model/regions";
+import {fibonacciSphere} from "../util/cartesian.ts";
 
 
 type config = {
@@ -12,14 +13,14 @@ type config = {
 
 const devConfig: config = {
     defaultColor: 0x888888FF,
-    regionDensityIndex: 1,
+    regionDensityIndex: 300,
     tilesHorizontalDensity: 2,
     tilesRows: 150
 }
 
 const prodConfig: config = {
     defaultColor: 0x010000FF,
-    regionDensityIndex: 2,
+    regionDensityIndex: 1000,
     tilesHorizontalDensity: 4,
     tilesRows: 800
 }
@@ -29,16 +30,18 @@ enum env {
     prod = "prod"
 }
 
-let environment = env.dev
+const environment = env.dev
+
+let config = prodConfig
+if (environment === env.dev) config = devConfig
+
+const tiles = generateTilesGrid(config.tilesRows, config.tilesHorizontalDensity);
+const regionEpicenters = fibonacciSphere(config.regionDensityIndex)
+
+const regions: Region[] = AssignTilesToRegions(
+    regionEpicenters.map(epicenter => epicenter.toGeodesic()), tiles)
 
 export default function App() {
-    let config = devConfig
-    if (environment === env.prod) config = prodConfig
-
-    const tiles = generateTilesGrid(config.tilesRows, config.tilesHorizontalDensity);
-    const triangles = generateRegionTriangles(2);
-    const regions = triangles.map(triangle => new Region(triangle, tiles));
-
     return (
         <div className="App">
             <MapViewer

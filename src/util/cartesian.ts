@@ -1,4 +1,4 @@
-import {Coordinates, Triangle as geodesicTriangle} from "./geodesic.ts";
+import {Coordinates} from "./geodesic.ts";
 
 export class Coordinates3 {
     constructor(
@@ -28,47 +28,21 @@ export class Coordinates3 {
     }
 }
 
-export function midPoint(a: Coordinates3, b: Coordinates3): Coordinates3 {
-    return new Coordinates3((a.x + b.x) / 2, (a.y + b.y) / 2, (a.z + b.z) / 2)
-}
+export function fibonacciSphere(pointsCount: number): Coordinates3[] {
+    const points: Coordinates3[] = []
+    const phi = (1 + Math.sqrt(5)) / 2
 
-export class onSphereTriangle {
-    public readonly a: Coordinates3
-    public readonly b: Coordinates3
-    public readonly c: Coordinates3
+    for (let i = 0; i < pointsCount; i++) {
+        const y = 1 - (i / (pointsCount - 1)) * 2
 
-    constructor(
-        a: Coordinates3,
-        b: Coordinates3,
-        c: Coordinates3
-    ) {
-        this.a = a.normalize()
-        this.b = b.normalize()
-        this.c = c.normalize()
+        const radius = Math.sqrt(1 - y ** 2)
+        const theta = phi * i
+
+        const x = Math.cos(theta) * radius
+        const z = Math.sin(theta) * radius
+
+        points.push(new Coordinates3(x, y, z))
     }
 
-    public subdivide(depth: number): onSphereTriangle[] {
-        if (depth === 0) {
-            return [this]
-        }
-
-        const mid1 = midPoint(this.a, this.b)
-        const mid2 = midPoint(this.b, this.c)
-        const mid3 = midPoint(this.c, this.a)
-
-        return [
-            ...new onSphereTriangle(this.a, mid1, mid3).subdivide(depth - 1),
-            ...new onSphereTriangle(this.b, mid2, mid1).subdivide(depth - 1),
-            ...new onSphereTriangle(this.c, mid3, mid2).subdivide(depth - 1),
-            ...new onSphereTriangle(mid1, mid2, mid3).subdivide(depth - 1)
-        ]
-    }
-
-    public toGeodesic(): geodesicTriangle {
-        return new geodesicTriangle(
-            this.a.toGeodesic(),
-            this.b.toGeodesic(),
-            this.c.toGeodesic(),
-        )
-    }
+    return points
 }
