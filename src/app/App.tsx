@@ -1,25 +1,25 @@
 import {generateTilesGrid} from "../model/tiles";
 import MapViewer from "./MapViewer";
-import {groupTiles} from "../model/regions.ts";
+import {generateRegionTriangles, Region} from "../model/regions";
 
 
 type config = {
     defaultColor: number
-    tileGroupsCount: number
+    regionDensityIndex: number
     tilesHorizontalDensity: number
     tilesRows: number
 }
 
 const devConfig: config = {
     defaultColor: 0x888888FF,
-    tileGroupsCount: 70,
+    regionDensityIndex: 1,
     tilesHorizontalDensity: 2,
     tilesRows: 150
 }
 
 const prodConfig: config = {
     defaultColor: 0x010000FF,
-    tileGroupsCount: 70,
+    regionDensityIndex: 2,
     tilesHorizontalDensity: 4,
     tilesRows: 800
 }
@@ -36,14 +36,14 @@ export default function App() {
     if (environment === env.prod) config = prodConfig
 
     const tiles = generateTilesGrid(config.tilesRows, config.tilesHorizontalDensity);
-    const groups = groupTiles(tiles, config.tileGroupsCount);
-    console.log(`${tiles.length} tiles, ~${groups[0].length} in each group`);
+    const triangles = generateRegionTriangles(2);
+    const regions = triangles.map(triangle => new Region(triangle, tiles));
 
     return (
         <div className="App">
             <MapViewer
                 defaultColor={config.defaultColor}
-                tileGroups={groups}
+                regions={regions}
             />
         </div>
     );

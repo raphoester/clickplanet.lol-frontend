@@ -8,10 +8,10 @@ import {
 } from "cesium";
 
 import Region, {RegionHandle} from "./Region.tsx";
-import {TileGroup} from "../model/regions.ts";
+import {Region as ModelRegion} from "../model/regions.ts";
 
 type MapViewerProps = {
-    tileGroups: TileGroup[]
+    regions: ModelRegion[]
     defaultColor: number
 }
 
@@ -19,19 +19,19 @@ type MapViewerProps = {
 export default function MapViewer(props: MapViewerProps) {
     const viewerRef = React.useRef<{ cesiumElement: CesiumViewer }>(null);
     const regionRefs = useRef<RefObject<RegionHandle>[]>([]);
-    regionRefs.current = props.tileGroups.map(
+    regionRefs.current = props.regions.map(
         (_, i) => regionRefs.current[i] ?? createRef<RegionHandle>()
     );
 
     const groupsPerTile = useMemo(() => {
         const ret: Map<string, number> = new Map();
-        props.tileGroups.forEach((group, index) => {
-            group.forEach(tile => {
+        props.regions.forEach((group, index) => {
+            group.getTiles().forEach((tile: { id: () => string; }) => {
                 ret.set(tile.id(), index);
             });
         });
         return ret
-    }, [props.tileGroups]);
+    }, [props.regions]);
 
 
     useEffect(() => {
@@ -63,10 +63,10 @@ export default function MapViewer(props: MapViewerProps) {
 
     return (
         <Viewer full ref={viewerRef as MutableRefObject<null>} timeline={false} animation={false}>
-            {props.tileGroups.map((tileGroup, index) => (
+            {props.regions.map((tileGroup, index) => (
                 <Region
                     key={index}
-                    tiles={tileGroup}
+                    tiles={tileGroup.getTiles()}
                     ref={regionRefs.current[index]}
                     defaultColor={props.defaultColor}
                 />

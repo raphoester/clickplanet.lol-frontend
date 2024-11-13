@@ -1,4 +1,4 @@
-import {Coordinates, endLat, endLon, startLat, startLon} from "./coordinates.ts";
+import {Coordinates, endLat, endLon, startLat, startLon} from "../util/geodesic.ts";
 import {absDiff} from "../util/math.ts";
 
 export function generateTilesGrid(
