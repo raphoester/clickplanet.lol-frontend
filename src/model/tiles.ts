@@ -1,14 +1,5 @@
-const startLat = -90.0;
-const endLat = 90.0;
-const startLon = -180.0;
-const endLon = 180.0;
-
-const absDiff = (a: number, b: number): number => {
-    if (a < b) {
-        return Math.abs(b - a)
-    }
-    return Math.abs(a - b)
-}
+import {Coordinates, endLat, endLon, startLat, startLon} from "./coordinates.ts";
+import {absDiff} from "../util/math.ts";
 
 export function generateTilesGrid(
     rows: number,
@@ -33,56 +24,6 @@ export function generateTilesGrid(
     return tiles
 }
 
-const approximationTolerance = 0.0001
-
-function round(float: number, ...targets: number[]): number {
-    for (const target of targets) {
-        if (absDiff(float, target) < approximationTolerance) {
-            return target
-        }
-    }
-    return float
-}
-
-export class Coordinates {
-    constructor(public lon: number, public lat: number) {
-        lon = round(lon, startLon, endLon)
-        lat = round(lat, startLat, endLat)
-
-        if (lon < startLon || lon > endLon) {
-            throw new Error(`longitude must be between ${startLon} and ${endLon}, got ${lon}`)
-        }
-
-        if (lat < startLat || lat > endLat) {
-            throw new Error(`latitude must be between ${endLat} and ${startLat}, got ${lat}`)
-        }
-    }
-
-    public toString(): string {
-        return `(${this.lon};${this.lat})`
-    }
-}
-
-export type TileGroup = Tile[]
-
-export function groupTiles(tiles: Tile[], groupsCount: number): TileGroup[] {
-    const groups: TileGroup[] = []
-
-    const tilesPerGroup = Math.floor(tiles.length / groupsCount)
-
-    for (let i = 0; i < groupsCount; i++) {
-        const start = i * tilesPerGroup
-        let end = (i + 1) * tilesPerGroup
-
-        if (i === groupsCount - 1) {
-            end = tiles.length
-        }
-
-        groups.push(tiles.slice(start, end))
-    }
-
-    return groups
-}
 
 export class Tile {
     constructor(southWestLon: number, southWestLat: number, lonStep: number, latStep: number) {

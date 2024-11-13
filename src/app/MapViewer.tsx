@@ -8,7 +8,7 @@ import {
 } from "cesium";
 
 import Region, {RegionHandle} from "./Region.tsx";
-import {TileGroup} from "../model/tiles.ts";
+import {TileGroup} from "../model/regions.ts";
 
 type MapViewerProps = {
     tileGroups: TileGroup[]

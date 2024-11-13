@@ -1,5 +1,6 @@
-import {generateTilesGrid, groupTiles} from "../model/tiles";
+import {generateTilesGrid} from "../model/tiles";
 import MapViewer from "./MapViewer";
+import {groupTiles} from "../model/regions.ts";
 
 
 type config = {
