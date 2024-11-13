@@ -1,4 +1,7 @@
-import React, {createRef, MutableRefObject, RefObject, useEffect, useMemo, useRef} from "react";
+import React, {
+    createRef, MutableRefObject, RefObject,
+    useEffect, useMemo, useRef
+} from "react";
 import {Viewer} from "resium";
 import {
     ScreenSpaceEventHandler,
@@ -11,10 +14,10 @@ import Region, {RegionHandle} from "./Region.tsx";
 import {Region as ModelRegion} from "../model/regions.ts";
 
 type MapViewerProps = {
-    regions: ModelRegion[]
-    defaultColor: number
+    regions: ModelRegion[],
+    defaultColor: number,
+    className?: string
 }
-
 
 export default function MapViewer(props: MapViewerProps) {
     const viewerRef = React.useRef<{ cesiumElement: CesiumViewer }>(null);
@@ -31,7 +34,7 @@ export default function MapViewer(props: MapViewerProps) {
             });
         });
         return ret
-    }, [props.regions]);
+    }, []);
 
 
     useEffect(() => {
@@ -59,7 +62,7 @@ export default function MapViewer(props: MapViewerProps) {
                 regionRef.current!.updateTileColor(pickedObject.id, Color.BLUE);
             }, ScreenSpaceEventType.LEFT_UP);
         }, 10)
-    }, [groupsPerTile, props]);
+    }, [groupsPerTile]);
 
     return (
         <Viewer full ref={viewerRef as MutableRefObject<null>} timeline={false} animation={false}>

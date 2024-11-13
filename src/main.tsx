@@ -8,10 +8,17 @@ import {
 } from 'react-router-dom';
 
 import App from "./app/App.tsx";
+import {StrictMode} from "react";
 
 const router = createBrowserRouter([{
     path: "",
-    element: <App/>
+    element: function () {
+        return (
+            <StrictMode>
+                <App/>
+            </StrictMode>
+        )
+    }()
 },])
 
 createRoot(document.getElementById('root')!).render(<RouterProvider router={router}/>);
