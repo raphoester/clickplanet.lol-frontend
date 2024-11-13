@@ -9,7 +9,6 @@ import {
 
 import Region, {RegionHandle} from "./Region.tsx";
 import {TileGroup} from "../model/tiles.ts";
-import Hover, {HoverHandle} from "./Hover.tsx";
 
 type MapViewerProps = {
     tileGroups: TileGroup[]
@@ -24,8 +23,6 @@ export default function MapViewer(props: MapViewerProps) {
         (_, i) => regionRefs.current[i] ?? createRef<RegionHandle>()
     );
 
-    const hoverRef = useRef<HoverHandle>(null);
-
     const groupsPerTile = useMemo(() => {
         const ret: Map<string, number> = new Map();
         props.tileGroups.forEach((group, index) => {
@@ -39,20 +36,8 @@ export default function MapViewer(props: MapViewerProps) {
 
     useEffect(() => {
         setTimeout(() => {
-            if (!viewerRef.current) return;
+            if (!viewerRef.current) throw new Error("viewerRef not found");
             const eventHandler = new ScreenSpaceEventHandler(viewerRef.current.cesiumElement.scene.canvas);
-
-            eventHandler.setInputAction((movement: { endPosition: Cartesian2 }) => {
-                const pickedObject = viewerRef.current!.cesiumElement.scene.pick(movement.endPosition);
-                if (!pickedObject) return
-
-                const groupIndex = groupsPerTile.get(pickedObject.id);
-                if (!groupIndex) return
-
-                const tile = regionRefs.current[groupIndex]!.current!.getTile(pickedObject.id);
-                hoverRef.current!.updateHoverTile(tile!);
-            }, ScreenSpaceEventType.MOUSE_MOVE);
-
             eventHandler.setInputAction((movement: { position: Cartesian2 }) => {
                 const pickedObject = viewerRef.current?.cesiumElement.scene.pick(movement.position);
                 if (!pickedObject) {
@@ -78,7 +63,6 @@ export default function MapViewer(props: MapViewerProps) {
 
     return (
         <Viewer full ref={viewerRef as MutableRefObject<null>} timeline={false} animation={false}>
-            <Hover ref={hoverRef}/>
             {props.tileGroups.map((tileGroup, index) => (
                 <Region
                     key={index}
