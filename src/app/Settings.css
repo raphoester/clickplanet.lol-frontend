@@ -1,4 +1,4 @@
-.country-selector-modal {
+.settings-modal {
     position: fixed;
     top: 0;
     left: 0;
@@ -11,15 +11,25 @@
     align-items: center;
 }
 
-.country-selector-modal-card {
+.settings-section {
+    position: relative;
     background: white;
     padding: 20px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    width: 300px;
+    width: 100%;
+    max-width: 400px;
 }
 
-.country-selector-button {
+.settings-modal-card {
+    background: white;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 400px;
+}
+
+.settings-opener-button {
     position: absolute;
     top: 10px;
     right: 10px;
@@ -27,15 +37,14 @@
     padding: 8px 12px;
 }
 
-.country-selector-select {
+.country-settings select {
     width: 100%;
     padding: 10px;
     margin: 10px 0;
 }
 
-.country-selector-modal-card-title {
+.settings-modal-card-title {
     font-size: 20px;
     margin-bottom: 10px;
-    font-family: sans-serif;
     text-align: center;
 }

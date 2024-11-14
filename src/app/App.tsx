@@ -2,7 +2,7 @@ import {generateTilesGrid} from "../model/tiles";
 import MapViewer from "./MapViewer";
 import {AssignTilesToRegions, Region} from "../model/regions";
 import {fibonacciSphere} from "../util/cartesian.ts";
-import CountrySelector from "./CountrySelector.tsx";
+import Settings from "./Settings.tsx";
 import CountryProvider from "./CountryProvider.tsx";
 import "./App.css";
 
@@ -52,11 +52,8 @@ console.log(`time to generate regions: ${end - start}ms`)
 export default function App() {
     return (
         <div className="App">
-
             <CountryProvider>
-                <CountrySelector
-                    className="country-selector"
-                />
+                <Settings/>
                 <MapViewer
                     className="map-viewer"
                     regions={regions}
