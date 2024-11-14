@@ -15,9 +15,9 @@ type config = {
 
 const devConfig: config = {
     defaultColor: 0x888888FF,
-    regionDensityIndex: 300,
-    tilesHorizontalDensity: 2,
-    tilesRows: 150
+    regionDensityIndex: 500,
+    tilesHorizontalDensity: 3,
+    tilesRows: 300
 }
 
 const prodConfig: config = {
@@ -38,7 +38,6 @@ let config = prodConfig
 if (environment === env.dev) config = devConfig
 
 // TODO: extract this expensive logic to a persistent json file (and avoid recomputing on every reload)
-
 
 const start = new Date().getTime()
 const tiles = generateTilesGrid(config.tilesRows, config.tilesHorizontalDensity);

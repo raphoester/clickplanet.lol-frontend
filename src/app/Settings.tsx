@@ -1,10 +1,7 @@
-import countriesData from "../../static/countries/countries.json"
-import {Country, countryContext} from "./CountryProvider.tsx";
+import {countryContext} from "./CountryProvider.tsx";
 import {useContext, ChangeEvent, useState} from "react";
-
+import {Countries} from "../model/countries.ts";
 import "./Settings.css"
-
-const countries: Country[] = countriesData
 
 export default function Settings() {
     const [isOpen, setIsOpen] = useState(false)
@@ -12,14 +9,14 @@ export default function Settings() {
         setIsOpen(!isOpen)
     }
 
-    const {setCountry} = useContext(countryContext);
+    const {country, setCountry} = useContext(countryContext);
     const handleCountrySelect = (event: ChangeEvent<HTMLSelectElement>) => {
-        const selectedCountry = countries.find(country =>
+        const selectedCountry = Countries.find(country =>
             country.code === event.target.value);
         if (!selectedCountry) {
             throw new Error(`Country not found for code ${event.target.value}`);
         }
-        setCountry(selectedCountry);
+        setCountry(selectedCountry)
     }
 
     return (
@@ -45,12 +42,13 @@ export default function Settings() {
                                 onChange={handleCountrySelect}
                                 className="settings-country-select">
                                 {
-                                    countries.map(
-                                        (country) => (
+                                    Countries.map(
+                                        (c) => (
                                             <option
-                                                key={country.code}
-                                                value={country.code}
-                                            >{country.name}
+                                                selected={c.code === country.code}
+                                                key={c.code}
+                                                value={c.code}
+                                            >{c.name}
                                             </option>
                                         )
                                     )

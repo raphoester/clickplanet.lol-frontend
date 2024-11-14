@@ -1,9 +1,24 @@
-import {Primitive} from "resium";
-import {Color, PerInstanceColorAppearance} from "cesium";
 import {Tile} from "../model/tiles.ts";
-import {ColorMap, defaultColorMap, tilesToGeometryInstances} from "./colors.ts";
-import {ForwardedRef, forwardRef, useContext, useImperativeHandle, useMemo, useState} from "react";
+import {
+    ForwardedRef,
+    forwardRef,
+    useContext,
+    useImperativeHandle, useMemo,
+    useState,
+} from "react";
 import {countryContext} from "./CountryProvider.tsx";
+import {Country} from "../model/countries.ts";
+import {Primitive} from "resium";
+import {
+    BlendingState,
+    Cartesian3,
+    Color, ColorGeometryInstanceAttribute,
+    GeometryInstance, Material,
+    MaterialAppearance,
+    PerInstanceColorAppearance,
+    Rectangle,
+    RectangleGeometry
+} from "cesium";
 
 type RegionProps = {
     tiles: Tile[];
@@ -11,9 +26,7 @@ type RegionProps = {
 }
 
 export interface RegionHandle {
-    updateTileColor(tileId: string, color: Color): void;
-
-    getTile(tileId: string): Tile | undefined;
+    handleTileClick(tileId: string): void;
 }
 
 export default forwardRef<RegionHandle, RegionProps>(
@@ -21,31 +34,93 @@ export default forwardRef<RegionHandle, RegionProps>(
         props: RegionProps,
         ref: ForwardedRef<RegionHandle>
     ) {
-        const [colorMap, setColorMap] = useState<ColorMap>(defaultColorMap(props.tiles, props.defaultColor))
-        const geometryInstances = useMemo(() => {
-            return tilesToGeometryInstances(props.tiles, colorMap);
-        }, [colorMap, props.tiles]);
+        const [countriesPerTiles, setCountriesPerTiles] =
+            useState<Map<string, Country | null>>(new Map(props.tiles.map(tile => [tile.id(), null])))
+        const tilesPerId = useMemo(() =>
+            new Map(props.tiles.map(tile => [tile.id(), tile])), [props.tiles])
 
         const {country} = useContext(countryContext);
-        // console.log(`Country code: ${country.code}, name: ${country.name}`);
-
         useImperativeHandle(ref, () => ({
-            updateTileColor: (tileId: string, color: Color) => {
-                console.log(`country code: ${country.code}, name: ${country.name}`);
-                colorMap.set(tileId, color);
-                setColorMap(colorMap.copy());
+            handleTileClick: (tileId: string) => {
+                countriesPerTiles.set(tileId, country)
+                setCountriesPerTiles(new Map(countriesPerTiles))
             },
-            getTile: (tileId: string): Tile | undefined => props.tiles.find(tile => tile.id() === tileId)
         }))
 
-        return (<Primitive
-            geometryInstances={geometryInstances}
-            appearance={new PerInstanceColorAppearance({
-                closed: true,
-                translucent: true
-            })}
-            releaseGeometryInstances={true}
-        />)
+        const [territories, tilesWithoutCountry] = useMemo(() => {
+            const territories = new Map<Country, Tile[]>()
+            const tilesWithoutCountry: Tile[] = []
+            countriesPerTiles.forEach((country, tileId) => {
+                const tile = tilesPerId.get(tileId)
+                if (!tile) return
+
+                if (!country) {
+                    tilesWithoutCountry.push(tile)
+                    return
+                }
+
+                const territory = territories.get(country) || []
+                territory.push(tile)
+                territories.set(country, territory)
+            })
+            return [territories, tilesWithoutCountry]
+        }, [countriesPerTiles, tilesPerId]);
+
+        return <>
+            {(tilesWithoutCountry.length > 0) && <Primitive
+                geometryInstances={tilesToGeometryInstances(tilesWithoutCountry, Color.WHITE.withAlpha(0.01))}
+                appearance={
+                    new PerInstanceColorAppearance({
+                        flat: true,
+                        translucent: true,
+                    })
+                }
+                releaseGeometryInstances={true}
+            />}
+
+            {Array.from(territories).map(([country, tiles]) =>
+                <Primitive
+                    geometryInstances={tilesToGeometryInstances(tiles)}
+                    appearance={new MaterialAppearance({
+                        renderState: {
+                            blending: BlendingState.ALPHA_BLEND
+                        },
+                        material: new Material({
+                            fabric: {
+                                type: "Image",
+                                uniforms: {
+                                    image: "/static/countries/1x1/" + country.code + ".svg",
+                                    color: new Color(1, 1, 1, 0.5),
+                                }
+                            }
+                        }),
+                        closed: true,
+                        translucent: true,
+                    })}
+                    releaseGeometryInstances={true}
+                />
+            )}
+        </>
     }
 )
 
+function tilesToGeometryInstances(tiles: Tile[], color?: Color): GeometryInstance[] {
+    const attrs = color ? {
+        color: ColorGeometryInstanceAttribute.fromColor(color)
+    } : {}
+
+    return tiles.map((tile: Tile) => {
+        return new GeometryInstance({
+            geometry: new RectangleGeometry({
+                rectangle: Rectangle.fromCartesianArray(
+                    Cartesian3.fromDegreesArray(tile.getBoundaries().map(coordinates => {
+                        return [coordinates.lon, coordinates.lat]
+                    }).flat())
+                ),
+                granularity: 1,
+            }),
+            attributes: attrs,
+            id: tile.id(),
+        })
+    })
+}

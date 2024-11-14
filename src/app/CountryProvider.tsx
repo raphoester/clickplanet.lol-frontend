@@ -1,19 +1,20 @@
 import {createContext, ReactNode, useState} from "react";
+import {Country} from "../model/countries.ts";
+
+export type countryContextHandle = {
+    country: Country
+    setCountry: (country: Country) => void
+}
 
 export const countryContext = createContext({
     country: {
         code: "fr",
         name: "France"
-    } as Country,
+    },
     setCountry: function (country: Country): void {
         throw new Error(`setCountry not implemented, country: ${country}`);
     }
-});
-
-export type Country = {
-    name: string,
-    code: string
-}
+} as countryContextHandle);
 
 export type CountryProviderProps = {
     children: ReactNode

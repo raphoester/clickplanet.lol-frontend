@@ -7,7 +7,7 @@ import {
     ScreenSpaceEventHandler,
     ScreenSpaceEventType,
     Cartesian2,
-    Viewer as CesiumViewer, Color,
+    Viewer as CesiumViewer,
 } from "cesium";
 
 import Region, {RegionHandle} from "./Region.tsx";
@@ -34,7 +34,7 @@ export default function MapViewer(props: MapViewerProps) {
             });
         });
         return ret
-    }, []);
+    }, [props.regions]);
 
 
     useEffect(() => {
@@ -46,7 +46,6 @@ export default function MapViewer(props: MapViewerProps) {
                 if (!pickedObject) {
                     return
                 }
-                console.log(`clicked object`, pickedObject);
 
                 const groupIndex = groupsPerTile.get(pickedObject.id);
                 if (!groupIndex) {
@@ -59,7 +58,7 @@ export default function MapViewer(props: MapViewerProps) {
                     throw new Error(`RegionRef not found at index ${groupIndex}`);
                 }
 
-                regionRef.current!.updateTileColor(pickedObject.id, Color.BLUE);
+                regionRef.current!.handleTileClick(pickedObject.id);
             }, ScreenSpaceEventType.LEFT_UP);
         }, 10)
     }, [groupsPerTile]);
