@@ -1,4 +1,3 @@
-import {Tile} from "../model/tiles.ts";
 import {
     ForwardedRef,
     forwardRef,
@@ -6,8 +5,6 @@ import {
     useImperativeHandle, useMemo,
     useState,
 } from "react";
-import {countryContext} from "./CountryProvider.tsx";
-import {Country} from "../model/countries.ts";
 import {Primitive} from "resium";
 import {
     BlendingState,
@@ -19,10 +16,14 @@ import {
     Rectangle,
     RectangleGeometry
 } from "cesium";
+import {countryContext} from "./CountryProvider.tsx";
+import {Tile} from "../model/tiles.ts";
+import {Country} from "../model/countries.ts";
 
 type RegionProps = {
-    tiles: Tile[];
+    tiles: Tile[]
     defaultColor: number
+    onRegionReady?: () => void
 }
 
 export interface RegionHandle {
@@ -39,7 +40,7 @@ export default forwardRef<RegionHandle, RegionProps>(
         const tilesPerId = useMemo(() =>
             new Map(props.tiles.map(tile => [tile.id(), tile])), [props.tiles])
 
-        const {country} = useContext(countryContext);
+        const {country} = useContext(countryContext)
         useImperativeHandle(ref, () => ({
             handleTileClick: (tileId: string) => {
                 countriesPerTiles.set(tileId, country)
@@ -68,7 +69,11 @@ export default forwardRef<RegionHandle, RegionProps>(
 
         return <>
             {(tilesWithoutCountry.length > 0) && <Primitive
-                geometryInstances={tilesToGeometryInstances(tilesWithoutCountry, Color.WHITE.withAlpha(0.01))}
+                onReady={() => props.onRegionReady?.()}
+                geometryInstances={tilesToGeometryInstances(tilesWithoutCountry,
+                    Color.WHITE.withAlpha(0.01),
+                    // Color.fromRandom({alpha: 0.5})
+                )}
                 appearance={
                     new PerInstanceColorAppearance({
                         flat: true,
@@ -80,6 +85,7 @@ export default forwardRef<RegionHandle, RegionProps>(
 
             {Array.from(territories).map(([country, tiles]) =>
                 <Primitive
+                    key={country.code}
                     geometryInstances={tilesToGeometryInstances(tiles)}
                     appearance={new MaterialAppearance({
                         renderState: {

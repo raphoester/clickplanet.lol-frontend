@@ -1,6 +1,6 @@
-import React, {
+import {
     createRef, MutableRefObject, RefObject,
-    useEffect, useMemo, useRef
+    useEffect, useMemo, useRef, useState
 } from "react";
 import {Viewer} from "resium";
 import {
@@ -12,6 +12,7 @@ import {
 
 import Region, {RegionHandle} from "./Region.tsx";
 import {Region as ModelRegion} from "../model/regions.ts";
+import Loader from "./Loader.tsx";
 
 type MapViewerProps = {
     regions: ModelRegion[],
@@ -20,7 +21,7 @@ type MapViewerProps = {
 }
 
 export default function MapViewer(props: MapViewerProps) {
-    const viewerRef = React.useRef<{ cesiumElement: CesiumViewer }>(null);
+    const viewerRef = useRef<{ cesiumElement: CesiumViewer }>(null);
     const regionRefs = useRef<RefObject<RegionHandle>[]>([]);
     regionRefs.current = props.regions.map(
         (_, i) => regionRefs.current[i] ?? createRef<RegionHandle>()
@@ -63,17 +64,32 @@ export default function MapViewer(props: MapViewerProps) {
         }, 10)
     }, [groupsPerTile]);
 
+    const counterRef = useRef(0);
+    const [allLoaded, setAllLoaded] = useState(false);
+
+    const onRegionReady = () => {
+        counterRef.current++;
+        if (counterRef.current === props.regions.length) {
+            setAllLoaded(true);
+        }
+    }
+
+
     return (
-        <Viewer full ref={viewerRef as MutableRefObject<null>} timeline={false} animation={false}>
-            {props.regions.map((tileGroup, index) => (
-                <Region
-                    key={index}
-                    tiles={tileGroup.getTiles()}
-                    ref={regionRefs.current[index]}
-                    defaultColor={props.defaultColor}
-                />
-            ))}
-        </Viewer>
+        <>
+            {!allLoaded && <Loader/>}
+            <Viewer full ref={viewerRef as MutableRefObject<null>} timeline={false} animation={false}>
+                {props.regions.map((tileGroup, index) => (
+                    <Region
+                        key={index}
+                        tiles={tileGroup.getTiles()}
+                        ref={regionRefs.current[index]}
+                        defaultColor={props.defaultColor}
+                        onRegionReady={onRegionReady}
+                    />
+                ))}
+            </Viewer>
+        </>
     );
 }
 

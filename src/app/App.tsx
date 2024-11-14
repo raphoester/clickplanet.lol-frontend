@@ -45,7 +45,6 @@ const regionEpicenters = fibonacciSphere(config.regionDensityIndex)
 const regions: Region[] = AssignTilesToRegions(
     regionEpicenters.map(epicenter => epicenter.toGeodesic()), tiles)
 const end = new Date().getTime()
-
 console.log(`time to generate regions: ${end - start}ms`)
 
 export default function App() {

@@ -39,13 +39,13 @@ export default function Settings() {
                         <div className="country-settings settings-section">
                             <label htmlFor="country-select">Country</label>
                             <select
+                                defaultValue={country.code}
                                 onChange={handleCountrySelect}
                                 className="settings-country-select">
                                 {
                                     Countries.map(
                                         (c) => (
                                             <option
-                                                selected={c.code === country.code}
                                                 key={c.code}
                                                 value={c.code}
                                             >{c.name}
