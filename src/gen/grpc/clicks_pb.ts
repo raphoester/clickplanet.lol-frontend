@@ -221,3 +221,40 @@ export class GeodesicCoordinates extends Message<GeodesicCoordinates> {
   }
 }
 
+/**
+ * @generated from message clicks.v1.State
+ */
+export class State extends Message<State> {
+  /**
+   * @generated from field: map<string, string> data = 1;
+   */
+  data: { [key: string]: string } = {};
+
+  constructor(data?: PartialMessage<State>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "clicks.v1.State";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "data", kind: "map", K: 9 /* ScalarType.STRING */, V: {kind: "scalar", T: 9 /* ScalarType.STRING */} },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): State {
+    return new State().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): State {
+    return new State().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): State {
+    return new State().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: State | PlainMessage<State> | undefined, b: State | PlainMessage<State> | undefined): boolean {
+    return proto3.util.equals(State, a, b);
+  }
+}
+

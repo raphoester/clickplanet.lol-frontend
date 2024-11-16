@@ -8,12 +8,14 @@ import {
 
 import App from "./app/App.tsx";
 import {StrictMode} from "react";
-import {ClickServiceClient, RegionsFetcher} from "./adapters/httpDataSources.ts";
+import {ClickServiceClient, HTTPBackend} from "./backends/httpBackend.ts";
 
 const clickServiceClient = new ClickServiceClient({
     baseUrl: "http://localhost:8080",
     timeoutMs: 1000
 })
+
+const backend = new HTTPBackend(clickServiceClient)
 
 const router = createBrowserRouter([{
     path: "",
@@ -21,7 +23,8 @@ const router = createBrowserRouter([{
         return (
             <StrictMode>
                 <App
-                    gameMapProvider={new RegionsFetcher(clickServiceClient)}
+                    gameMapProvider={backend}
+                    tileClicker={backend}
                 />
             </StrictMode>
         )

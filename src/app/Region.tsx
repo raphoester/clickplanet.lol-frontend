@@ -19,11 +19,13 @@ import {
 import {countryContext} from "./CountryProvider.tsx";
 import {Tile} from "../model/tiles.ts";
 import {Country} from "../model/countries.ts";
+import {TileClicker} from "../backends/backend.ts";
 
 type RegionProps = {
     tiles: Tile[]
     defaultColor: number
     onRegionReady?: () => void
+    tileClicker: TileClicker
 }
 
 export interface RegionHandle {
@@ -45,6 +47,7 @@ export default forwardRef<RegionHandle, RegionProps>(
             handleTileClick: (tileId: string) => {
                 countriesPerTiles.set(tileId, country)
                 setCountriesPerTiles(new Map(countriesPerTiles))
+                props.tileClicker.clickTile(tileId, country.code).catch(console.error)
             },
         }))
 

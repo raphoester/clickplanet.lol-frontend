@@ -31,6 +31,7 @@ export class Tile {
         southWestLat: number,
         lonStep: number,
         latStep: number,
+        private ID?: string,
     ) {
         const southWest = new Coordinates(southWestLat, southWestLon)
         const southEast = new Coordinates(southWestLat, southWestLon + lonStep,)
@@ -48,12 +49,13 @@ export class Tile {
     private readonly northEast: Coordinates
     private readonly northWest: Coordinates
 
-    public static fromMinimalBoundaries(southWest: Coordinates, northEast: Coordinates): Tile {
+    public static fromMinimalBoundaries(southWest: Coordinates, northEast: Coordinates, id?: string): Tile {
         return new Tile(
             southWest.lon,
             southWest.lat,
             northEast.lon - southWest.lon,
             northEast.lat - southWest.lat,
+            id,
         )
     }
 
@@ -72,6 +74,6 @@ export class Tile {
     }
 
     public id(): string {
-        return `${this.southWest.lon};${this.southWest.lat}`
+        return this.ID ?? `${this.southWest.lon};${this.southWest.lat}`
     }
 }

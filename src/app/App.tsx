@@ -3,11 +3,12 @@ import Settings from "./Settings.tsx";
 import CountryProvider from "./CountryProvider.tsx";
 import "./App.css";
 import {useEffect, useState} from "react";
-import GameMapProvider from "../adapters/dataSources.ts";
 import {GameMap} from "../model/gameMap.ts";
+import {GameMapProvider, TileClicker} from "../backends/backend.ts";
 
 export type AppProps = {
     gameMapProvider: GameMapProvider
+    tileClicker: TileClicker
 }
 
 export default function App(props: AppProps) {
@@ -25,6 +26,7 @@ export default function App(props: AppProps) {
                 <Settings/>
                 {gameMap &&
                     <MapViewer
+                        tileClicker={props.tileClicker}
                         className="map-viewer"
                         gameMap={gameMap}
                         defaultColor={0x00ff00}

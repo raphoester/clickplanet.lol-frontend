@@ -13,9 +13,11 @@ export default function Loader() {
         ]
 
         setTimeout(() => {
-            descriptors.push("I'm sorry, I'm trying my best")
             descriptors.push("Damn, your laptop sucks")
             descriptors.push("That's what you get for using Windows")
+            descriptors.push("Am I running in fucking Internet Explorer?")
+            descriptors.push("Did you try turning it off and on again?")
+            descriptors.push("Lol, you're still waiting?")
         }, 20_000)
 
         const interval = setInterval(() => {

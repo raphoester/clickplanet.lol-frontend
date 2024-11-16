@@ -13,9 +13,11 @@ import {
 import Region, {RegionHandle} from "./Region.tsx";
 import {GameMap} from "../model/gameMap.ts";
 import Loader from "./Loader.tsx";
+import {TileClicker} from "../backends/backend.ts";
 
 type MapViewerProps = {
     gameMap: GameMap
+    tileClicker: TileClicker
     defaultColor: number
     className?: string
 }
@@ -44,20 +46,13 @@ export default function MapViewer(props: MapViewerProps) {
             const eventHandler = new ScreenSpaceEventHandler(viewerRef.current.cesiumElement.scene.canvas);
             eventHandler.setInputAction((movement: { position: Cartesian2 }) => {
                 const pickedObject = viewerRef.current?.cesiumElement.scene.pick(movement.position);
-                if (!pickedObject) {
-                    return
-                }
+                if (!pickedObject) return
 
                 const groupIndex = regionsPerTile.get(pickedObject.id);
-                if (!groupIndex) {
-                    console.log(`no group index found for id ${pickedObject.id}`);
-                    return
-                }
+                if (!groupIndex) return
 
                 const regionRef = regionRefs.current[groupIndex];
-                if (!regionRef) {
-                    throw new Error(`RegionRef not found at index ${groupIndex}`);
-                }
+                if (!regionRef) return
 
                 regionRef.current!.handleTileClick(pickedObject.id);
             }, ScreenSpaceEventType.LEFT_UP);
@@ -81,6 +76,7 @@ export default function MapViewer(props: MapViewerProps) {
             <Viewer full ref={viewerRef as MutableRefObject<null>} timeline={false} animation={false}>
                 {props.gameMap.regions.map((region, index) => (
                     <Region
+                        tileClicker={props.tileClicker}
                         key={index}
                         tiles={region.getTiles()}
                         ref={regionRefs.current[index]}

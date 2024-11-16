@@ -1,5 +1,5 @@
 import {AssignTilesToRegions} from "../model/regions.ts";
-import RegionsDataSource from "./dataSources.ts";
+import {GameMapProvider} from "./backend.ts";
 import {generateTilesGrid} from "../model/tiles.ts";
 import {fibonacciSphere} from "../util/cartesian.ts";
 import {GameMap} from "../model/gameMap.ts";
@@ -10,7 +10,7 @@ export type LocalGameMapComputerConfig = {
     tilesRows: number
 }
 
-export class GameMapComputer implements RegionsDataSource {
+export class GameMapComputer implements GameMapProvider {
     private gameMap: GameMap | null = null
 
     constructor(private cfg: LocalGameMapComputerConfig) {
