@@ -24,7 +24,7 @@ export class Coordinates3 {
     public toGeodesic(): Coordinates {
         const lon = Math.atan2(this.y, this.x) * 180 / Math.PI
         const lat = Math.asin(this.z) * 180 / Math.PI
-        return new Coordinates(lon, lat)
+        return new Coordinates(lat, lon)
     }
 }
 

@@ -10,8 +10,8 @@ export class Coordinates {
     public readonly lat: number
 
     constructor(
-        lon: number,
         lat: number,
+        lon: number,
     ) {
         lon = round(lon, startLon, endLon)
         lat = round(lat, startLat, endLat)

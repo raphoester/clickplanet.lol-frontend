@@ -11,31 +11,31 @@ import {
 } from "cesium";
 
 import Region, {RegionHandle} from "./Region.tsx";
-import {Region as ModelRegion} from "../model/regions.ts";
+import {GameMap} from "../model/gameMap.ts";
 import Loader from "./Loader.tsx";
 
 type MapViewerProps = {
-    regions: ModelRegion[],
-    defaultColor: number,
+    gameMap: GameMap
+    defaultColor: number
     className?: string
 }
 
 export default function MapViewer(props: MapViewerProps) {
     const viewerRef = useRef<{ cesiumElement: CesiumViewer }>(null);
     const regionRefs = useRef<RefObject<RegionHandle>[]>([]);
-    regionRefs.current = props.regions.map(
+    regionRefs.current = props.gameMap.regions.map(
         (_, i) => regionRefs.current[i] ?? createRef<RegionHandle>()
     );
 
-    const groupsPerTile = useMemo(() => {
+    const regionsPerTile = useMemo(() => {
         const ret: Map<string, number> = new Map();
-        props.regions.forEach((group, index) => {
+        props.gameMap.regions.forEach((group, index) => {
             group.getTiles().forEach((tile: { id: () => string; }) => {
                 ret.set(tile.id(), index);
             });
         });
         return ret
-    }, [props.regions]);
+    }, [props.gameMap]);
 
 
     useEffect(() => {
@@ -48,7 +48,7 @@ export default function MapViewer(props: MapViewerProps) {
                     return
                 }
 
-                const groupIndex = groupsPerTile.get(pickedObject.id);
+                const groupIndex = regionsPerTile.get(pickedObject.id);
                 if (!groupIndex) {
                     console.log(`no group index found for id ${pickedObject.id}`);
                     return
@@ -62,27 +62,27 @@ export default function MapViewer(props: MapViewerProps) {
                 regionRef.current!.handleTileClick(pickedObject.id);
             }, ScreenSpaceEventType.LEFT_UP);
         }, 10)
-    }, [groupsPerTile]);
+    }, [regionsPerTile]);
 
     const counterRef = useRef(0);
     const [allLoaded, setAllLoaded] = useState(false);
 
     const onRegionReady = () => {
         counterRef.current++;
-        if (counterRef.current === props.regions.length) {
+        console.log(`Region ready ${counterRef.current}`);
+        if (counterRef.current === props.gameMap.regions.length) {
             setAllLoaded(true);
         }
     }
-
 
     return (
         <>
             {!allLoaded && <Loader/>}
             <Viewer full ref={viewerRef as MutableRefObject<null>} timeline={false} animation={false}>
-                {props.regions.map((tileGroup, index) => (
+                {props.gameMap.regions.map((region, index) => (
                     <Region
                         key={index}
-                        tiles={tileGroup.getTiles()}
+                        tiles={region.getTiles()}
                         ref={regionRefs.current[index]}
                         defaultColor={props.defaultColor}
                         onRegionReady={onRegionReady}

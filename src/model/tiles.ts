@@ -26,11 +26,16 @@ export function generateTilesGrid(
 export class Tile {
     private _epicenter: Coordinates | null = null
 
-    constructor(southWestLon: number, southWestLat: number, lonStep: number, latStep: number) {
-        const southWest = new Coordinates(southWestLon, southWestLat)
-        const southEast = new Coordinates(southWestLon + lonStep, southWestLat)
-        const northEast = new Coordinates(southWestLon + lonStep, southWestLat + latStep)
-        const northWest = new Coordinates(southWestLon, southWestLat + latStep)
+    constructor(
+        southWestLon: number,
+        southWestLat: number,
+        lonStep: number,
+        latStep: number,
+    ) {
+        const southWest = new Coordinates(southWestLat, southWestLon)
+        const southEast = new Coordinates(southWestLat, southWestLon + lonStep,)
+        const northEast = new Coordinates(southWestLat + latStep, southWestLon + lonStep,)
+        const northWest = new Coordinates(southWestLat + latStep, southWestLon,)
 
         this.southWest = southWest
         this.southEast = southEast
@@ -43,6 +48,15 @@ export class Tile {
     private readonly northEast: Coordinates
     private readonly northWest: Coordinates
 
+    public static fromMinimalBoundaries(southWest: Coordinates, northEast: Coordinates): Tile {
+        return new Tile(
+            southWest.lon,
+            southWest.lat,
+            northEast.lon - southWest.lon,
+            northEast.lat - southWest.lat,
+        )
+    }
+
     public getBoundaries(): Coordinates[] {
         return [this.southWest, this.southEast, this.northEast, this.northWest]
     }
@@ -50,8 +64,8 @@ export class Tile {
     public epicenter(): Coordinates {
         if (!this._epicenter) {
             this._epicenter = new Coordinates(
+                (this.southWest.lat + this.southEast.lat + this.northEast.lat + this.northWest.lat) / 4,
                 (this.southWest.lon + this.southEast.lon + this.northEast.lon + this.northWest.lon) / 4,
-                (this.southWest.lat + this.southEast.lat + this.northEast.lat + this.northWest.lat) / 4
             )
         }
         return this._epicenter

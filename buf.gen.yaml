@@ -1,0 +1,11 @@
+version: v2
+inputs:
+  - directory: proto
+managed:
+  enabled: true
+plugins:
+  - local: protoc-gen-es
+    out: src/gen/grpc
+    strategy: all
+    opt:
+      - target=ts

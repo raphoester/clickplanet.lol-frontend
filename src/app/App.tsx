@@ -1,62 +1,35 @@
-import {generateTilesGrid} from "../model/tiles";
 import MapViewer from "./MapViewer";
-import {AssignTilesToRegions, Region} from "../model/regions";
-import {fibonacciSphere} from "../util/cartesian.ts";
 import Settings from "./Settings.tsx";
 import CountryProvider from "./CountryProvider.tsx";
 import "./App.css";
+import {useEffect, useState} from "react";
+import GameMapProvider from "../adapters/dataSources.ts";
+import {GameMap} from "../model/gameMap.ts";
 
-type config = {
-    defaultColor: number
-    regionDensityIndex: number
-    tilesHorizontalDensity: number
-    tilesRows: number
+export type AppProps = {
+    gameMapProvider: GameMapProvider
 }
 
-const devConfig: config = {
-    defaultColor: 0x888888FF,
-    regionDensityIndex: 500,
-    tilesHorizontalDensity: 3,
-    tilesRows: 300
-}
+export default function App(props: AppProps) {
+    const [gameMap, setGameMap] = useState<GameMap | undefined>()
+    useEffect(() => {
+        props.gameMapProvider.provideGameMap().then((newGameMap) => {
+            console.log("gameMap", newGameMap)
+            setGameMap(newGameMap)
+        })
+    }, [props.gameMapProvider])
 
-const prodConfig: config = {
-    defaultColor: 0x010000FF,
-    regionDensityIndex: 1000,
-    tilesHorizontalDensity: 4,
-    tilesRows: 800
-}
-
-enum env {
-    dev = "dev",
-    prod = "prod"
-}
-
-const environment = env.dev
-
-let config = prodConfig
-if (environment === env.dev) config = devConfig
-
-// TODO: extract this expensive logic to a persistent json file (and avoid recomputing on every reload)
-
-const start = new Date().getTime()
-const tiles = generateTilesGrid(config.tilesRows, config.tilesHorizontalDensity);
-const regionEpicenters = fibonacciSphere(config.regionDensityIndex)
-const regions: Region[] = AssignTilesToRegions(
-    regionEpicenters.map(epicenter => epicenter.toGeodesic()), tiles)
-const end = new Date().getTime()
-console.log(`time to generate regions: ${end - start}ms`)
-
-export default function App() {
     return (
         <div className="App">
             <CountryProvider>
                 <Settings/>
-                <MapViewer
-                    className="map-viewer"
-                    regions={regions}
-                    defaultColor={config.defaultColor}
-                />
+                {gameMap &&
+                    <MapViewer
+                        className="map-viewer"
+                        gameMap={gameMap}
+                        defaultColor={0x00ff00}
+                    />
+                }
             </CountryProvider>
         </div>
     );

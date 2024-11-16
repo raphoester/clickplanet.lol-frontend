@@ -69,10 +69,11 @@ export default forwardRef<RegionHandle, RegionProps>(
 
         return <>
             {(tilesWithoutCountry.length > 0) && <Primitive
-                onReady={() => props.onRegionReady?.()}
+                onReady={() => {
+                    props.onRegionReady?.()
+                }}
                 geometryInstances={tilesToGeometryInstances(tilesWithoutCountry,
-                    Color.WHITE.withAlpha(0.01),
-                    // Color.fromRandom({alpha: 0.5})
+                    Color.WHITE.withAlpha(0.5),
                 )}
                 appearance={
                     new PerInstanceColorAppearance({

@@ -6,8 +6,9 @@ export class Region {
 
     constructor(
         private epicenter: Coordinates,
+        tiles?: Tile[]
     ) {
-        this.tiles = []
+        this.tiles = tiles ?? []
     }
 
     public id(): string {
