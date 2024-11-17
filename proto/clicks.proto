@@ -29,4 +29,10 @@ message GeodesicCoordinates {
 
 message State {
   map<string, string> data = 1;
+  // TODO: add country leaderboard
+}
+
+message TileUpdate {
+  string tile_id = 1;
+  string country_id = 2;
 }
