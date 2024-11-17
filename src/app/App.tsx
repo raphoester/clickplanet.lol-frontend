@@ -4,18 +4,18 @@ import CountryProvider from "./CountryProvider.tsx";
 import "./App.css";
 import {useEffect, useState} from "react";
 import {GameMap} from "../model/gameMap.ts";
-import {GameMapProvider, TileClicker} from "../backends/backend.ts";
+import {GameMapProvider, TileClicker, OwnershipsGetter} from "../backends/backend.ts";
 
 export type AppProps = {
     gameMapProvider: GameMapProvider
     tileClicker: TileClicker
+    ownershipsGetter: OwnershipsGetter
 }
 
 export default function App(props: AppProps) {
     const [gameMap, setGameMap] = useState<GameMap | undefined>()
     useEffect(() => {
         props.gameMapProvider.provideGameMap().then((newGameMap) => {
-            console.log("gameMap", newGameMap)
             setGameMap(newGameMap)
         })
     }, [props.gameMapProvider])

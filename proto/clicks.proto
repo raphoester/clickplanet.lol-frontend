@@ -19,7 +19,8 @@ message Region {
 message Tile {
   GeodesicCoordinates south_west = 1;
   GeodesicCoordinates north_east = 2;
-  string id = 3;
+  string country_id = 3;
+  string id = 4;
 }
 
 message GeodesicCoordinates {

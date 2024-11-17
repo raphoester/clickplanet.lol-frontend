@@ -25,6 +25,7 @@ export function generateTilesGrid(
 
 export class Tile {
     private _epicenter: Coordinates | null = null
+    countryCode: string | undefined
 
     constructor(
         southWestLon: number,
@@ -61,6 +62,15 @@ export class Tile {
 
     public getBoundaries(): Coordinates[] {
         return [this.southWest, this.southEast, this.northEast, this.northWest]
+    }
+
+    public setCountryCode(countryCode?: string) {
+        this.countryCode = countryCode
+        return this
+    }
+
+    public getCountryCode(): string | undefined {
+        return this.countryCode
     }
 
     public epicenter(): Coordinates {

@@ -144,7 +144,12 @@ export class Tile extends Message<Tile> {
   northEast?: GeodesicCoordinates;
 
   /**
-   * @generated from field: string id = 3;
+   * @generated from field: string country_id = 3;
+   */
+  countryId = "";
+
+  /**
+   * @generated from field: string id = 4;
    */
   id = "";
 
@@ -158,7 +163,8 @@ export class Tile extends Message<Tile> {
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 1, name: "south_west", kind: "message", T: GeodesicCoordinates },
     { no: 2, name: "north_east", kind: "message", T: GeodesicCoordinates },
-    { no: 3, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "country_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 4, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): Tile {

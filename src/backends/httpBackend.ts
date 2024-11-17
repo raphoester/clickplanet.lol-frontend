@@ -65,14 +65,15 @@ export class HTTPBackend implements GameMapProvider, TileClicker, OwnershipsGett
         const binary = await this.client.fetch("GET", "/app/map", undefined)
         const message = GameMapProto.fromBinary(binary!)
         const regions = message.regions.map(region =>
-            new Region(mapGeodesicCoordinates(
-                region.epicenter), region.tiles.map(tile =>
-                Tile.fromMinimalBoundaries(
-                    mapGeodesicCoordinates(tile.southWest),
-                    mapGeodesicCoordinates(tile.northEast),
-                    tile.id
-                )
-            ))
+            new Region(
+                mapGeodesicCoordinates(region.epicenter),
+                region.tiles.map(tile =>
+                    Tile.fromMinimalBoundaries(
+                        mapGeodesicCoordinates(tile.southWest),
+                        mapGeodesicCoordinates(tile.northEast),
+                        tile.id
+                    ).setCountryCode(tile.countryId)
+                ))
         )
         const tiles = regions.flatMap(region => region.getTiles())
         return Promise.resolve({regions, tiles})

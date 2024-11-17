@@ -2,8 +2,7 @@ import {
     ForwardedRef,
     forwardRef,
     useContext,
-    useImperativeHandle, useMemo,
-    useState,
+    useImperativeHandle, useMemo, useRef, useState,
 } from "react";
 import {Primitive} from "resium";
 import {
@@ -18,7 +17,6 @@ import {
 } from "cesium";
 import {countryContext} from "./CountryProvider.tsx";
 import {Tile} from "../model/tiles.ts";
-import {Country} from "../model/countries.ts";
 import {TileClicker} from "../backends/backend.ts";
 
 type RegionProps = {
@@ -37,76 +35,67 @@ export default forwardRef<RegionHandle, RegionProps>(
         props: RegionProps,
         ref: ForwardedRef<RegionHandle>
     ) {
-        const [countriesPerTiles, setCountriesPerTiles] =
-            useState<Map<string, Country | null>>(new Map(props.tiles.map(tile => [tile.id(), null])))
-        const tilesPerId = useMemo(() =>
+        const tilesPerIdMemo = useMemo(() =>
             new Map(props.tiles.map(tile => [tile.id(), tile])), [props.tiles])
 
+        const [tilesPerId, setTilesPerId] = useState(tilesPerIdMemo)
         const {country} = useContext(countryContext)
+
         useImperativeHandle(ref, () => ({
             handleTileClick: (tileId: string) => {
-                countriesPerTiles.set(tileId, country)
-                setCountriesPerTiles(new Map(countriesPerTiles))
+                tilesPerId.get(tileId)?.setCountryCode(country.code)
+                setTilesPerId(new Map<string, Tile>(tilesPerId))
                 props.tileClicker.clickTile(tileId, country.code).catch(console.error)
             },
         }))
 
-        const [territories, tilesWithoutCountry] = useMemo(() => {
-            const territories = new Map<Country, Tile[]>()
-            const tilesWithoutCountry: Tile[] = []
-            countriesPerTiles.forEach((country, tileId) => {
-                const tile = tilesPerId.get(tileId)
-                if (!tile) return
-
-                if (!country) {
-                    tilesWithoutCountry.push(tile)
-                    return
-                }
-
-                const territory = territories.get(country) || []
-                territory.push(tile)
-                territories.set(country, territory)
+        const bindings = useMemo(() => {
+            const bindings = new Map<string | undefined, Tile[]>()
+            tilesPerId.forEach((tile: Tile) => {
+                bindings.set(tile.getCountryCode(), [...(bindings.get(tile.getCountryCode()) ?? []), tile])
             })
-            return [territories, tilesWithoutCountry]
-        }, [countriesPerTiles, tilesPerId]);
+            return bindings
+        }, [tilesPerId]);
 
+        const renderedTerritoriesCount = useRef(0)
+        const markRegionAsRendered = () => {
+            renderedTerritoriesCount.current += 1
+            if (renderedTerritoriesCount.current == bindings.size) {
+                props.onRegionReady?.()
+            }
+        }
+
+        // TODO: use onReady
         return <>
-            {(tilesWithoutCountry.length > 0) && <Primitive
-                onReady={() => {
-                    props.onRegionReady?.()
-                }}
-                geometryInstances={tilesToGeometryInstances(tilesWithoutCountry,
-                    Color.WHITE.withAlpha(0.5),
-                )}
-                appearance={
-                    new PerInstanceColorAppearance({
-                        flat: true,
-                        translucent: true,
-                    })
-                }
-                releaseGeometryInstances={true}
-            />}
-
-            {Array.from(territories).map(([country, tiles]) =>
+            {Array.from(bindings).map(([country, tiles]) =>
                 <Primitive
-                    key={country.code}
-                    geometryInstances={tilesToGeometryInstances(tiles)}
-                    appearance={new MaterialAppearance({
-                        renderState: {
-                            blending: BlendingState.ALPHA_BLEND
-                        },
-                        material: new Material({
-                            fabric: {
-                                type: "Image",
-                                uniforms: {
-                                    image: "/static/countries/1x1/" + country.code + ".svg",
-                                    color: new Color(1, 1, 1, 0.5),
+                    onReady={markRegionAsRendered}
+                    key={country}
+                    geometryInstances={
+                        tilesToGeometryInstances(tiles,
+                            (country) ? undefined : Color.WHITE.withAlpha(0.5))
+                    }
+                    appearance={
+                        country ? new MaterialAppearance({
+                            renderState: {
+                                blending: BlendingState.ALPHA_BLEND
+                            },
+                            material: new Material({
+                                fabric: {
+                                    type: "Image",
+                                    uniforms: {
+                                        image: "/static/countries/1x1/" + country + ".svg",
+                                        color: new Color(1, 1, 1, 0.5),
+                                    }
                                 }
-                            }
-                        }),
-                        closed: true,
-                        translucent: true,
-                    })}
+                            }),
+                            closed: true,
+                            translucent: true,
+                        }) : new PerInstanceColorAppearance({
+                            flat: true,
+                            translucent: true,
+                        })
+                    }
                     releaseGeometryInstances={true}
                 />
             )}

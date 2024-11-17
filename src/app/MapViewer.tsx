@@ -64,7 +64,6 @@ export default function MapViewer(props: MapViewerProps) {
 
     const onRegionReady = () => {
         counterRef.current++;
-        console.log(`Region ready ${counterRef.current}`);
         if (counterRef.current === props.gameMap.regions.length) {
             setAllLoaded(true);
         }
