@@ -1,8 +1,12 @@
-import {GameMapProvider, TileClicker} from "./backend.ts";
+import {GameMapProvider, Ownerships, OwnershipsGetter, TileClicker} from "./backend.ts";
 import {GameMap} from "../model/gameMap.ts";
-import {ClickRequest, Map as GameMapProto} from "../gen/grpc/clicks_pb.ts";
+import {
+    ClickRequest,
+    Map as GameMapProto,
+    Ownerships as OwnershipsProto,
+    GeodesicCoordinates,
+} from "../gen/grpc/clicks_pb.ts";
 import {Tile} from "../model/tiles.ts";
-import {GeodesicCoordinates} from "../gen/grpc/clicks_pb.ts";
 import {Coordinates} from "../util/geodesic.ts";
 import {Region} from "../model/regions.ts";
 import {Message} from "@bufbuild/protobuf";
@@ -36,7 +40,7 @@ export class ClickServiceClient {
         if (!res.ok) {
             throw new Error(`Failed to fetch ${verb} ${path}: ${res.statusText} ${await res.text()}`)
         }
-        
+
         const json = await res.json()
         const base64String = json.data
         if (!base64String) {
@@ -53,12 +57,12 @@ export class ClickServiceClient {
     }
 }
 
-export class HTTPBackend implements GameMapProvider, TileClicker {
+export class HTTPBackend implements GameMapProvider, TileClicker, OwnershipsGetter {
     constructor(private client: ClickServiceClient) {
     }
 
     public async provideGameMap(): Promise<GameMap> {
-        const binary = await this.client.fetch("GET", "/map", undefined)
+        const binary = await this.client.fetch("GET", "/app/map", undefined)
         const message = GameMapProto.fromBinary(binary!)
         const regions = message.regions.map(region =>
             new Region(mapGeodesicCoordinates(
@@ -80,9 +84,16 @@ export class HTTPBackend implements GameMapProvider, TileClicker {
             countryId: countryId,
         })
 
-        await this.client.fetch("POST", "/click", payload)
+        await this.client.fetch("POST", "/app/click", payload)
     }
 
+    public async getCurrentOwnerships(): Promise<Ownerships> {
+        const binary = await this.client.fetch("GET", "/app/bindings", undefined)
+        const message = OwnershipsProto.fromBinary(binary!)
+        return {
+            bindings: new Map<string, string>(Object.entries(message.bindings))
+        }
+    }
 }
 
 function mapGeodesicCoordinates(proto: GeodesicCoordinates | undefined): Coordinates {

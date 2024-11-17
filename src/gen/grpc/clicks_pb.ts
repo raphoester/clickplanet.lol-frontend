@@ -222,39 +222,84 @@ export class GeodesicCoordinates extends Message<GeodesicCoordinates> {
 }
 
 /**
- * @generated from message clicks.v1.State
+ * @generated from message clicks.v1.Ownerships
  */
-export class State extends Message<State> {
+export class Ownerships extends Message<Ownerships> {
   /**
-   * @generated from field: map<string, string> data = 1;
+   * TODO: add country leaderboard
+   *
+   * @generated from field: map<string, string> bindings = 1;
    */
-  data: { [key: string]: string } = {};
+  bindings: { [key: string]: string } = {};
 
-  constructor(data?: PartialMessage<State>) {
+  constructor(data?: PartialMessage<Ownerships>) {
     super();
     proto3.util.initPartial(data, this);
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "clicks.v1.State";
+  static readonly typeName = "clicks.v1.Ownerships";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "data", kind: "map", K: 9 /* ScalarType.STRING */, V: {kind: "scalar", T: 9 /* ScalarType.STRING */} },
+    { no: 1, name: "bindings", kind: "map", K: 9 /* ScalarType.STRING */, V: {kind: "scalar", T: 9 /* ScalarType.STRING */} },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): State {
-    return new State().fromBinary(bytes, options);
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): Ownerships {
+    return new Ownerships().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): State {
-    return new State().fromJson(jsonValue, options);
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): Ownerships {
+    return new Ownerships().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): State {
-    return new State().fromJsonString(jsonString, options);
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): Ownerships {
+    return new Ownerships().fromJsonString(jsonString, options);
   }
 
-  static equals(a: State | PlainMessage<State> | undefined, b: State | PlainMessage<State> | undefined): boolean {
-    return proto3.util.equals(State, a, b);
+  static equals(a: Ownerships | PlainMessage<Ownerships> | undefined, b: Ownerships | PlainMessage<Ownerships> | undefined): boolean {
+    return proto3.util.equals(Ownerships, a, b);
+  }
+}
+
+/**
+ * @generated from message clicks.v1.TileUpdate
+ */
+export class TileUpdate extends Message<TileUpdate> {
+  /**
+   * @generated from field: string tile_id = 1;
+   */
+  tileId = "";
+
+  /**
+   * @generated from field: string country_id = 2;
+   */
+  countryId = "";
+
+  constructor(data?: PartialMessage<TileUpdate>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "clicks.v1.TileUpdate";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "tile_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "country_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): TileUpdate {
+    return new TileUpdate().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): TileUpdate {
+    return new TileUpdate().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): TileUpdate {
+    return new TileUpdate().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: TileUpdate | PlainMessage<TileUpdate> | undefined, b: TileUpdate | PlainMessage<TileUpdate> | undefined): boolean {
+    return proto3.util.equals(TileUpdate, a, b);
   }
 }
 

@@ -27,8 +27,8 @@ message GeodesicCoordinates {
   double lon = 2;
 }
 
-message State {
-  map<string, string> data = 1;
+message Ownerships {
+  map<string, string> bindings = 1;
   // TODO: add country leaderboard
 }
 
