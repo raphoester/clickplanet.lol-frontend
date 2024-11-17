@@ -25,7 +25,7 @@ export function generateTilesGrid(
 
 export class Tile {
     private _epicenter: Coordinates | null = null
-    countryCode: string | undefined
+    private countryCode: string | undefined
 
     constructor(
         southWestLon: number,

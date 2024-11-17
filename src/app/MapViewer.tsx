@@ -49,7 +49,7 @@ export default function MapViewer(props: MapViewerProps) {
                 if (!pickedObject) return
 
                 const groupIndex = regionsPerTile.get(pickedObject.id);
-                if (!groupIndex) return
+                if (groupIndex === undefined) return // groupIndex can be 0
 
                 const regionRef = regionRefs.current[groupIndex];
                 if (!regionRef) return
@@ -76,7 +76,7 @@ export default function MapViewer(props: MapViewerProps) {
                 {props.gameMap.regions.map((region, index) => (
                     <Region
                         tileClicker={props.tileClicker}
-                        key={index}
+                        key={region.getEpicenter().toString()}
                         index={index}
                         tiles={region.getTiles()}
                         ref={regionRefs.current[index]}

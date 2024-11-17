@@ -1,7 +1,7 @@
 import {
     ForwardedRef,
     forwardRef,
-    useContext,
+    useContext, useEffect,
     useImperativeHandle, useMemo, useRef, useState,
 } from "react";
 import {Primitive} from "resium";
@@ -36,9 +36,9 @@ export default forwardRef<RegionHandle, RegionProps>(
         props: RegionProps,
         ref: ForwardedRef<RegionHandle>
     ) {
-        console.log("index", props.index)
-        const tilesPerIdMemo = useMemo(() =>
-            new Map(props.tiles.map(tile => [tile.id(), tile])), [props.tiles])
+        const tilesPerIdMemo = useMemo(() => {
+            return new Map(props.tiles.map(tile => [tile.id(), tile]))
+        }, [props.tiles])
 
         const [tilesPerId, setTilesPerId] = useState(tilesPerIdMemo)
         const {country} = useContext(countryContext)
@@ -47,18 +47,24 @@ export default forwardRef<RegionHandle, RegionProps>(
             handleTileClick: (tileId: string) => {
                 const tile = tilesPerId.get(tileId)
                 if (!tile) throw new Error("tile not found")
-                tile.setCountryCode(country.code)
-                setTilesPerId(new Map<string, Tile>(tilesPerId))
+
+                tilesPerId.set(tileId, tile.setCountryCode(country.code))
+                setTilesPerId(new Map(tilesPerId))
+
+                console.log("clicked on index", props.index)
+
+                // call backend to save tile state
                 props.tileClicker.clickTile(tileId, country.code).catch(console.error)
             },
         }))
 
-        const bindings = useMemo(() => {
-            const bindings = new Map<string | undefined, Tile[]>()
+        const [bindings, setBindings] = useState(new Map<string | undefined, Tile[]>())
+        useEffect(() => {
+            const localBindings = new Map<string | undefined, Tile[]>()
             tilesPerId.forEach((tile: Tile) => {
-                bindings.set(tile.getCountryCode(), [...(bindings.get(tile.getCountryCode()) ?? []), tile])
+                localBindings.set(tile.getCountryCode(), [...(localBindings.get(tile.getCountryCode()) ?? []), tile])
             })
-            return bindings
+            setBindings(new Map(localBindings))
         }, [tilesPerId]);
 
         const renderedTerritoriesCount = useRef(0)
@@ -69,16 +75,15 @@ export default forwardRef<RegionHandle, RegionProps>(
             }
         }
 
-        // TODO: use onReady
         return <>
             {Array.from(bindings).map(([country, tiles]) =>
                 <Primitive
                     onReady={markRegionAsRendered}
-                    key={country}
+                    key={tiles[0].id()}
                     geometryInstances={
                         tilesToGeometryInstances(tiles,
-                            // (country) ? undefined : Color.WHITE.withAlpha(0.5),
-                            (country) ? undefined : indiceToDefaultColor.get(props.index)!.withAlpha(0.5)
+                            (country) ? undefined : Color.WHITE.withAlpha(0.5),
+                            // (country) ? undefined : Color.fromRandom({alpha: 0.5})
                         )
                     }
                     appearance={
@@ -108,26 +113,11 @@ export default forwardRef<RegionHandle, RegionProps>(
         </>
     }
 )
-// quand il y a déjà des drapeaux sur la région on reload, les primitives ne sont pas recréées onclick
-// index 0 -> aucun trigger onclick for some reason (même pas dans la console)
 
-const indiceToDefaultColor: Map<number, Color> = new Map([
-    [0, Color.RED],
-    [1, Color.BLUE],
-    [2, Color.GREEN],
-    [3, Color.YELLOW],
-    [4, Color.CYAN],
-    [5, Color.MAGENTA],
-    [6, Color.ORANGE],
-    [7, Color.PURPLE],
-    [8, Color.TEAL],
-    [9, Color.WHITE],
-])
+// quand il y a déjà des drapeaux sur la région on reload, les primitives ne sont pas recréées onclick
 
 function tilesToGeometryInstances(tiles: Tile[], color?: Color): GeometryInstance[] {
-    const attrs = color ? {
-        color: ColorGeometryInstanceAttribute.fromColor(color)
-    } : {}
+    const attrs = color ? {color: ColorGeometryInstanceAttribute.fromColor(color)} : {}
 
     return tiles.map((tile: Tile) => {
         return new GeometryInstance({

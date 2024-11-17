@@ -11,7 +11,7 @@ import {StrictMode} from "react";
 import {ClickServiceClient, HTTPBackend} from "./backends/httpBackend.ts";
 
 const clickServiceClient = new ClickServiceClient({
-    baseUrl: "http://172.20.10.3:8080",
+    baseUrl: "http://localhost:8080",
     timeoutMs: 1000
 })
 
