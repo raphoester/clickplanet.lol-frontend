@@ -77,6 +77,7 @@ export default function MapViewer(props: MapViewerProps) {
                     <Region
                         tileClicker={props.tileClicker}
                         key={index}
+                        index={index}
                         tiles={region.getTiles()}
                         ref={regionRefs.current[index]}
                         defaultColor={props.defaultColor}

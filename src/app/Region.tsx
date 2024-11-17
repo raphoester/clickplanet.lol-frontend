@@ -24,6 +24,7 @@ type RegionProps = {
     defaultColor: number
     onRegionReady?: () => void
     tileClicker: TileClicker
+    index: number
 }
 
 export interface RegionHandle {
@@ -35,6 +36,7 @@ export default forwardRef<RegionHandle, RegionProps>(
         props: RegionProps,
         ref: ForwardedRef<RegionHandle>
     ) {
+        console.log("index", props.index)
         const tilesPerIdMemo = useMemo(() =>
             new Map(props.tiles.map(tile => [tile.id(), tile])), [props.tiles])
 
@@ -43,7 +45,9 @@ export default forwardRef<RegionHandle, RegionProps>(
 
         useImperativeHandle(ref, () => ({
             handleTileClick: (tileId: string) => {
-                tilesPerId.get(tileId)?.setCountryCode(country.code)
+                const tile = tilesPerId.get(tileId)
+                if (!tile) throw new Error("tile not found")
+                tile.setCountryCode(country.code)
                 setTilesPerId(new Map<string, Tile>(tilesPerId))
                 props.tileClicker.clickTile(tileId, country.code).catch(console.error)
             },
@@ -73,7 +77,9 @@ export default forwardRef<RegionHandle, RegionProps>(
                     key={country}
                     geometryInstances={
                         tilesToGeometryInstances(tiles,
-                            (country) ? undefined : Color.WHITE.withAlpha(0.5))
+                            // (country) ? undefined : Color.WHITE.withAlpha(0.5),
+                            (country) ? undefined : indiceToDefaultColor.get(props.index)!.withAlpha(0.5)
+                        )
                     }
                     appearance={
                         country ? new MaterialAppearance({
@@ -102,6 +108,21 @@ export default forwardRef<RegionHandle, RegionProps>(
         </>
     }
 )
+// quand il y a déjà des drapeaux sur la région on reload, les primitives ne sont pas recréées onclick
+// index 0 -> aucun trigger onclick for some reason (même pas dans la console)
+
+const indiceToDefaultColor: Map<number, Color> = new Map([
+    [0, Color.RED],
+    [1, Color.BLUE],
+    [2, Color.GREEN],
+    [3, Color.YELLOW],
+    [4, Color.CYAN],
+    [5, Color.MAGENTA],
+    [6, Color.ORANGE],
+    [7, Color.PURPLE],
+    [8, Color.TEAL],
+    [9, Color.WHITE],
+])
 
 function tilesToGeometryInstances(tiles: Tile[], color?: Color): GeometryInstance[] {
     const attrs = color ? {

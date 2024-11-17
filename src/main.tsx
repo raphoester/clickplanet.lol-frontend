@@ -11,7 +11,7 @@ import {StrictMode} from "react";
 import {ClickServiceClient, HTTPBackend} from "./backends/httpBackend.ts";
 
 const clickServiceClient = new ClickServiceClient({
-    baseUrl: "http://localhost:8080",
+    baseUrl: "http://172.20.10.3:8080",
     timeoutMs: 1000
 })
 
@@ -23,6 +23,7 @@ const router = createBrowserRouter([{
         return (
             <StrictMode>
                 <App
+                    ownershipsGetter={backend}
                     gameMapProvider={backend}
                     tileClicker={backend}
                 />
