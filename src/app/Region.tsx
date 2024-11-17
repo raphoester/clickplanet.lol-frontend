@@ -40,16 +40,21 @@ export default forwardRef<RegionHandle, RegionProps>(
             return new Map(props.tiles.map(tile => [tile.id(), tile]))
         }, [props.tiles])
 
-        const [tilesPerId, setTilesPerId] = useState(tilesPerIdMemo)
+        const [tilesPerId, setTilesPerId] = useState(new Map<string, Tile>())
         const {country} = useContext(countryContext)
+
+        useEffect(() => {
+            setTilesPerId(tilesPerIdMemo)
+        }, [tilesPerIdMemo]);
 
         useImperativeHandle(ref, () => ({
             handleTileClick: (tileId: string) => {
-                const tile = tilesPerId.get(tileId)
-                if (!tile) throw new Error("tile not found")
-
-                tilesPerId.set(tileId, tile.setCountryCode(country.code))
-                setTilesPerId(new Map(tilesPerId))
+                setTilesPerId((prev) => {
+                    const newMap = new Map(prev)
+                    const newTile = newMap.get(tileId)!.setCountryCode(country.code)
+                    newMap.set(tileId, newTile)
+                    return newMap
+                })
 
                 console.log("clicked on index", props.index)
 
@@ -60,11 +65,14 @@ export default forwardRef<RegionHandle, RegionProps>(
 
         const [bindings, setBindings] = useState(new Map<string | undefined, Tile[]>())
         useEffect(() => {
-            const localBindings = new Map<string | undefined, Tile[]>()
-            tilesPerId.forEach((tile: Tile) => {
-                localBindings.set(tile.getCountryCode(), [...(localBindings.get(tile.getCountryCode()) ?? []), tile])
+            setBindings(() => {
+                const newMap = new Map()
+                tilesPerId.forEach((tile) => {
+                    newMap.set(tile.getCountryCode(), [...(newMap.get(tile.getCountryCode()) || []), tile])
+                })
+
+                return newMap
             })
-            setBindings(new Map(localBindings))
         }, [tilesPerId]);
 
         const renderedTerritoriesCount = useRef(0)
@@ -82,8 +90,8 @@ export default forwardRef<RegionHandle, RegionProps>(
                     key={tiles[0].id()}
                     geometryInstances={
                         tilesToGeometryInstances(tiles,
-                            (country) ? undefined : Color.WHITE.withAlpha(0.5),
-                            // (country) ? undefined : Color.fromRandom({alpha: 0.5})
+                            // (country) ? undefined : Color.WHITE.withAlpha(0.5),
+                            (country) ? undefined : Color.fromRandom({alpha: 0.5})
                         )
                     }
                     appearance={
@@ -113,8 +121,6 @@ export default forwardRef<RegionHandle, RegionProps>(
         </>
     }
 )
-
-// quand il y a déjà des drapeaux sur la région on reload, les primitives ne sont pas recréées onclick
 
 function tilesToGeometryInstances(tiles: Tile[], color?: Color): GeometryInstance[] {
     const attrs = color ? {color: ColorGeometryInstanceAttribute.fromColor(color)} : {}
