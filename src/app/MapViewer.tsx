@@ -71,7 +71,7 @@ export default function MapViewer(props: MapViewerProps) {
 
     return (
         <>
-            {!allLoaded && <Loader/>}
+            {/*{!allLoaded && <Loader/>}*/}
             <Viewer full ref={viewerRef as MutableRefObject<null>} timeline={false} animation={false}>
                 {props.gameMap.regions.map((region, index) => (
                     <Region

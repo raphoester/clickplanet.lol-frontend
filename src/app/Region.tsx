@@ -2,7 +2,7 @@ import {
     ForwardedRef,
     forwardRef,
     useContext, useEffect,
-    useImperativeHandle, useMemo, useRef, useState,
+    useImperativeHandle, useRef, useState,
 } from "react";
 import {Primitive} from "resium";
 import {
@@ -36,95 +36,102 @@ export default forwardRef<RegionHandle, RegionProps>(
         props: RegionProps,
         ref: ForwardedRef<RegionHandle>
     ) {
-        const tilesPerIdMemo = useMemo(() => {
-            return new Map(props.tiles.map(tile => [tile.id(), tile]))
-        }, [props.tiles])
-
-        const [tilesPerId, setTilesPerId] = useState(new Map<string, Tile>())
-        const {country} = useContext(countryContext)
+        const [tilesPerId, setTilesPerId] = useState(() => new Map<string, Tile>())
 
         useEffect(() => {
-            setTilesPerId(tilesPerIdMemo)
-        }, [tilesPerIdMemo]);
+            const tilesPerId = new Map<string, Tile>()
+            props.tiles.forEach((tile) => {
+                tilesPerId.set(tile.id(), tile)
+            })
+            setTilesPerId(tilesPerId)
+        }, [props.tiles]);
+
+        const {country} = useContext(countryContext)
 
         useImperativeHandle(ref, () => ({
             handleTileClick: (tileId: string) => {
-                setTilesPerId((prev) => {
-                    const newMap = new Map(prev)
-                    const newTile = newMap.get(tileId)!.setCountryCode(country.code)
-                    newMap.set(tileId, newTile)
-                    return newMap
-                })
+                console.log("clicked on", props.index)
+                const tile = tilesPerId.get(tileId)
+                if (!tile) throw new Error(`Tile with id ${tileId} not found`)
 
-                console.log("clicked on index", props.index)
+                setTilesPerId((tilesPerId) => {
+                    const newTilesPerId = new Map(tilesPerId)
+                    newTilesPerId.delete(tileId)
+                    newTilesPerId.set(tileId, tile.setCountryCode(country.code))
+                    return newTilesPerId
+                })
 
                 // call backend to save tile state
                 props.tileClicker.clickTile(tileId, country.code).catch(console.error)
             },
         }))
 
-        const [bindings, setBindings] = useState(new Map<string | undefined, Tile[]>())
+        const [mainLoadingFinished, setMainLoadingFinished] = useState(false)
+        const territoriesLoaded = useRef(0)
+        const territoriesCount = useRef(0)
+
         useEffect(() => {
-            setBindings(() => {
-                const newMap = new Map()
-                tilesPerId.forEach((tile) => {
-                    newMap.set(tile.getCountryCode(), [...(newMap.get(tile.getCountryCode()) || []), tile])
+            if (mainLoadingFinished) return
+            if (territoriesCount.current != 0
+                && territoriesCount.current === territoriesLoaded.current) {
+                setMainLoadingFinished(true)
+            }
+        }, [mainLoadingFinished, setMainLoadingFinished])
+
+        return <> {
+            function () {
+                const perCountry = new Map<string | undefined, Tile[]>()
+                tilesPerId.forEach(tile => {
+                    const countryId = tile.getCountryCode()
+                    perCountry.set(countryId, (perCountry.get(countryId) ?? []).concat(tile))
                 })
 
-                return newMap
-            })
-        }, [tilesPerId]);
+                territoriesCount.current = perCountry.size
 
-        const renderedTerritoriesCount = useRef(0)
-        const markRegionAsRendered = () => {
-            renderedTerritoriesCount.current += 1
-            if (renderedTerritoriesCount.current == bindings.size) {
-                props.onRegionReady?.()
-            }
-        }
 
-        return <>
-            {Array.from(bindings).map(([country, tiles]) =>
-                <Primitive
-                    onReady={markRegionAsRendered}
-                    key={tiles[0].id()}
-                    geometryInstances={
-                        tilesToGeometryInstances(tiles,
-                            // (country) ? undefined : Color.WHITE.withAlpha(0.5),
-                            (country) ? undefined : Color.fromRandom({alpha: 0.5})
-                        )
-                    }
-                    appearance={
-                        country ? new MaterialAppearance({
-                            renderState: {
-                                blending: BlendingState.ALPHA_BLEND
-                            },
-                            material: new Material({
-                                fabric: {
-                                    type: "Image",
-                                    uniforms: {
-                                        image: "/static/countries/1x1/" + country + ".svg",
-                                        color: new Color(1, 1, 1, 0.5),
+                return Array.from(perCountry.entries()).map(([countryId, tiles]) => {
+                    return <Primitive
+                        onReady={() => {
+                            territoriesLoaded.current++
+                        }}
+                        key={countryId}
+                        geometryInstances={
+                            tilesToGeometryInstances(tiles,
+                                (countryId) ? undefined : Color.fromRandom({alpha: 0.5})
+                            )
+                        }
+                        appearance={
+                            countryId ? new MaterialAppearance({
+                                renderState: {
+                                    blending: BlendingState.ALPHA_BLEND
+                                },
+                                material: new Material({
+                                    fabric: {
+                                        type: "Image",
+                                        uniforms: {
+                                            image: "/static/countries/1x1/" + countryId + ".svg",
+                                            color: new Color(1, 1, 1, 0.5),
+                                        }
                                     }
-                                }
-                            }),
-                            closed: true,
-                            translucent: true,
-                        }) : new PerInstanceColorAppearance({
-                            flat: true,
-                            translucent: true,
-                        })
-                    }
-                    releaseGeometryInstances={true}
-                />
-            )}
+                                }),
+                                closed: true,
+                                translucent: true,
+                            }) : new PerInstanceColorAppearance({
+                                flat: true,
+                                translucent: true,
+                            })
+                        }
+                        releaseGeometryInstances={true}
+                    />
+                })
+            }()
+        }
         </>
     }
 )
 
 function tilesToGeometryInstances(tiles: Tile[], color?: Color): GeometryInstance[] {
     const attrs = color ? {color: ColorGeometryInstanceAttribute.fromColor(color)} : {}
-
     return tiles.map((tile: Tile) => {
         return new GeometryInstance({
             geometry: new RectangleGeometry({
