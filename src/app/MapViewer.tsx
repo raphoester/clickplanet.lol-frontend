@@ -60,18 +60,21 @@ export default function MapViewer(props: MapViewerProps) {
     }, [regionsPerTile]);
 
     const counterRef = useRef(0);
-    const [allLoaded, setAllLoaded] = useState(false);
+    const [fakeLoading, setFakeLoading] = useState(true);
+
 
     const onRegionReady = () => {
-        counterRef.current++;
+        counterRef.current += 1;
         if (counterRef.current === props.gameMap.regions.length) {
-            setAllLoaded(true);
+            setTimeout(() => {
+                setFakeLoading(false);
+            }, 10_000)
         }
     }
 
     return (
         <>
-            {/*{!allLoaded && <Loader/>}*/}
+            {fakeLoading && <Loader/>}
             <Viewer full ref={viewerRef as MutableRefObject<null>} timeline={false} animation={false}>
                 {props.gameMap.regions.map((region, index) => (
                     <Region

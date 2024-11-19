@@ -2,7 +2,7 @@ import {
     ForwardedRef,
     forwardRef,
     useContext, useEffect,
-    useImperativeHandle, useRef, useState,
+    useImperativeHandle, useMemo, useRef, useState,
 } from "react";
 import {Primitive} from "resium";
 import {
@@ -13,7 +13,7 @@ import {
     MaterialAppearance,
     PerInstanceColorAppearance,
     Rectangle,
-    RectangleGeometry
+    RectangleGeometry,
 } from "cesium";
 import {countryContext} from "./CountryProvider.tsx";
 import {Tile} from "../model/tiles.ts";
@@ -46,7 +46,11 @@ export default forwardRef<RegionHandle, RegionProps>(
             setTilesPerId(tilesPerId)
         }, [props.tiles]);
 
-        const {country} = useContext(countryContext)
+        const countryCtx = useContext(countryContext).country
+        const country = useMemo(() => {
+            return countryCtx
+        }, [countryCtx])
+
 
         useImperativeHandle(ref, () => ({
             handleTileClick: (tileId: string) => {
@@ -66,17 +70,16 @@ export default forwardRef<RegionHandle, RegionProps>(
             },
         }))
 
-        const [mainLoadingFinished, setMainLoadingFinished] = useState(false)
-        const territoriesLoaded = useRef(0)
+        const territoriesLoaded = useRef(1)
         const territoriesCount = useRef(0)
 
-        useEffect(() => {
-            if (mainLoadingFinished) return
-            if (territoriesCount.current != 0
-                && territoriesCount.current === territoriesLoaded.current) {
-                setMainLoadingFinished(true)
+        const interval = setInterval(() => {
+            if (territoriesLoaded.current === territoriesCount.current) {
+                clearInterval(interval)
+                props.onRegionReady?.()
             }
-        }, [mainLoadingFinished, setMainLoadingFinished])
+        }, 100)
+
 
         return <> {
             function () {
@@ -87,17 +90,17 @@ export default forwardRef<RegionHandle, RegionProps>(
                 })
 
                 territoriesCount.current = perCountry.size
-
+                const now = Date.now()
 
                 return Array.from(perCountry.entries()).map(([countryId, tiles]) => {
                     return <Primitive
-                        onReady={() => {
-                            territoriesLoaded.current++
-                        }}
-                        key={countryId}
+                        onReady={() => territoriesLoaded.current++}
+                        key={`${countryId}-${now}`}
                         geometryInstances={
                             tilesToGeometryInstances(tiles,
-                                (countryId) ? undefined : Color.fromRandom({alpha: 0.5})
+                                (countryId) ? undefined :
+                                    Color.fromRandom({alpha: 0.5})
+                                // Color.WHITE.withAlpha(0.01)
                             )
                         }
                         appearance={
