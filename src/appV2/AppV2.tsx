@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import {Canvas, useThree} from "@react-three/fiber";
 import {OrbitControls} from "@react-three/drei";
-import {useEffect, useMemo, useRef} from "react";
+import {MutableRefObject, useEffect, useMemo, useRef} from "react";
 import "./AppV2.css"
 
 const textureLoader = new THREE.TextureLoader();
@@ -33,13 +33,14 @@ const fragmentShader = `
   }
 `;
 
-function PointsWithPicking({onPick}) {
-    const ref = useRef();
+function PointsWithPicking({onPick}: { onPick: (_: number) => void }) {
+    const ref = useRef<THREE.Points>() as MutableRefObject<THREE.Points>;
     const {gl, size, scene, camera} = useThree();
 
     const {positions, uv, ids} = useMemo(() => {
         const geometry = new THREE.IcosahedronGeometry(1, 520);
         const pos = geometry.attributes.position.array;
+        console.log(pos.length);
         const uv = geometry.attributes.uv.array;
 
         // Générer des IDs uniques
@@ -56,7 +57,7 @@ function PointsWithPicking({onPick}) {
     const pickingTexture = useMemo(() => new THREE.WebGLRenderTarget(size.width, size.height), [size]);
 
     useEffect(() => {
-        const handleClick = (event) => {
+        const handleClick = (event: MouseEvent) => {
             const mouse = new THREE.Vector2();
             mouse.x = (event.clientX / size.width) * 2 - 1;
             mouse.y = -(event.clientY / size.height) * 2 + 1;
@@ -129,7 +130,7 @@ function PointsWithPicking({onPick}) {
 }
 
 export default function AppV2() {
-    const handlePick = (id: string) => {
+    const handlePick = (id: number) => {
         console.log("Point clicked, ID:", id);
     };
 
@@ -139,7 +140,7 @@ export default function AppV2() {
             <color attach="background" args={["#000000"]}/>
             <PointsWithPicking onPick={handlePick}/>
             <OrbitControls
-                minDistance={1.1}
+                minDistance={1.09999999}
                 maxDistance={4}
             />
         </Canvas>
