@@ -11,15 +11,12 @@ export default function AppV4() {
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.getElementById('three-container')!.appendChild(renderer.domElement);
 
-        const size = 20000;
-        const positions = new Float32Array(size * 3);
+        const {positions, ids, size} = generatePositions(130);
+        console.log(size)
+
         const colors = new Float32Array(size * 3);
 
         for (let i = 0; i < size; i++) {
-            positions[i * 3] = (Math.random() - 0.5) * 10;
-            positions[i * 3 + 1] = (Math.random() - 0.5) * 10;
-            positions[i * 3 + 2] = (Math.random() - 0.5) * 10;
-
             const [r, g, b] = integerToColor(i + 1); // add +1 to avoid black color (background)
             colors[i * 3] = r / 255;
             colors[i * 3 + 1] = g / 255;
@@ -37,8 +34,9 @@ export default function AppV4() {
                 
                 void main() {
                     vColor = color;
-                    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-                    gl_PointSize = 10.0;
+                    vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+                    gl_PointSize = 1.0 * (2.0 / -mvPosition.z);
+                    gl_Position = projectionMatrix * mvPosition;
                 }
             `,
             fragmentShader: `
@@ -51,6 +49,14 @@ export default function AppV4() {
 
         scene.add(new THREE.AmbientLight(0xffffff, 1));
         scene.add(points)
+        const icosahedron = new THREE.Mesh(
+            new THREE.IcosahedronGeometry(0.9999, 16),
+            new THREE.MeshStandardMaterial({
+                map: new THREE.TextureLoader().load('/static/earth/3_no_ice_clouds_8k.jpg'),
+            })
+        );
+
+        scene.add(icosahedron);
 
         window.addEventListener('click', (event: MouseEvent) => {
             const mouse = new THREE.Vector2();
@@ -85,6 +91,8 @@ export default function AppV4() {
         camera.position.z = 5;
 
         const controls = new OrbitControls(camera, renderer.domElement);
+        controls.maxDistance = 4
+        controls.minDistance = 1.1
 
 
         // Animation
@@ -116,4 +124,25 @@ function integerToColor(id: number): [number, number, number] {
 
 function colorToInteger(rgb: [number, number, number]): number {
     return (rgb[0] << 16) + (rgb[1] << 8) + rgb[2];
+}
+
+function generatePositions(detail: number) {
+    if (detail < 1) detail = 1;
+    if (detail > 520) detail = 520;
+
+    const geometry = new THREE.IcosahedronGeometry(1, detail);
+    const pos = geometry.attributes.position.array;
+    const uv = geometry.attributes.uv.array;
+
+    // Générer des IDs uniques
+    const ids = new Float32Array(pos.length / 3);
+
+    for (let i = 0; i < ids.length; i++) ids[i] = i;
+
+    return {
+        positions: new Float32Array(pos),
+        uv: new Float32Array(uv),
+        ids: ids,
+        size: pos.length / 3,
+    };
 }
