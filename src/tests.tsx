@@ -25,8 +25,8 @@ export default function AppV4() {
         const pickerGeometry = new THREE.BufferGeometry();
         const displayGeometry = new THREE.BufferGeometry();
         displayGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-        const hovered = new Float32Array(size).fill(0);
-        displayGeometry.setAttribute('hover', new THREE.BufferAttribute(hovered, 1));
+        const hoveredArr = new Float32Array(size).fill(0);
+        displayGeometry.setAttribute('hover', new THREE.BufferAttribute(hoveredArr, 1));
 
         pickerGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
         pickerGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
@@ -43,7 +43,7 @@ export default function AppV4() {
                     vHover = hover;
                     
                     vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-                    gl_PointSize = 1.0 * (2.0 / -mvPosition.z);
+                    gl_PointSize = 1.0 * (2.5 / -mvPosition.z);
                     gl_Position = projectionMatrix * mvPosition;
                 }
             `
@@ -71,15 +71,15 @@ export default function AppV4() {
         }));
 
 
-        function updateHoverEffect(hoveredId: number) { // oof ça va être lourd
-            const hoverArr = displayGeometry.attributes.hover.array;
-            for (let i = 0; i < hoverArr.length; i++) {
-                hoverArr[i - 1] = i === hoveredId ? 1 : 0;
-            }
+        function updateHoverEffect(hoveredId: number) {
+            const newHovered = new Float32Array(size).fill(0);
+            newHovered[hoveredId - 1] = 1; // -1 to avoid black color (background)
+
+            displayGeometry.setAttribute('hover', new THREE.BufferAttribute(newHovered, 1));
             displayGeometry.attributes.hover.needsUpdate = true;
         }
 
-        function mouseEvent(event: MouseEvent, fn: (_: number) => void) {
+        function actOnPick(event: MouseEvent, fn: (_: number) => void) {
             const mouse = new THREE.Vector2();
             mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
             mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -112,11 +112,11 @@ export default function AppV4() {
         }
 
         window.addEventListener('mousemove', (event: MouseEvent) => {
-            mouseEvent(event, updateHoverEffect)
+            actOnPick(event, updateHoverEffect)
         });
 
         window.addEventListener('click', (event: MouseEvent) => {
-            mouseEvent(event, (id) => {
+            actOnPick(event, (id) => {
                 console.log(id)
             })
         })
@@ -133,7 +133,7 @@ export default function AppV4() {
 
         camera.position.z = 5;
         const controls = new OrbitControls(camera, renderer.domElement);
-        controls.maxDistance = 4
+        controls.maxDistance = 2
         controls.minDistance = 1.1
 
 
