@@ -43,20 +43,26 @@ export default function AppV4() {
                     vHover = hover;
                     
                     vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-                    gl_PointSize = 1.0 * (2.5 / -mvPosition.z);
+                    gl_PointSize = 1.0 * (4.5 / -mvPosition.z);
                     gl_Position = projectionMatrix * mvPosition;
                 }
             `
 
         const displayPoints = new THREE.Points(displayGeometry, new THREE.ShaderMaterial({
             vertexShader: commonVertexShader,
+            transparent: true,
             fragmentShader: `
                 varying float vHover;
                 
                 void main() {
-                    gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+                    // make them round 
+                    vec2 coordinates = gl_PointCoord - vec2(0.5);
+                    float dist = length(coordinates); 
+                    if (dist > 0.5) discard; 
+                    
+                    gl_FragColor = vec4(1.0, 1.0, 1.0, 0.03);
                     if (vHover > 0.5) {
-                        gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+                        gl_FragColor = vec4(1.0, 1.0, 1.0, 0.3);
                     }
                 }`
         }))
