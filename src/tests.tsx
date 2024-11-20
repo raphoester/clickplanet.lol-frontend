@@ -4,14 +4,13 @@ import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 
 export default function AppV4() {
     useEffect(() => {
-        // Initialisation de la scène, de la caméra et du rendu
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer();
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.getElementById('three-container')!.appendChild(renderer.domElement);
 
-        const {positions, ids, size} = generatePositions(130);
+        const {positions, size} = generatePositions(130);
         console.log(size)
 
         const colors = new Float32Array(size * 3);
@@ -23,57 +22,84 @@ export default function AppV4() {
             colors[i * 3 + 2] = b / 255; // divide by 255 to get a value between 0 and 1 (required by three.js)
         }
 
-        const geometry = new THREE.BufferGeometry();
-        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-        geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+        const pickerGeometry = new THREE.BufferGeometry();
+        const displayGeometry = new THREE.BufferGeometry();
+        displayGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        const hovered = new Float32Array(size).fill(0);
+        displayGeometry.setAttribute('hover', new THREE.BufferAttribute(hovered, 1));
 
-        const points = new THREE.Points(geometry, new THREE.ShaderMaterial({
-            vertexShader: `
+        pickerGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        pickerGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+        const commonVertexShader = `
                 attribute vec3 color;
+                attribute float hover;
+                
                 varying vec3 vColor;
+                varying float vHover;
                 
                 void main() {
                     vColor = color;
+                    vHover = hover;
+                    
                     vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
                     gl_PointSize = 1.0 * (2.0 / -mvPosition.z);
                     gl_Position = projectionMatrix * mvPosition;
                 }
-            `,
+            `
+
+        const displayPoints = new THREE.Points(displayGeometry, new THREE.ShaderMaterial({
+            vertexShader: commonVertexShader,
+            fragmentShader: `
+                varying float vHover;
+                
+                void main() {
+                    gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+                    if (vHover > 0.5) {
+                        gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+                    }
+                }`
+        }))
+
+        const pickingPoints = new THREE.Points(pickerGeometry, new THREE.ShaderMaterial({
+            vertexShader: commonVertexShader,
             fragmentShader: `
                 varying vec3 vColor;
                 void main() {
                     gl_FragColor = vec4(vColor, 1.0);
-                }
-            `
+                }`
         }));
 
-        scene.add(new THREE.AmbientLight(0xffffff, 1));
-        scene.add(points)
-        const icosahedron = new THREE.Mesh(
-            new THREE.IcosahedronGeometry(0.9999, 16),
-            new THREE.MeshStandardMaterial({
-                map: new THREE.TextureLoader().load('/static/earth/3_no_ice_clouds_8k.jpg'),
-            })
-        );
 
-        scene.add(icosahedron);
+        function updateHoverEffect(hoveredId: number) { // oof ça va être lourd
+            const hoverArr = displayGeometry.attributes.hover.array;
+            for (let i = 0; i < hoverArr.length; i++) {
+                hoverArr[i - 1] = i === hoveredId ? 1 : 0;
+            }
+            displayGeometry.attributes.hover.needsUpdate = true;
+        }
 
-        window.addEventListener('click', (event: MouseEvent) => {
+        function mouseEvent(event: MouseEvent, fn: (_: number) => void) {
             const mouse = new THREE.Vector2();
             mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
             mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
-            const pixelBuffer = new Uint8Array(4);
+            const renderTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight);
 
-            const renderTarget = new THREE.WebGLRenderTarget(
-                window.innerWidth,
-                window.innerHeight,
-            );
+            const pickingScene = new THREE.Scene();
+            pickingScene.add(pickingPoints);
+            pickingScene.add(new THREE.Mesh(      // inner sphere
+                new THREE.IcosahedronGeometry(0.999, 20),
+                new THREE.MeshBasicMaterial({ // basic material to avoid lighting
+                    color: 0xffffff,
+                })
+            ))
 
             renderer.setRenderTarget(renderTarget);
-            renderer.render(scene, camera);
+            renderer.render(pickingScene, camera);
             renderer.setRenderTarget(null);
 
+            const pixelBuffer = new Uint8Array(4);
             renderer.readRenderTargetPixels(
                 renderTarget,
                 Math.floor(((mouse.x + 1) / 2) * window.innerWidth),
@@ -81,21 +107,36 @@ export default function AppV4() {
                 1, 1, pixelBuffer
             )
 
-            console.log(pixelBuffer)
-
             const originalId = colorToInteger([pixelBuffer[0], pixelBuffer[1], pixelBuffer[2]]);
-            console.log(originalId)
+            fn(originalId)
+        }
+
+        window.addEventListener('mousemove', (event: MouseEvent) => {
+            mouseEvent(event, updateHoverEffect)
+        });
+
+        window.addEventListener('click', (event: MouseEvent) => {
+            mouseEvent(event, (id) => {
+                console.log(id)
+            })
         })
 
-        // Position de la caméra
-        camera.position.z = 5;
+        scene.add(new THREE.AmbientLight(0xffffff, 1));
+        scene.add(displayPoints)
 
+        scene.add(new THREE.Mesh(      // inner sphere
+            new THREE.IcosahedronGeometry(0.999, 50),
+            new THREE.MeshStandardMaterial({
+                map: new THREE.TextureLoader().load('/static/earth/3_no_ice_clouds_8k.jpg'),
+            })
+        ))
+
+        camera.position.z = 5;
         const controls = new OrbitControls(camera, renderer.domElement);
         controls.maxDistance = 4
         controls.minDistance = 1.1
 
 
-        // Animation
         const animate = () => {
             requestAnimationFrame(animate);
             controls.update()
@@ -104,7 +145,6 @@ export default function AppV4() {
 
         animate();
 
-        // Cleanup pour éviter les fuites mémoire
         return () => {
             renderer.dispose();
             document.getElementById('three-container')!.innerHTML = '';
@@ -134,10 +174,8 @@ function generatePositions(detail: number) {
     const pos = geometry.attributes.position.array;
     const uv = geometry.attributes.uv.array;
 
-    // Générer des IDs uniques
     const ids = new Float32Array(pos.length / 3);
-
-    for (let i = 0; i < ids.length; i++) ids[i] = i;
+    for (let i = 0; i < ids.length; i++) ids[i] = i + 1; // +1 to avoid black color (background)
 
     return {
         positions: new Float32Array(pos),
