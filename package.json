@@ -20,7 +20,9 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.28.0",
-    "resium": "^1.18.3"
+    "resium": "^1.18.3",
+    "sharp": "^0.33.5",
+    "spritesmith": "^3.5.1"
   },
   "devDependencies": {
     "@bufbuild/buf": "^1.47.2",
