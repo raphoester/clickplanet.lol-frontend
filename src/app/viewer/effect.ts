@@ -5,7 +5,7 @@ import {createPoints} from "./points.ts";
 import {actOnPick} from "./gpuPicking.ts";
 import {regions} from "./atlas.ts";
 import {Country} from "../countries.ts";
-import {TileClicker} from "../../backends/backend.ts";
+import {OwnershipsGetter, TileClicker} from "../../backends/backend.ts";
 
 type Uniforms = {
     zoom: THREE.IUniform,
@@ -17,7 +17,7 @@ type Uniforms = {
 export function effect(
     country: Country,
     tileClicker: TileClicker,
-    // ownershipsGetter: OwnershipsGetter,
+    ownershipsGetter: OwnershipsGetter,
 ) {
     const {scene, camera, renderer, cleanup} = setupScene();
     const uniforms: Uniforms = {
@@ -43,6 +43,7 @@ export function effect(
             const region = regions.get(country.code)
             if (!region) throw new Error(`Region not found for country ${country.code}`)
 
+            console.log("clicked on", id)
             tileClicker.clickTile(id, country.code).catch(console.error)
 
             const arr = displayPoints.geometry.getAttribute('regionVector').array as Float32Array
@@ -61,12 +62,29 @@ export function effect(
     });
 
     // 0 means no region is selected
-
     function defaultRegionVector(size: number): Float32Array {
         return new Float32Array(size * 4).fill(0);
     }
 
     displayPoints.geometry.setAttribute('regionVector', new THREE.BufferAttribute(defaultRegionVector(size), 4));
+
+    ownershipsGetter.getCurrentOwnerships().then(ownerships => {
+        if (ownerships.bindings.size === 0) return
+
+        const regionVectors = displayPoints.geometry.getAttribute('regionVector').array as Float32Array;
+        ownerships.bindings.forEach((countryCode, index) => {
+            const region = regions.get(countryCode);
+            if (!region) throw new Error(`Region not found for country ${countryCode}`);
+
+            regionVectors[index * 4] = region.x;
+            regionVectors[index * 4 + 1] = region.y;
+            regionVectors[index * 4 + 2] = region.width;
+            regionVectors[index * 4 + 3] = region.height;
+        });
+
+        displayPoints.geometry.getAttribute('regionVector').needsUpdate = true;
+    }).catch(console.error)
+
 
     addDisplayObjects(scene, displayPoints)
 

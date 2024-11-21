@@ -4,6 +4,13 @@ import {innerSphere} from "./sphere.ts";
 
 const innerSphereGeometry = innerSphere()
 
+const skipId1 = colorToInteger([255, 255, 255])
+const skipId2 = colorToInteger([0, 0, 0])
+
+function shouldSkipID(id: number): boolean {
+    return id === skipId1 || id === skipId2
+} // skip clicks on black surfaces (background, inner sphere)
+
 export function actOnPick(
     renderer: THREE.WebGLRenderer,
     camera: THREE.Camera,
@@ -39,5 +46,6 @@ export function actOnPick(
     )
 
     const originalId = colorToInteger([pixelBuffer[0], pixelBuffer[1], pixelBuffer[2]]);
+    if (shouldSkipID(originalId)) return
     callback(originalId - 1) // subtract -1 to account for the fact that the id is 1-indexed
 }

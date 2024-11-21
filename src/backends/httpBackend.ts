@@ -65,7 +65,7 @@ export class HTTPBackend implements TileClicker, OwnershipsGetter {
     }
 
     public async getCurrentOwnerships(): Promise<Ownerships> {
-        const binary = await this.client.fetch("GET", "/app/bindings", undefined)
+        const binary = await this.client.fetch("GET", "/app/ownerships", undefined)
         const message = OwnershipsProto.fromBinary(binary!)
         return {
             bindings: new Map<number, string>(
