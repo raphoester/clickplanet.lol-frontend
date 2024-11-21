@@ -8,4 +8,3 @@ export default function AppV3() {
 
     return <div id="three-container" style={{width: '100vw', height: '100vh'}}/>;
 };
-
