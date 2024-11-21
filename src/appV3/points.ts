@@ -1,14 +1,14 @@
 import * as THREE from "three";
 
 // @ts-expect-error typescript does not know about vite-plugin-glsl
-import displayVertex from "./shaders/display/vertex.vert"
+import displayVertex from "./shaders/display/vertex.glsl"
 // @ts-expect-error typescript does not know about vite-plugin-glsl
-import displayFragment from "./shaders/display/fragment.frag"
+import displayFragment from "./shaders/display/fragment.glsl"
 
 // @ts-expect-error typescript does not know about vite-plugin-glsl
-import pickerVertex from "./shaders/picker/vertex.vert"
+import pickerVertex from "./shaders/picker/vertex.glsl"
 // @ts-expect-error typescript does not know about vite-plugin-glsl
-import pickerFragment from "./shaders/picker/fragment.frag"
+import pickerFragment from "./shaders/picker/fragment.glsl"
 import {integerToColor} from "./pickingColors.ts";
 import {IUniform} from "three";
 
