@@ -3,17 +3,8 @@ import {OrbitControls} from "three/addons/controls/OrbitControls.js";
 import {addDisplayObjects, setupScene} from "./scene.ts";
 import {createPoints} from "./points.ts";
 import {actOnPick} from "./gpuPicking.ts";
-import {Region, regions} from "./atlas.ts";
+import {regions} from "./atlas.ts";
 import {Country} from "../../model/countries.ts";
-
-const regionVectors: Region[] = Array.from(regions.values()).map(region => {
-    return {
-        x: region.x,
-        y: region.y,
-        width: region.width,
-        height: region.height
-    };
-})
 
 type Uniforms = {
     zoom: THREE.IUniform,
@@ -34,38 +25,20 @@ export function effect(country: Country) {
 
     const {pickingPoints, displayPoints, size} = createPoints(uniforms);
 
-    console.log("running with", size, "points");
-
-    const randomTextureArray = () => {
-        const textureIndex = new Float32Array(size * 4);
-        for (let i = 0; i < size; i++) {
-            const {x, y, width, height} = regionVectors[Math.floor(Math.random() * regionVectors.length)];
-            textureIndex[i * 4] = x;
-            textureIndex[i * 4 + 1] = y;
-            textureIndex[i * 4 + 2] = width;
-            textureIndex[i * 4 + 3] = height;
-        }
-        return textureIndex;
-    }
-
     const actOnPick_ = (event: MouseEvent, callback: (id: number) => void) => {
         return actOnPick(renderer, camera, event, pickingPoints, callback);
     }
 
     window.addEventListener('mousemove', (event: MouseEvent) => {
-        actOnPick_(event, id => {
-            updateHoverEffect(displayPoints.geometry, id)
-        })
+        actOnPick_(event, id => updateHoverEffect(displayPoints.geometry, id))
     });
 
     window.addEventListener('click', (event: MouseEvent) => {
         actOnPick_(event, id => {
-            console.log("clicked on", id)
             const region = regions.get(country.code)
             if (!region) throw new Error(`Region not found for country ${country.code}`)
 
             const arr = displayPoints.geometry.getAttribute('regionVector').array as Float32Array
-
             arr[id * 4] = region.x
             arr[id * 4 + 1] = region.y
             arr[id * 4 + 2] = region.width
@@ -80,7 +53,13 @@ export function effect(country: Country) {
         uniforms.resolution.value.set(window.innerWidth, window.innerHeight);
     });
 
-    displayPoints.geometry.setAttribute('regionVector', new THREE.BufferAttribute(randomTextureArray(), 4));
+    // 0 means no region is selected
+
+    function defaultRegionVector(size: number): Float32Array {
+        return new Float32Array(size * 4).fill(0);
+    }
+
+    displayPoints.geometry.setAttribute('regionVector', new THREE.BufferAttribute(defaultRegionVector(size), 4));
 
     addDisplayObjects(scene, displayPoints)
 

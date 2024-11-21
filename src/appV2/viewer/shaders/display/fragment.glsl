@@ -4,11 +4,26 @@ uniform vec2 textureSize;
 flat in vec4 vRegionVector;
 varying float vHover;
 
+vec4 applyHover(vec4 color, float hover) {
+    color.a = 0.5;
+    if (hover > 0.5) {
+        color.a = 0.8;
+    }
+
+    return color;
+}
+
 void main() {
     // make them round
     vec2 coordinates = gl_PointCoord - vec2(0.5);
     float dist = length(coordinates);
     if (dist > 0.5) discard;
+
+    if (vRegionVector.z == 0.0 || vRegionVector.w == 0.0) {
+        gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+        gl_FragColor = applyHover(gl_FragColor, vHover);
+        return;
+    }
 
     vec2 uv = gl_PointCoord;
 
@@ -42,9 +57,5 @@ void main() {
 
     // Sample the texture
     gl_FragColor = texture2D(img, atlasUV);
-    gl_FragColor.a = 0.4;
-
-    if (vHover > 0.5) {
-        gl_FragColor.a = 0.8;
-    }
+    gl_FragColor = applyHover(gl_FragColor, vHover);
 }
