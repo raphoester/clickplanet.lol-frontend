@@ -10,14 +10,21 @@ type Uniforms = {
     zoom: THREE.IUniform,
     resolution: THREE.IUniform
     img: THREE.IUniform
+    atlasRegion: THREE.IUniform
+    textureSize: THREE.IUniform
 }
 
 export function effect() {
     const {scene, camera, renderer, cleanup} = setupScene();
+
+
+    const texture = new THREE.TextureLoader().load('/static/countries/atlas.png');
     const uniforms: Uniforms = {
         zoom: {value: 1.0},
         resolution: {value: new THREE.Vector2(window.innerWidth, window.innerHeight)},
-        img: {value: new THREE.TextureLoader().load('/static/countries/atlas.png')}
+        img: {value: texture},
+        atlasRegion: {value: new THREE.Vector4(6000, 1334, 1000, 667)}, // display only france for this test
+        textureSize: {value: new THREE.Vector2(13000, 12288)} // TODO: retrieve the size from the texture itself
     };
 
     const {

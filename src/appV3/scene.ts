@@ -15,7 +15,7 @@ export function setupScene() {
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.getElementById('three-container')!.appendChild(renderer.domElement);
 
-    scene.add(new THREE.AmbientLight(0xffffff, 1));
+    scene.add(new THREE.AmbientLight(0xffffff, 3));
 
     const cleanup = () => {
         renderer.dispose();
