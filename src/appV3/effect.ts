@@ -52,6 +52,19 @@ export function effect() {
 
     addDisplayObjects(scene, displayPoints)
 
+    setInterval(() => {
+        const randomCircleIndex = Math.floor(Math.random() * size);
+        const randomRegionIndex = Math.floor(Math.random() * regionVectors.length);
+        const randomRegion = regionVectors[randomRegionIndex];
+
+        displayPoints.geometry.attributes.regionVector.array[randomCircleIndex * 4] = randomRegion.x;
+        displayPoints.geometry.attributes.regionVector.array[randomCircleIndex * 4 + 1] = randomRegion.y;
+        displayPoints.geometry.attributes.regionVector.array[randomCircleIndex * 4 + 2] = randomRegion.z;
+        displayPoints.geometry.attributes.regionVector.array[randomCircleIndex * 4 + 3] = randomRegion.w;
+
+        displayPoints.geometry.attributes.regionVector.needsUpdate = true;
+    }, 0)
+
     startAnimation(renderer, scene, camera, uniforms);
 
     return cleanup
