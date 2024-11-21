@@ -9,6 +9,7 @@ import {setupEventListeners} from "./events.ts";
 type Uniforms = {
     zoom: THREE.IUniform,
     resolution: THREE.IUniform
+    img: THREE.IUniform
 }
 
 export function effect() {
@@ -16,6 +17,7 @@ export function effect() {
     const uniforms: Uniforms = {
         zoom: {value: 1.0},
         resolution: {value: new THREE.Vector2(window.innerWidth, window.innerHeight)},
+        img: {value: new THREE.TextureLoader().load('/static/countries/atlas.png')}
     };
 
     const {
