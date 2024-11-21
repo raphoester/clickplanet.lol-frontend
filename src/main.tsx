@@ -10,7 +10,7 @@ import App from "./app/App.tsx";
 import {StrictMode} from "react";
 import {ClickServiceClient, HTTPBackend} from "./backends/httpBackend.ts";
 import AppV2 from "./appV2/AppV2.tsx";
-import AppV3 from "./appV3/appV3.tsx";
+import AppV3 from "./appV3/AppV3.tsx";
 
 const clickServiceClient = new ClickServiceClient({
     baseUrl: "http://localhost:8080",
