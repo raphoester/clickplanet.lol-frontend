@@ -14,11 +14,8 @@ import {IUniform} from "three";
 
 
 export function createPoints(uniforms: { [uniform: string]: IUniform; }) {
-    const {positions, size} = generatePositions(130);
+    const {positions, size} = generatePositions(316);
     const colors = generateColors(size);
-
-    console.log("positions", positions)
-    console.log("colors", colors)
 
     const pickerGeometry = new THREE.BufferGeometry();
     const displayGeometry = new THREE.BufferGeometry();

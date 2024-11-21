@@ -37,6 +37,8 @@ export function effect() {
         size
     } = createPoints(uniforms);
 
+    console.log("running with", size, "points");
+
     const textureIndex = new Float32Array(size * 4);
     for (let i = 0; i < size; i++) {
         const [x, y, z, w] = regionVectors[i % regionVectors.length];
