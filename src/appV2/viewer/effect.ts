@@ -58,16 +58,6 @@ export function effect() {
 
     addDisplayObjects(scene, displayPoints)
 
-    setInterval(() => {
-        // re-randomise all the regions
-
-        console.log("re-randomising regions");
-
-        const textureIndex = randomTextureArray();
-        displayPoints.geometry.setAttribute('regionVector', new THREE.BufferAttribute(textureIndex, 4));
-        displayPoints.geometry.attributes.regionVector.needsUpdate = true;
-    }, 1000)
-
     startAnimation(renderer, scene, camera, uniforms);
 
     return cleanup

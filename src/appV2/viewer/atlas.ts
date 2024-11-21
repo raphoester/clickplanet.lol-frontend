@@ -1,4 +1,4 @@
-import atlasRegion from "../../static/countries/atlas.json"
+import atlasRegion from "../../../static/countries/atlas.json"
 
 export type Region = {
     x: number,
