@@ -9,8 +9,8 @@ import {
 import App from "./app/App.tsx";
 import {StrictMode} from "react";
 import {ClickServiceClient, HTTPBackend} from "./backends/httpBackend.ts";
-import Tests from "./tests.tsx";
 import AppV2 from "./appV2/AppV2.tsx";
+import AppV3 from "./appV3/appV3.tsx";
 
 const clickServiceClient = new ClickServiceClient({
     baseUrl: "http://localhost:8080",
@@ -35,7 +35,7 @@ const router = createBrowserRouter([{
 }, {
     path: "v2", element: <AppV2/>
 }, {
-    path: "tests", element: <Tests/>
+    path: "v3", element: <AppV3/>
 }])
 
 createRoot(document.getElementById('root')!).render(<RouterProvider router={router}/>);
