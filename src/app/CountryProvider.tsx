@@ -1,7 +1,6 @@
 import {ReactNode, useState} from "react";
-import {Country} from "../model/countries.ts";
+import {Country} from "./countries.ts";
 import {countryContext} from "./CountryContext.tsx";
-
 
 export type CountryProviderProps = {
     children: ReactNode

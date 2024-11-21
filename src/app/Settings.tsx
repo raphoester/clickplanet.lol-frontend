@@ -1,6 +1,6 @@
 import {countryContext} from "./CountryContext.tsx";
 import {useContext, ChangeEvent, useState} from "react";
-import {Countries} from "../model/countries.ts";
+import {Countries} from "./countries.ts";
 import "./Settings.css"
 
 export default function Settings() {

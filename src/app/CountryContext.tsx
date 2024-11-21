@@ -1,4 +1,4 @@
-import {Country} from "../model/countries.ts";
+import {Country} from "./countries.ts";
 import {createContext} from "react";
 
 

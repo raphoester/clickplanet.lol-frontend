@@ -4,7 +4,7 @@ import {addDisplayObjects, setupScene} from "./scene.ts";
 import {createPoints} from "./points.ts";
 import {actOnPick} from "./gpuPicking.ts";
 import {regions} from "./atlas.ts";
-import {Country} from "../../model/countries.ts";
+import {Country} from "../countries.ts";
 import {TileClicker} from "../../backends/backend.ts";
 
 type Uniforms = {

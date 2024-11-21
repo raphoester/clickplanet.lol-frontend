@@ -1,4 +1,4 @@
-import countriesData from "../../static/countries/countries.json"
+import countriesData from "../../static/countries/countries.json";
 
 export const Countries: Country[] = Object.entries(countriesData).map(([code, name]) => ({
     code,
