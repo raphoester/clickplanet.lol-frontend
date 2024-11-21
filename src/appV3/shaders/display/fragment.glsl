@@ -20,11 +20,11 @@ void main() {
 
     vec2 atlasUV = normalizedRegionXY + vec2(uv.x, 1.0 - uv.y) * normalizedRegionZW;
     gl_FragColor = texture2D(img, atlasUV);
-    gl_FragColor.a = 0.13;
+    gl_FragColor.a = 0.40;
 
     //        gl_FragColor = vec4(1.0, 1.0, 1.0, 0.03); // half transparent white (default color for later)
 
     if (vHover > 0.5) {
-        gl_FragColor = vec4(1.0, 1.0, 1.0, 0.3);
+        gl_FragColor.a = 0.8;
     }
 }
