@@ -11,9 +11,9 @@ import { Message, proto3 } from "@bufbuild/protobuf";
  */
 export class ClickRequest extends Message<ClickRequest> {
   /**
-   * @generated from field: string tile_id = 1;
+   * @generated from field: uint32 tile_id = 1;
    */
-  tileId = "";
+  tileId = 0;
 
   /**
    * @generated from field: string country_id = 2;
@@ -28,7 +28,7 @@ export class ClickRequest extends Message<ClickRequest> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "clicks.v1.ClickRequest";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "tile_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 1, name: "tile_id", kind: "scalar", T: 13 /* ScalarType.UINT32 */ },
     { no: 2, name: "country_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ]);
 
@@ -50,193 +50,15 @@ export class ClickRequest extends Message<ClickRequest> {
 }
 
 /**
- * @generated from message clicks.v1.Map
- */
-export class Map extends Message<Map> {
-  /**
-   * @generated from field: repeated clicks.v1.Region regions = 1;
-   */
-  regions: Region[] = [];
-
-  constructor(data?: PartialMessage<Map>) {
-    super();
-    proto3.util.initPartial(data, this);
-  }
-
-  static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "clicks.v1.Map";
-  static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "regions", kind: "message", T: Region, repeated: true },
-  ]);
-
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): Map {
-    return new Map().fromBinary(bytes, options);
-  }
-
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): Map {
-    return new Map().fromJson(jsonValue, options);
-  }
-
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): Map {
-    return new Map().fromJsonString(jsonString, options);
-  }
-
-  static equals(a: Map | PlainMessage<Map> | undefined, b: Map | PlainMessage<Map> | undefined): boolean {
-    return proto3.util.equals(Map, a, b);
-  }
-}
-
-/**
- * @generated from message clicks.v1.Region
- */
-export class Region extends Message<Region> {
-  /**
-   * @generated from field: clicks.v1.GeodesicCoordinates epicenter = 1;
-   */
-  epicenter?: GeodesicCoordinates;
-
-  /**
-   * @generated from field: repeated clicks.v1.Tile tiles = 2;
-   */
-  tiles: Tile[] = [];
-
-  constructor(data?: PartialMessage<Region>) {
-    super();
-    proto3.util.initPartial(data, this);
-  }
-
-  static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "clicks.v1.Region";
-  static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "epicenter", kind: "message", T: GeodesicCoordinates },
-    { no: 2, name: "tiles", kind: "message", T: Tile, repeated: true },
-  ]);
-
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): Region {
-    return new Region().fromBinary(bytes, options);
-  }
-
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): Region {
-    return new Region().fromJson(jsonValue, options);
-  }
-
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): Region {
-    return new Region().fromJsonString(jsonString, options);
-  }
-
-  static equals(a: Region | PlainMessage<Region> | undefined, b: Region | PlainMessage<Region> | undefined): boolean {
-    return proto3.util.equals(Region, a, b);
-  }
-}
-
-/**
- * @generated from message clicks.v1.Tile
- */
-export class Tile extends Message<Tile> {
-  /**
-   * @generated from field: clicks.v1.GeodesicCoordinates south_west = 1;
-   */
-  southWest?: GeodesicCoordinates;
-
-  /**
-   * @generated from field: clicks.v1.GeodesicCoordinates north_east = 2;
-   */
-  northEast?: GeodesicCoordinates;
-
-  /**
-   * @generated from field: string country_id = 3;
-   */
-  countryId = "";
-
-  /**
-   * @generated from field: string id = 4;
-   */
-  id = "";
-
-  constructor(data?: PartialMessage<Tile>) {
-    super();
-    proto3.util.initPartial(data, this);
-  }
-
-  static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "clicks.v1.Tile";
-  static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "south_west", kind: "message", T: GeodesicCoordinates },
-    { no: 2, name: "north_east", kind: "message", T: GeodesicCoordinates },
-    { no: 3, name: "country_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 4, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-  ]);
-
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): Tile {
-    return new Tile().fromBinary(bytes, options);
-  }
-
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): Tile {
-    return new Tile().fromJson(jsonValue, options);
-  }
-
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): Tile {
-    return new Tile().fromJsonString(jsonString, options);
-  }
-
-  static equals(a: Tile | PlainMessage<Tile> | undefined, b: Tile | PlainMessage<Tile> | undefined): boolean {
-    return proto3.util.equals(Tile, a, b);
-  }
-}
-
-/**
- * @generated from message clicks.v1.GeodesicCoordinates
- */
-export class GeodesicCoordinates extends Message<GeodesicCoordinates> {
-  /**
-   * @generated from field: double lat = 1;
-   */
-  lat = 0;
-
-  /**
-   * @generated from field: double lon = 2;
-   */
-  lon = 0;
-
-  constructor(data?: PartialMessage<GeodesicCoordinates>) {
-    super();
-    proto3.util.initPartial(data, this);
-  }
-
-  static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "clicks.v1.GeodesicCoordinates";
-  static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "lat", kind: "scalar", T: 1 /* ScalarType.DOUBLE */ },
-    { no: 2, name: "lon", kind: "scalar", T: 1 /* ScalarType.DOUBLE */ },
-  ]);
-
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GeodesicCoordinates {
-    return new GeodesicCoordinates().fromBinary(bytes, options);
-  }
-
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GeodesicCoordinates {
-    return new GeodesicCoordinates().fromJson(jsonValue, options);
-  }
-
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GeodesicCoordinates {
-    return new GeodesicCoordinates().fromJsonString(jsonString, options);
-  }
-
-  static equals(a: GeodesicCoordinates | PlainMessage<GeodesicCoordinates> | undefined, b: GeodesicCoordinates | PlainMessage<GeodesicCoordinates> | undefined): boolean {
-    return proto3.util.equals(GeodesicCoordinates, a, b);
-  }
-}
-
-/**
  * @generated from message clicks.v1.Ownerships
  */
 export class Ownerships extends Message<Ownerships> {
   /**
    * TODO: add country leaderboard
    *
-   * @generated from field: map<string, string> bindings = 1;
+   * @generated from field: map<uint32, string> bindings = 1;
    */
-  bindings: { [key: string]: string } = {};
+  bindings: { [key: number]: string } = {};
 
   constructor(data?: PartialMessage<Ownerships>) {
     super();
@@ -246,7 +68,7 @@ export class Ownerships extends Message<Ownerships> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "clicks.v1.Ownerships";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "bindings", kind: "map", K: 9 /* ScalarType.STRING */, V: {kind: "scalar", T: 9 /* ScalarType.STRING */} },
+    { no: 1, name: "bindings", kind: "map", K: 13 /* ScalarType.UINT32 */, V: {kind: "scalar", T: 9 /* ScalarType.STRING */} },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): Ownerships {
@@ -271,9 +93,9 @@ export class Ownerships extends Message<Ownerships> {
  */
 export class TileUpdate extends Message<TileUpdate> {
   /**
-   * @generated from field: string tile_id = 1;
+   * @generated from field: uint32 tile_id = 1;
    */
-  tileId = "";
+  tileId = 0;
 
   /**
    * @generated from field: string country_id = 2;
@@ -288,7 +110,7 @@ export class TileUpdate extends Message<TileUpdate> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "clicks.v1.TileUpdate";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "tile_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 1, name: "tile_id", kind: "scalar", T: 13 /* ScalarType.UINT32 */ },
     { no: 2, name: "country_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ]);
 

@@ -5,6 +5,7 @@ import {createPoints} from "./points.ts";
 import {actOnPick} from "./gpuPicking.ts";
 import {regions} from "./atlas.ts";
 import {Country} from "../../model/countries.ts";
+import {TileClicker} from "../../backends/backend.ts";
 
 type Uniforms = {
     zoom: THREE.IUniform,
@@ -13,7 +14,11 @@ type Uniforms = {
     textureSize: THREE.IUniform
 }
 
-export function effect(country: Country) {
+export function effect(
+    country: Country,
+    tileClicker: TileClicker,
+    // ownershipsGetter: OwnershipsGetter,
+) {
     const {scene, camera, renderer, cleanup} = setupScene();
 
     const uniforms: Uniforms = {
@@ -37,6 +42,8 @@ export function effect(country: Country) {
         actOnPick_(event, id => {
             const region = regions.get(country.code)
             if (!region) throw new Error(`Region not found for country ${country.code}`)
+
+            tileClicker.clickTile(id, country.code).catch(console.error)
 
             const arr = displayPoints.geometry.getAttribute('regionVector').array as Float32Array
             arr[id * 4] = region.x

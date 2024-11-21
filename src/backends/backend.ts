@@ -5,7 +5,7 @@ export interface GameMapProvider {
 }
 
 export interface TileClicker {
-    clickTile(tileId: string, countryId: string): Promise<void>
+    clickTile(tileId: number, countryId: string): Promise<void>
 }
 
 export type Ownerships = {

@@ -3,37 +3,16 @@ syntax = "proto3";
 package clicks.v1;
 
 message ClickRequest {
-  string tile_id = 1;
+  uint32 tile_id = 1;
   string country_id = 2;
 }
 
-message Map {
-  repeated Region regions = 1;
-}
-
-message Region {
-  GeodesicCoordinates epicenter = 1;
-  repeated Tile tiles = 2;
-}
-
-message Tile {
-  GeodesicCoordinates south_west = 1;
-  GeodesicCoordinates north_east = 2;
-  string country_id = 3;
-  string id = 4;
-}
-
-message GeodesicCoordinates {
-  double lat = 1;
-  double lon = 2;
-}
-
 message Ownerships {
-  map<string, string> bindings = 1;
+  map<uint32, string> bindings = 1;
   // TODO: add country leaderboard
 }
 
 message TileUpdate {
-  string tile_id = 1;
+  uint32 tile_id = 1;
   string country_id = 2;
 }

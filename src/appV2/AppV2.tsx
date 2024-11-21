@@ -1,11 +1,16 @@
-import Viewer from "./viewer/Viewer.tsx";
+import Viewer, {ViewerProps} from "./viewer/Viewer.tsx";
 import Settings from "./Settings.tsx";
 import CountryProvider from "./CountryProvider.tsx";
 
-export default function AppV2() {
+export type AppProps = ViewerProps
+
+export default function AppV2(props: AppProps) {
     return <>
         <CountryProvider>
-            <Viewer/>
+            <Viewer
+                tileClicker={props.tileClicker}
+                ownershipsGetter={props.ownershipsGetter}
+            />
             <Settings/>
         </CountryProvider>
     </>

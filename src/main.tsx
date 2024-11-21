@@ -32,7 +32,10 @@ const router = createBrowserRouter([{
         )
     }()
 }, {
-    path: "v2", element: <AppV2/>
+    path: "v2", element: <AppV2
+        ownershipsGetter={backend}
+        tileClicker={backend}
+    />
 }])
 
 createRoot(document.getElementById('root')!).render(<RouterProvider router={router}/>);

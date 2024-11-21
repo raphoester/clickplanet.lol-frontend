@@ -79,7 +79,7 @@ export class HTTPBackend implements GameMapProvider, TileClicker, OwnershipsGett
         return Promise.resolve({regions, tiles})
     }
 
-    public async clickTile(tileId: string, countryId: string) {
+    public async clickTile(tileId: number, countryId: string) {
         const payload = new ClickRequest({
             tileId: tileId,
             countryId: countryId,
