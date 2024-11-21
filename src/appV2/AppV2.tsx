@@ -40,7 +40,6 @@ function PointsWithPicking({onPick}: { onPick: (_: number) => void }) {
     const {positions, uv, ids} = useMemo(() => {
         const geometry = new THREE.IcosahedronGeometry(1, 520);
         const pos = geometry.attributes.position.array;
-        console.log(pos.length);
         const uv = geometry.attributes.uv.array;
 
         // Générer des IDs uniques

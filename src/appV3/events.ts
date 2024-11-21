@@ -14,7 +14,7 @@ export function setupEventListeners(
     });
 
     window.addEventListener('click', (event: MouseEvent) => {
-        actOnPick(renderer, camera, event, pickingPoints, id => console.log(id));
+        actOnPick(renderer, camera, event, pickingPoints, id => console.log("clicked on", id));
     });
 
     window.addEventListener('resize', () => {
