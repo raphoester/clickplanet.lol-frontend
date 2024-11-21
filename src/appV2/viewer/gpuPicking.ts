@@ -2,38 +2,9 @@ import * as THREE from "three"
 import {colorToInteger} from "./pickingColors.ts";
 import {innerSphere} from "./sphere.ts";
 
-export function setupEventListeners(
-    renderer: THREE.WebGLRenderer,
-    camera: THREE.Camera,
-    uniforms: { [key: string]: THREE.IUniform },
-    pickingPoints: THREE.Points,
-    displayPoints: THREE.Points,
-) {
-    window.addEventListener('mousemove', (event: MouseEvent) => {
-        actOnPick(renderer, camera, event, pickingPoints, id => updateHoverEffect(displayPoints.geometry, id));
-    });
-
-    window.addEventListener('click', (event: MouseEvent) => {
-        actOnPick(renderer, camera, event, pickingPoints, id => console.log("clicked on", id));
-    });
-
-    window.addEventListener('resize', () => {
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        uniforms.resolution.value.set(window.innerWidth, window.innerHeight);
-    });
-}
-
-function updateHoverEffect(geometry: THREE.BufferGeometry, hoveredId: number) {
-    const size = geometry.attributes.hover.array.length;
-    const newHovered = new Float32Array(size).fill(0);
-    newHovered[hoveredId - 1] = 1;
-    geometry.setAttribute('hover', new THREE.BufferAttribute(newHovered, 1));
-    geometry.attributes.hover.needsUpdate = true;
-}
-
 const innerSphereGeometry = innerSphere()
 
-function actOnPick(
+export function actOnPick(
     renderer: THREE.WebGLRenderer,
     camera: THREE.Camera,
     event: MouseEvent,
@@ -68,5 +39,5 @@ function actOnPick(
     )
 
     const originalId = colorToInteger([pixelBuffer[0], pixelBuffer[1], pixelBuffer[2]]);
-    callback(originalId)
+    callback(originalId - 1) // subtract -1 to account for the fact that the id is 1-indexed
 }

@@ -8,5 +8,4 @@ export type Region = {
 }
 
 // export dictionary of regions and assign key to code
-
-export const regions: { [code: string]: Region } = atlasRegion
+export const regions: Map<string, Region> = new Map(Object.entries(atlasRegion))

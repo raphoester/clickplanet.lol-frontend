@@ -9,6 +9,7 @@ export function setupScene() {
         -cameraSize * aspect, cameraSize * aspect,
         cameraSize, -cameraSize, 0.01, 100
     );
+
     camera.position.z = 5
 
     const renderer = new THREE.WebGLRenderer();
@@ -21,6 +22,7 @@ export function setupScene() {
         renderer.dispose();
         document.getElementById('three-container')!.innerHTML = '';
     }
+
 
     return {scene, camera, renderer, cleanup};
 }
