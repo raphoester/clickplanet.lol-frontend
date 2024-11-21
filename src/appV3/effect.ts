@@ -6,10 +6,14 @@ import {addDisplayObjects, setupScene} from "./scene.ts";
 import {createPoints} from "./points.ts";
 import {setupEventListeners} from "./events.ts";
 
+type Uniforms = {
+    zoom: THREE.IUniform,
+    resolution: THREE.IUniform
+}
 
 export function effect() {
     const {scene, camera, renderer, cleanup} = setupScene();
-    const uniforms = {
+    const uniforms: Uniforms = {
         zoom: {value: 1.0},
         resolution: {value: new THREE.Vector2(window.innerWidth, window.innerHeight)},
     };
@@ -22,7 +26,7 @@ export function effect() {
     console.log(size, "points generated")
 
     setupEventListeners(renderer, camera, uniforms, pickingPoints, displayPoints);
-    
+
     addDisplayObjects(scene, displayPoints)
 
     startAnimation(renderer, scene, camera, uniforms);
@@ -33,8 +37,8 @@ export function effect() {
 function startAnimation(
     renderer: THREE.WebGLRenderer,
     scene: THREE.Scene,
-    camera: THREE.Camera,
-    uniforms: { [uniform: string]: THREE.IUniform; },
+    camera: THREE.OrthographicCamera,
+    uniforms: Uniforms,
 ) {
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.minZoom = 1;
@@ -50,6 +54,6 @@ function startAnimation(
     animate();
 }
 
-function updateUniforms(camera: THREE.Camera, uniforms: any) {
-    uniforms.zoom.value = (camera as any).zoom;
+function updateUniforms(camera: THREE.OrthographicCamera, uniforms: Uniforms) {
+    uniforms.zoom.value = camera.zoom;
 }
