@@ -12,6 +12,7 @@ import App from "./app/App.tsx";
 
 const clickServiceClient = new ClickServiceClient({
     baseUrl: "http://localhost:8080",
+    // baseUrl: "http://192.168.100.3:8080",
     timeoutMs: 1000
 })
 
@@ -25,6 +26,7 @@ const router = createBrowserRouter([{
                 <App
                     ownershipsGetter={backend}
                     tileClicker={backend}
+                    updatesListener={backend}
                 />
             </StrictMode>
         )

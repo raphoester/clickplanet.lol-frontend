@@ -1,7 +1,7 @@
-import {Ownerships, OwnershipsGetter, TileClicker} from "./backend.ts";
+import {Ownerships, OwnershipsGetter, TileClicker, UpdatesListener} from "./backend.ts";
 import {
     ClickRequest,
-    Ownerships as OwnershipsProto,
+    Ownerships as OwnershipsProto, TileUpdate,
 } from "../gen/grpc/clicks_pb.ts";
 import {Message} from "@bufbuild/protobuf";
 
@@ -11,7 +11,7 @@ type Config = {
 }
 
 export class ClickServiceClient {
-    constructor(private config: Config) {
+    constructor(public config: Config) {
     }
 
     public async fetch(
@@ -51,7 +51,7 @@ export class ClickServiceClient {
     }
 }
 
-export class HTTPBackend implements TileClicker, OwnershipsGetter {
+export class HTTPBackend implements TileClicker, OwnershipsGetter, UpdatesListener {
     constructor(private client: ClickServiceClient) {
     }
 
@@ -71,5 +71,18 @@ export class HTTPBackend implements TileClicker, OwnershipsGetter {
             bindings: new Map<number, string>(
                 Object.entries(message.bindings).map(([k, v]) => [parseInt(k), v]))
         }
+    }
+
+    public async listenForUpdates(callback: (tile: number, countryCode: string) => void): Promise<() => void> {
+        const baseURL = this.client.config.baseUrl.replace(/(^\w+:|^)\/\//, '');
+        const websocket = new WebSocket(`ws://${baseURL}/ws/listen`)
+        websocket.binaryType = "arraybuffer";
+        websocket.addEventListener('message', (event) => {
+            const binary = new Uint8Array(event.data)
+            const message = TileUpdate.fromBinary(binary)
+            callback(message.tileId, message.countryId)
+        })
+
+        return () => websocket.close
     }
 }

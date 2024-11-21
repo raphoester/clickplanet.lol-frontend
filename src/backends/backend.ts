@@ -9,3 +9,7 @@ export type Ownerships = {
 export interface OwnershipsGetter {
     getCurrentOwnerships(): Promise<Ownerships>
 }
+
+export interface UpdatesListener {
+    listenForUpdates(callback: (tile: number, countryCode: string) => void): Promise<() => void>
+}

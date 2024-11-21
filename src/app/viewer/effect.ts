@@ -5,7 +5,7 @@ import {createPoints} from "./points.ts";
 import {actOnPick} from "./gpuPicking.ts";
 import {regions} from "./atlas.ts";
 import {Country} from "../countries.ts";
-import {OwnershipsGetter, TileClicker} from "../../backends/backend.ts";
+import {OwnershipsGetter, TileClicker, UpdatesListener} from "../../backends/backend.ts";
 
 type Uniforms = {
     zoom: THREE.IUniform,
@@ -18,6 +18,7 @@ export function effect(
     country: Country,
     tileClicker: TileClicker,
     ownershipsGetter: OwnershipsGetter,
+    updatesListener: UpdatesListener,
 ) {
     const {scene, camera, renderer, cleanup} = setupScene();
     const uniforms: Uniforms = {
@@ -29,6 +30,13 @@ export function effect(
 
     const {pickingPoints, displayPoints, size} = createPoints(uniforms);
     console.log("running with", size, "points");
+
+
+    window.addEventListener('resize', () => {
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        uniforms.resolution.value.set(window.innerWidth, window.innerHeight);
+    });
+
 
     const actOnPick_ = (event: MouseEvent, callback: (id: number) => void) => {
         return actOnPick(renderer, camera, event, pickingPoints, callback);
@@ -56,11 +64,6 @@ export function effect(
         });
     });
 
-    window.addEventListener('resize', () => {
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        uniforms.resolution.value.set(window.innerWidth, window.innerHeight);
-    });
-
     // 0 means no region is selected
     function defaultRegionVector(size: number): Float32Array {
         return new Float32Array(size * 4).fill(0);
@@ -68,21 +71,28 @@ export function effect(
 
     displayPoints.geometry.setAttribute('regionVector', new THREE.BufferAttribute(defaultRegionVector(size), 4));
 
-    ownershipsGetter.getCurrentOwnerships().then(ownerships => {
-        if (ownerships.bindings.size === 0) return
+    const updateTilesAccordingToNewBindings = (bindings: Map<number, string>) => {
+        if (bindings.size == 0) return
 
         const regionVectors = displayPoints.geometry.getAttribute('regionVector').array as Float32Array;
-        ownerships.bindings.forEach((countryCode, index) => {
+        bindings.forEach((countryCode, index) => {
             const region = regions.get(countryCode);
             if (!region) throw new Error(`Region not found for country ${countryCode}`);
-
             regionVectors[index * 4] = region.x;
             regionVectors[index * 4 + 1] = region.y;
             regionVectors[index * 4 + 2] = region.width;
             regionVectors[index * 4 + 3] = region.height;
         });
-
         displayPoints.geometry.getAttribute('regionVector').needsUpdate = true;
+    }
+
+    ownershipsGetter.getCurrentOwnerships().then(ownerships => {
+        updateTilesAccordingToNewBindings(ownerships.bindings)
+    }).catch(console.error)
+
+    updatesListener.listenForUpdates((tile, countryCode) => {
+        console.log("received update", tile, countryCode)
+        updateTilesAccordingToNewBindings(new Map([[tile, countryCode]]))
     }).catch(console.error)
 
 
