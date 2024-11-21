@@ -5,7 +5,10 @@ import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 export default function AppV4() {
     useEffect(() => {
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        // const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const cameraSize = 1
+        const aspect = window.innerWidth / window.innerHeight;
+        const camera = new THREE.OrthographicCamera(-cameraSize * aspect, cameraSize * aspect, cameraSize, -cameraSize, 0.01, 100);
         const renderer = new THREE.WebGLRenderer();
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.getElementById('three-container')!.appendChild(renderer.domElement);
@@ -31,7 +34,20 @@ export default function AppV4() {
         pickerGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
         pickerGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
+        const uniforms = {
+            zoom: {value: 1.0}, // Initialisé par défaut
+            resolution: {value: new THREE.Vector2(window.innerWidth, window.innerHeight)},
+        }
+
+        function updateUniforms() {
+            uniforms.zoom.value = camera.zoom;
+            uniforms.resolution.value.set(window.innerWidth, window.innerHeight);
+        }
+
         const commonVertexShader = `
+                uniform float zoom;
+                uniform vec2 resolution;
+
                 attribute vec3 color;
                 attribute float hover;
                 
@@ -43,7 +59,7 @@ export default function AppV4() {
                     vHover = hover;
                     
                     vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-                    gl_PointSize = 1.0 * (4.5 / -mvPosition.z);
+                    gl_PointSize = (zoom * 3.7) * (resolution.y / 1000.0);
                     gl_Position = projectionMatrix * mvPosition;
                 }
             `
@@ -51,6 +67,7 @@ export default function AppV4() {
         const displayPoints = new THREE.Points(displayGeometry, new THREE.ShaderMaterial({
             vertexShader: commonVertexShader,
             transparent: true,
+            uniforms: uniforms,
             fragmentShader: `
                 varying float vHover;
                 
@@ -69,6 +86,7 @@ export default function AppV4() {
 
         const pickingPoints = new THREE.Points(pickerGeometry, new THREE.ShaderMaterial({
             vertexShader: commonVertexShader,
+            uniforms: uniforms,
             fragmentShader: `
                 varying vec3 vColor;
                 void main() {
@@ -127,6 +145,11 @@ export default function AppV4() {
             })
         })
 
+        window.addEventListener('resize', () => {
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            uniforms.resolution.value.set(window.innerWidth, window.innerHeight);
+        });
+
         scene.add(new THREE.AmbientLight(0xffffff, 1));
         scene.add(displayPoints)
 
@@ -139,14 +162,14 @@ export default function AppV4() {
 
         camera.position.z = 5;
         const controls = new OrbitControls(camera, renderer.domElement);
-        controls.maxDistance = 2
-        controls.minDistance = 1.1
-
+        controls.minZoom = 1
+        controls.maxZoom = 50
 
         const animate = () => {
             requestAnimationFrame(animate);
             controls.update()
             renderer.render(scene, camera);
+            updateUniforms()
         };
 
         animate();
