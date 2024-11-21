@@ -4,7 +4,6 @@ import {addDisplayObjects, setupScene} from "./scene.ts";
 import {createPoints} from "./points.ts";
 import {setupEventListeners} from "./events.ts";
 import {regions} from "./atlas.ts";
-import {Vector4} from "three";
 
 const regionVectors = Array.from(Object.values(regions)).map(region => {
     return new THREE.Vector4(
@@ -40,16 +39,20 @@ export function effect() {
 
     console.log("running with", size, "points");
 
-    const textureIndex = new Float32Array(size * 4);
-    for (let i = 0; i < size; i++) {
-        const [x, y, z, w] = regionVectors[i % regionVectors.length];
-        textureIndex[i * 4] = x;
-        textureIndex[i * 4 + 1] = y;
-        textureIndex[i * 4 + 2] = z;
-        textureIndex[i * 4 + 3] = w;
+    const randomTextureArray = () => {
+        const textureIndex = new Float32Array(size * 4);
+        for (let i = 0; i < size; i++) {
+            const [x, y, z, w] = regionVectors[Math.floor(Math.random() * regionVectors.length)];
+            textureIndex[i * 4] = x;
+            textureIndex[i * 4 + 1] = y;
+            textureIndex[i * 4 + 2] = z;
+            textureIndex[i * 4 + 3] = w;
+        }
+        return textureIndex;
     }
 
-    displayPoints.geometry.setAttribute('regionVector', new THREE.BufferAttribute(textureIndex, 4));
+
+    displayPoints.geometry.setAttribute('regionVector', new THREE.BufferAttribute(randomTextureArray(), 4));
 
     setupEventListeners(renderer, camera, uniforms, pickingPoints, displayPoints);
 
@@ -60,15 +63,7 @@ export function effect() {
 
         console.log("re-randomising regions");
 
-        const textureIndex = new Float32Array(size * 4);
-        for (let i = 0; i < size; i++) {
-            const [x, y, z, w] = regionVectors[Math.floor(Math.random() * regionVectors.length)];
-            textureIndex[i * 4] = x;
-            textureIndex[i * 4 + 1] = y;
-            textureIndex[i * 4 + 2] = z;
-            textureIndex[i * 4 + 3] = w;
-        }
-
+        const textureIndex = randomTextureArray();
         displayPoints.geometry.setAttribute('regionVector', new THREE.BufferAttribute(textureIndex, 4));
         displayPoints.geometry.attributes.regionVector.needsUpdate = true;
     }, 1000)
