@@ -1,6 +1,16 @@
 import * as THREE from "three";
 import {OrbitControls} from "three/addons/controls/OrbitControls.js";
 
+// @ts-expect-error typescript does not know about vite-plugin-glsl
+import displayVertex from "./shaders/display/vertex.vert"
+// @ts-expect-error typescript does not know about vite-plugin-glsl
+import displayFragment from "./shaders/display/fragment.frag"
+
+// @ts-expect-error typescript does not know about vite-plugin-glsl
+import pickerVertex from "./shaders/picker/vertex.vert"
+// @ts-expect-error typescript does not know about vite-plugin-glsl
+import pickerFragment from "./shaders/picker/fragment.frag"
+
 export function effect() {
     const scene = new THREE.Scene();
     const cameraSize = 1
@@ -39,55 +49,17 @@ export function effect() {
         uniforms.resolution.value.set(window.innerWidth, window.innerHeight);
     }
 
-    const commonVertexShader = `
-                uniform float zoom;
-                uniform vec2 resolution;
-
-                attribute vec3 color;
-                attribute float hover;
-                
-                varying vec3 vColor;
-                varying float vHover;
-                
-                void main() {
-                    vColor = color;
-                    vHover = hover;
-                    
-                    vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-                    gl_PointSize = (zoom * 3.7) * (resolution.y / 1000.0);
-                    gl_Position = projectionMatrix * mvPosition;
-                }
-            `
-
     const displayPoints = new THREE.Points(displayGeometry, new THREE.ShaderMaterial({
-        vertexShader: commonVertexShader,
         transparent: true,
         uniforms: uniforms,
-        fragmentShader: `
-                varying float vCountryIndex;
-                varying float vHover;
-                
-                void main() {
-                    // make them round 
-                    vec2 coordinates = gl_PointCoord - vec2(0.5);
-                    float dist = length(coordinates); 
-                    if (dist > 0.5) discard; 
-                    
-                    gl_FragColor = vec4(1.0, 1.0, 1.0, 0.03);
-                    if (vHover > 0.5) {
-                        gl_FragColor = vec4(1.0, 1.0, 1.0, 0.3);
-                    }
-                }`
+        vertexShader: displayVertex,
+        fragmentShader: displayFragment
     }))
 
     const pickingPoints = new THREE.Points(pickerGeometry, new THREE.ShaderMaterial({
-        vertexShader: commonVertexShader,
         uniforms: uniforms,
-        fragmentShader: `
-                varying vec3 vColor;
-                void main() {
-                    gl_FragColor = vec4(vColor, 1.0);
-                }`
+        vertexShader: pickerVertex,
+        fragmentShader: pickerFragment
     }));
 
 
