@@ -6,10 +6,9 @@ import {
     RouterProvider,
 } from 'react-router-dom';
 
-import App from "./app/App.tsx";
 import {StrictMode} from "react";
 import {ClickServiceClient, HTTPBackend} from "./backends/httpBackend.ts";
-import AppV2 from "./appV2/AppV2.tsx";
+import App from "./app/App.tsx";
 
 const clickServiceClient = new ClickServiceClient({
     baseUrl: "http://localhost:8080",
@@ -25,17 +24,11 @@ const router = createBrowserRouter([{
             <StrictMode>
                 <App
                     ownershipsGetter={backend}
-                    gameMapProvider={backend}
                     tileClicker={backend}
                 />
             </StrictMode>
         )
     }()
-}, {
-    path: "v2", element: <AppV2
-        ownershipsGetter={backend}
-        tileClicker={backend}
-    />
 }])
 
 createRoot(document.getElementById('root')!).render(<RouterProvider router={router}/>);

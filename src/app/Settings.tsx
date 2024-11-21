@@ -1,4 +1,4 @@
-import {countryContext} from "./CountryProvider.tsx";
+import {countryContext} from "./CountryContext.tsx";
 import {useContext, ChangeEvent, useState} from "react";
 import {Countries} from "../model/countries.ts";
 import "./Settings.css"

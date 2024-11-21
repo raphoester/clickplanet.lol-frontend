@@ -1,15 +1,9 @@
-import {GameMap} from "../model/gameMap.ts";
-
-export interface GameMapProvider {
-    provideGameMap(): Promise<GameMap>
-}
-
 export interface TileClicker {
     clickTile(tileId: number, countryId: string): Promise<void>
 }
 
 export type Ownerships = {
-    bindings: Map<string, string>
+    bindings: Map<number, string>
 }
 
 export interface OwnershipsGetter {

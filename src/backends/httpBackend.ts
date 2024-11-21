@@ -1,14 +1,8 @@
-import {GameMapProvider, Ownerships, OwnershipsGetter, TileClicker} from "./backend.ts";
-import {GameMap} from "../model/gameMap.ts";
+import {Ownerships, OwnershipsGetter, TileClicker} from "./backend.ts";
 import {
     ClickRequest,
-    Map as GameMapProto,
     Ownerships as OwnershipsProto,
-    GeodesicCoordinates,
 } from "../gen/grpc/clicks_pb.ts";
-import {Tile} from "../model/tiles.ts";
-import {Coordinates} from "../util/geodesic.ts";
-import {Region} from "../model/regions.ts";
 import {Message} from "@bufbuild/protobuf";
 
 type Config = {
@@ -57,26 +51,8 @@ export class ClickServiceClient {
     }
 }
 
-export class HTTPBackend implements GameMapProvider, TileClicker, OwnershipsGetter {
+export class HTTPBackend implements TileClicker, OwnershipsGetter {
     constructor(private client: ClickServiceClient) {
-    }
-
-    public async provideGameMap(): Promise<GameMap> {
-        const binary = await this.client.fetch("GET", "/app/map", undefined)
-        const message = GameMapProto.fromBinary(binary!)
-        const regions = message.regions.map(region =>
-            new Region(
-                mapGeodesicCoordinates(region.epicenter),
-                region.tiles.map(tile =>
-                    Tile.fromMinimalBoundaries(
-                        mapGeodesicCoordinates(tile.southWest),
-                        mapGeodesicCoordinates(tile.northEast),
-                        tile.id
-                    ).setCountryCode(tile.countryId)
-                ))
-        )
-        const tiles = regions.flatMap(region => region.getTiles())
-        return Promise.resolve({regions, tiles})
     }
 
     public async clickTile(tileId: number, countryId: string) {
@@ -92,11 +68,8 @@ export class HTTPBackend implements GameMapProvider, TileClicker, OwnershipsGett
         const binary = await this.client.fetch("GET", "/app/bindings", undefined)
         const message = OwnershipsProto.fromBinary(binary!)
         return {
-            bindings: new Map<string, string>(Object.entries(message.bindings))
+            bindings: new Map<number, string>(
+                Object.entries(message.bindings).map(([k, v]) => [parseInt(k), v]))
         }
     }
-}
-
-function mapGeodesicCoordinates(proto: GeodesicCoordinates | undefined): Coordinates {
-    return new Coordinates(proto!.lat, proto!.lon)
 }

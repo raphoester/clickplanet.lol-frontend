@@ -2,6 +2,10 @@ syntax = "proto3";
 
 package clicks.v1;
 
+message MapDensityResponse {
+  int32 density = 1;
+}
+
 message ClickRequest {
   uint32 tile_id = 1;
   string country_id = 2;

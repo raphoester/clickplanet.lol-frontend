@@ -20,7 +20,6 @@ export function effect(
     // ownershipsGetter: OwnershipsGetter,
 ) {
     const {scene, camera, renderer, cleanup} = setupScene();
-
     const uniforms: Uniforms = {
         zoom: {value: 1.0},
         resolution: {value: new THREE.Vector2(window.innerWidth, window.innerHeight)},
@@ -29,6 +28,7 @@ export function effect(
     };
 
     const {pickingPoints, displayPoints, size} = createPoints(uniforms);
+    console.log("running with", size, "points");
 
     const actOnPick_ = (event: MouseEvent, callback: (id: number) => void) => {
         return actOnPick(renderer, camera, event, pickingPoints, callback);

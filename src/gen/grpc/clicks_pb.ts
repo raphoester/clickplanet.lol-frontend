@@ -7,6 +7,43 @@ import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialM
 import { Message, proto3 } from "@bufbuild/protobuf";
 
 /**
+ * @generated from message clicks.v1.MapDensityResponse
+ */
+export class MapDensityResponse extends Message<MapDensityResponse> {
+  /**
+   * @generated from field: int32 density = 1;
+   */
+  density = 0;
+
+  constructor(data?: PartialMessage<MapDensityResponse>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "clicks.v1.MapDensityResponse";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "density", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): MapDensityResponse {
+    return new MapDensityResponse().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): MapDensityResponse {
+    return new MapDensityResponse().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): MapDensityResponse {
+    return new MapDensityResponse().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: MapDensityResponse | PlainMessage<MapDensityResponse> | undefined, b: MapDensityResponse | PlainMessage<MapDensityResponse> | undefined): boolean {
+    return proto3.util.equals(MapDensityResponse, a, b);
+  }
+}
+
+/**
  * @generated from message clicks.v1.ClickRequest
  */
 export class ClickRequest extends Message<ClickRequest> {
