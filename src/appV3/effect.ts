@@ -4,6 +4,7 @@ import {addDisplayObjects, setupScene} from "./scene.ts";
 import {createPoints} from "./points.ts";
 import {setupEventListeners} from "./events.ts";
 import {regions} from "./atlas.ts";
+import {Vector4} from "three";
 
 const regionVectors = Array.from(Object.values(regions)).map(region => {
     return new THREE.Vector4(
@@ -55,17 +56,22 @@ export function effect() {
     addDisplayObjects(scene, displayPoints)
 
     setInterval(() => {
-        const randomCircleIndex = Math.floor(Math.random() * size);
-        const randomRegionIndex = Math.floor(Math.random() * regionVectors.length);
-        const randomRegion = regionVectors[randomRegionIndex];
+        // re-randomise all the regions
 
-        displayPoints.geometry.attributes.regionVector.array[randomCircleIndex * 4] = randomRegion.x;
-        displayPoints.geometry.attributes.regionVector.array[randomCircleIndex * 4 + 1] = randomRegion.y;
-        displayPoints.geometry.attributes.regionVector.array[randomCircleIndex * 4 + 2] = randomRegion.z;
-        displayPoints.geometry.attributes.regionVector.array[randomCircleIndex * 4 + 3] = randomRegion.w;
+        console.log("re-randomising regions");
 
+        const textureIndex = new Float32Array(size * 4);
+        for (let i = 0; i < size; i++) {
+            const [x, y, z, w] = regionVectors[Math.floor(Math.random() * regionVectors.length)];
+            textureIndex[i * 4] = x;
+            textureIndex[i * 4 + 1] = y;
+            textureIndex[i * 4 + 2] = z;
+            textureIndex[i * 4 + 3] = w;
+        }
+
+        displayPoints.geometry.setAttribute('regionVector', new THREE.BufferAttribute(textureIndex, 4));
         displayPoints.geometry.attributes.regionVector.needsUpdate = true;
-    }, 0)
+    }, 1000)
 
     startAnimation(renderer, scene, camera, uniforms);
 
