@@ -1,13 +1,17 @@
 uniform float zoom;
 uniform vec2 resolution;
+uniform sampler2D specularTexture;
 
 attribute float hover;
 attribute vec4 regionVector;
 
+varying vec2 vUv;
 varying float vHover;
 flat out vec4 vRegionVector;
 
 void main() {
+    vUv = uv;
+
     vHover = hover;
     vRegionVector = regionVector;
 

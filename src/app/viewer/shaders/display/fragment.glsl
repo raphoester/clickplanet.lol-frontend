@@ -1,13 +1,15 @@
-uniform sampler2D img;
-uniform vec2 textureSize;
+uniform sampler2D atlasTexture;
+uniform vec2 atlasTextureSize;
+uniform sampler2D specularTexture;
 
 flat in vec4 vRegionVector;
 varying float vHover;
+varying vec2 vUv;
 
 vec4 applyHover(vec4 color, float hover) {
-    color.a = 0.5;
+    color.a = 0.7;
     if (hover > 0.5) {
-        color.a = 0.8;
+        color.a = 1.0;
     }
 
     return color;
@@ -19,17 +21,26 @@ void main() {
     float dist = length(coordinates);
     if (dist > 0.5) discard;
 
+    // skip regions covered with water
+    float altitude = 1.0 - texture2D(specularTexture, vUv).r;
+    if (altitude < 0.5) {
+        discard;
+    }
+
+    // Skip empty regions
     if (vRegionVector.z == 0.0 || vRegionVector.w == 0.0) {
-        gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
-        gl_FragColor = applyHover(gl_FragColor, vHover);
+        gl_FragColor = vec4(1.0, 1.0, 1.0, 0.3);
+        if (vHover > 0.5) {
+            gl_FragColor.a = 0.6;
+        }
         return;
     }
 
     vec2 uv = gl_PointCoord;
 
     // normalize the region coordinates to the texture size + flip the y axis
-    vec2 normalizedRegionXY = vec2(vRegionVector.x, textureSize.y - vRegionVector.y - vRegionVector.w) / textureSize;
-    vec2 normalizedRegionZW = vRegionVector.zw / textureSize;
+    vec2 normalizedRegionXY = vec2(vRegionVector.x, atlasTextureSize.y - vRegionVector.y - vRegionVector.w) / atlasTextureSize;
+    vec2 normalizedRegionZW = vRegionVector.zw / atlasTextureSize;
 
     // Calculate aspect ratios
     float regionAspect = normalizedRegionZW.x / normalizedRegionZW.y; // Region aspect ratio (width/height)
@@ -56,6 +67,6 @@ void main() {
     vec2 atlasUV = normalizedRegionXY + adjustedUV * normalizedRegionZW;
 
     // Sample the texture
-    gl_FragColor = texture2D(img, atlasUV);
+    gl_FragColor = texture2D(atlasTexture, atlasUV);
     gl_FragColor = applyHover(gl_FragColor, vHover);
 }

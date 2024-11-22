@@ -10,9 +10,12 @@ import {OwnershipsGetter, TileClicker, UpdatesListener} from "../../backends/bac
 type Uniforms = {
     zoom: THREE.IUniform,
     resolution: THREE.IUniform
-    img: THREE.IUniform
-    textureSize: THREE.IUniform
+    atlasTexture: THREE.IUniform
+    specularTexture: THREE.IUniform
+    atlasTextureSize: THREE.IUniform
 }
+
+const textureLoader = new THREE.TextureLoader();
 
 export function effect(
     country: Country,
@@ -25,8 +28,9 @@ export function effect(
     const uniforms: Uniforms = {
         zoom: {value: 1.0},
         resolution: {value: new THREE.Vector2(window.innerWidth, window.innerHeight)},
-        img: {value: new THREE.TextureLoader().load('/static/countries/atlas.png')},
-        textureSize: {value: new THREE.Vector2(13000, 12288)} // TODO: retrieve the size from the texture itself
+        atlasTexture: {value: textureLoader.load('/static/countries/atlas.png')},
+        atlasTextureSize: {value: new THREE.Vector2(13000, 12288)}, // TODO: retrieve the size from the texture itself
+        specularTexture: {value: textureLoader.load('/static/earth/2k_earth_specular_map.png')},
     };
 
     const {pickingPoints, displayPoints, size} = createPoints(uniforms);
@@ -112,7 +116,6 @@ export function effect(
         const newNode = eventTarget.cloneNode(true)
         eventTarget.parentNode?.replaceChild(newNode, eventTarget)
         cleanUpdatesListener()
-        console.log("cleaning up")
         cleanup()
     }
 }
