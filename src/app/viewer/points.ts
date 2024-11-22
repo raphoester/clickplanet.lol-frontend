@@ -1,4 +1,6 @@
 import * as THREE from "three";
+import {integerToColor} from "./pickingColors.ts";
+import {IUniform} from "three";
 
 // @ts-expect-error typescript does not know about vite-plugin-glsl
 import displayVertex from "./shaders/display/vertex.glsl"
@@ -9,8 +11,6 @@ import displayFragment from "./shaders/display/fragment.glsl"
 import pickerVertex from "./shaders/picker/vertex.glsl"
 // @ts-expect-error typescript does not know about vite-plugin-glsl
 import pickerFragment from "./shaders/picker/fragment.glsl"
-import {integerToColor} from "./pickingColors.ts";
-import {IUniform} from "three";
 
 
 export function createPoints(uniforms: { [uniform: string]: IUniform; }) {
@@ -65,11 +65,11 @@ function generatePositions(detail: number) {
     const geometry = new THREE.IcosahedronGeometry(1, detail);
     const pos = geometry.attributes.position.array;
 
-
+    // filter out duplicate vertices (one vertex is created PER face it is part of)
     const retPositions: number[] = []
     const uniqueVertices = new Set<string>();
     for (let i = 0; i < pos.length; i += 3) {
-        const x = pos[i].toFixed(6); // Limiter à 6 décimales pour éviter les erreurs de précision
+        const x = pos[i].toFixed(6); // Limit to 6 decimal places to avoid floating point errors
         const y = pos[i + 1].toFixed(6);
         const z = pos[i + 2].toFixed(6);
 
@@ -81,12 +81,8 @@ function generatePositions(detail: number) {
         retPositions.push(pos[i], pos[i + 1], pos[i + 2]);
     }
 
-    // const ids = new Float32Array(pos.length / 3);
-    // for (let i = 0; i < ids.length; i++) ids[i] = i + 1; // +1 to avoid black color (background)
-
     return {
         positions: new Float32Array(retPositions),
-        // ids: ids,
         size: retPositions.length / 3
     };
 }

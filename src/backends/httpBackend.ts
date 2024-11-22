@@ -73,7 +73,7 @@ export class HTTPBackend implements TileClicker, OwnershipsGetter, UpdatesListen
         }
     }
 
-    public async listenForUpdates(callback: (tile: number, countryCode: string) => void): Promise<() => void> {
+    public listenForUpdates(callback: (tile: number, countryCode: string) => void): () => void {
         const baseURL = this.client.config.baseUrl.replace(/(^\w+:|^)\/\//, '');
         const websocket = new WebSocket(`ws://${baseURL}/ws/listen`)
         websocket.binaryType = "arraybuffer";

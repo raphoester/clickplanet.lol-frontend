@@ -11,5 +11,5 @@ export interface OwnershipsGetter {
 }
 
 export interface UpdatesListener {
-    listenForUpdates(callback: (tile: number, countryCode: string) => void): Promise<() => void>
+    listenForUpdates(callback: (tile: number, countryCode: string) => void): () => void
 }

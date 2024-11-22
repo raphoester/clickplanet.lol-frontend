@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import {innerSphere} from "./sphere.ts";
 
+
 export function setupScene() {
     const scene = new THREE.Scene();
     const cameraSize = 1;
@@ -12,8 +13,9 @@ export function setupScene() {
 
     camera.position.z = 5
 
-    const renderer = new THREE.WebGLRenderer();
+    const renderer = new THREE.WebGLRenderer({});
     renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0x000000);
     document.getElementById('three-container')!.appendChild(renderer.domElement);
 
     scene.add(new THREE.AmbientLight(0xffffff, 3));
@@ -22,7 +24,6 @@ export function setupScene() {
         renderer.dispose();
         document.getElementById('three-container')!.innerHTML = '';
     }
-
 
     return {scene, camera, renderer, cleanup};
 }

@@ -4,13 +4,6 @@ import {innerSphere} from "./sphere.ts";
 
 const innerSphereGeometry = innerSphere()
 
-const skipId1 = colorToInteger([255, 255, 255])
-const skipId2 = colorToInteger([0, 0, 0])
-
-function shouldSkipID(id: number): boolean {
-    return id === skipId1 || id === skipId2
-} // skip clicks on black surfaces (background, inner sphere)
-
 export function actOnPick(
     renderer: THREE.WebGLRenderer,
     camera: THREE.Camera,
@@ -24,13 +17,12 @@ export function actOnPick(
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
     const renderTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight);
-
     const pickingScene = new THREE.Scene();
     pickingScene.add(pickingPoints);
     pickingScene.add(new THREE.Mesh(
         innerSphereGeometry,
-        new THREE.MeshBasicMaterial({ // basic material to avoid lighting
-            color: 0xffffff,
+        new THREE.MeshBasicMaterial({ // same color as background (black)
+            color: 0x000000,
         })
     ))
 
@@ -51,5 +43,12 @@ export function actOnPick(
         nullIdCallback?.()
         return
     }
-    callback(originalId - 1) // subtract -1 to account for the fact that the id is 1-indexed
+    callback(originalId)
 }
+
+const skipId1 = colorToInteger([255, 255, 255])
+const skipId2 = colorToInteger([0, 0, 0])
+
+function shouldSkipID(id: number): boolean {
+    return id === skipId1 || id === skipId2
+} // skip clicks on black surfaces (background, inner sphere)

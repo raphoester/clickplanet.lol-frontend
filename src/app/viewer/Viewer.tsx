@@ -11,13 +11,14 @@ export type ViewerProps = {
 
 export default function Viewer(props: ViewerProps) {
     const country = useContext(countryContext).country
-    console.log("Viewer country", country)
     useEffect(() => {
+        const eventTarget = document.getElementById("three-container")!
         return effect(
             country,
             props.tileClicker,
             props.ownershipsGetter,
             props.updatesListener,
+            eventTarget
         )
     }, [country, props]);
     return <div id="three-container" style={{width: '100vw', height: '100vh'}}/>;

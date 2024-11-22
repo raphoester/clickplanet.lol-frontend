@@ -17,6 +17,7 @@ const clickServiceClient = new ClickServiceClient({
 })
 
 const backend = new HTTPBackend(clickServiceClient)
+// const backend = new FakeBackend()
 
 const router = createBrowserRouter([{
     path: "",
