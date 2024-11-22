@@ -7,7 +7,7 @@ COPY . .
 RUN npm ci
 RUN npm run build
 
-FROM nginx:1.27-alpine3.20 as prod
+FROM nginx:1.27-alpine3.20 AS prod
 
 COPY --from=build /usr/src/app/nginx.conf /etc/nginx/conf.d
 
