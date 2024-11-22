@@ -60,11 +60,11 @@ export class HTTPBackend implements TileClicker, OwnershipsGetter, UpdatesListen
             countryId: countryId,
         })
 
-        await this.client.fetch("POST", "/app/click", payload)
+        await this.client.fetch("POST", "/api/click", payload)
     }
 
     public async getCurrentOwnerships(): Promise<Ownerships> {
-        const binary = await this.client.fetch("GET", "/app/ownerships", undefined)
+        const binary = await this.client.fetch("GET", "/api/ownerships", undefined)
         const message = OwnershipsProto.fromBinary(binary!)
         return {
             bindings: new Map<number, string>(
@@ -73,8 +73,7 @@ export class HTTPBackend implements TileClicker, OwnershipsGetter, UpdatesListen
     }
 
     public listenForUpdates(callback: (tile: number, countryCode: string) => void): () => void {
-        const baseURL = this.client.config.baseUrl.replace(/(^\w+:|^)\/\//, '');
-        const websocket = new WebSocket(`ws://${baseURL}/ws/listen`)
+        const websocket = new WebSocket(`ws://${window.location.host}/ws/listen`)
         websocket.binaryType = "arraybuffer";
         websocket.addEventListener('message', (event) => {
             const binary = new Uint8Array(event.data)
