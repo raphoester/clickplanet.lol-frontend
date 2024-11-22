@@ -38,12 +38,19 @@ export function effect(
     });
 
 
-    const actOnPick_ = (event: MouseEvent, callback: (id: number) => void) => {
-        return actOnPick(renderer, camera, event, pickingPoints, callback);
+    const actOnPick_ = (
+        event: MouseEvent,
+        callback: (id: number) => void,
+        nullCallback?: () => void, // if no point is selected
+    ) => {
+        return actOnPick(renderer, camera, event, pickingPoints, callback, nullCallback);
     }
 
     window.addEventListener('mousemove', (event: MouseEvent) => {
-        actOnPick_(event, id => updateHoverEffect(displayPoints.geometry, id))
+        actOnPick_(event,
+            id => updateHoverEffect(displayPoints.geometry, id),
+            () => updateHoverEffect(displayPoints.geometry)
+        )
     });
 
     window.addEventListener('click', (event: MouseEvent) => {
@@ -112,6 +119,7 @@ function startAnimation(
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.minZoom = 1;
     controls.maxZoom = 50;
+    controls.panSpeed = 0.1;
 
     const animate = () => {
         requestAnimationFrame(animate);
@@ -127,10 +135,12 @@ function updateUniforms(camera: THREE.OrthographicCamera, uniforms: Uniforms) {
     uniforms.zoom.value = camera.zoom;
 }
 
-export function updateHoverEffect(geometry: THREE.BufferGeometry, hoveredId: number) {
+export function updateHoverEffect(geometry: THREE.BufferGeometry, hoveredId?: number) {
     const size = geometry.attributes.hover.array.length;
     const newHovered = new Float32Array(size).fill(0);
-    newHovered[hoveredId] = 1;
+    if (hoveredId) {
+        newHovered[hoveredId] = 1;
+    }
     geometry.setAttribute('hover', new THREE.BufferAttribute(newHovered, 1));
     geometry.attributes.hover.needsUpdate = true;
 }
