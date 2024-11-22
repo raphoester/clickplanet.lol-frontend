@@ -20,7 +20,6 @@ export class ClickServiceClient {
         body?: Message
     ): Promise<Uint8Array | undefined> {
         const url = this.config.baseUrl + path
-        console.log(`Fetching ${verb} ${url}`)
         const res = await fetch(url, {
             method: verb,
             headers: {
