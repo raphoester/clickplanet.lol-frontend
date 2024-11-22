@@ -1,0 +1,13 @@
+node_modules
+
+.vscode
+
+.git
+
+dist
+build
+
+.eslint*
+.prettier*
+.editorconfig
+.DS_Store
