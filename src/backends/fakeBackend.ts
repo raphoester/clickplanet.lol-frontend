@@ -1,4 +1,5 @@
 import {Ownerships, OwnershipsGetter, TileClicker, UpdatesListener} from "./backend.ts";
+import {v4 as UUIDv4} from 'uuid';
 
 export class FakeBackend implements TileClicker, OwnershipsGetter, UpdatesListener {
     private tileBindings: Map<number, string> = new Map()
@@ -16,7 +17,7 @@ export class FakeBackend implements TileClicker, OwnershipsGetter, UpdatesListen
     public listenForUpdates(
         callback: (tile: number, countryCode: string) => void
     ): () => void {
-        const identifier = self.crypto.randomUUID()
+        const identifier = UUIDv4()
         this.updateListeners.set(identifier, callback)
         return () => {
             this.updateListeners.delete(identifier)
