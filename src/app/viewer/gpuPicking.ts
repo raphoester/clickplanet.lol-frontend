@@ -17,8 +17,7 @@ export function actOnPick(
     event: MouseEvent,
     pickingPoints: THREE.Points,
     callback: (id: number) => void,
-    nullIdCallback = () => {
-    }
+    nullIdCallback?: () => void
 ) {
     const mouse = new THREE.Vector2();
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
@@ -49,7 +48,7 @@ export function actOnPick(
 
     const originalId = colorToInteger([pixelBuffer[0], pixelBuffer[1], pixelBuffer[2]]);
     if (shouldSkipID(originalId)) {
-        nullIdCallback()
+        nullIdCallback?.()
         return
     }
     callback(originalId - 1) // subtract -1 to account for the fact that the id is 1-indexed
