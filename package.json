@@ -4,6 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "dBuild": "docker build -t registry.digitalocean.com/clickplanet-frontend/frontend:latest .",
+    "dPush": "docker push registry.digitalocean.com/clickplanet-frontend/frontend:latest",
     "dev": "vite --host 0.0.0.0",
     "build": "tsc -b && vite build",
     "lint": "eslint .",

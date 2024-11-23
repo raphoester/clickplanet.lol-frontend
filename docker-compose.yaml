@@ -3,3 +3,11 @@ services:
     image: registry.digitalocean.com/clickplanet-frontend/frontend:latest
     ports:
       - "80:80"
+      - "443:443"
+    volumes:
+      - type: bind
+        source: ./tls/fullchain.pem
+        target: /etc/letsencrypt/live/clickplanet.lol/fullchain.pem
+      - type: bind
+        source: ./tls/privkey.pem
+        target: /etc/letsencrypt/live/clickplanet.lol/privkey.pem
