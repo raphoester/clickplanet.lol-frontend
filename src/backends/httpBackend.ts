@@ -73,7 +73,7 @@ export class HTTPBackend implements TileClicker, OwnershipsGetter, UpdatesListen
     }
 
     public listenForUpdates(callback: (tile: number, countryCode: string) => void): () => void {
-        const websocket = new WebSocket(`ws://${window.location.host}/ws/listen`)
+        const websocket = new WebSocket(`wss://${window.location.host}/ws/listen`)
         websocket.binaryType = "arraybuffer";
         websocket.addEventListener('message', (event) => {
             const binary = new Uint8Array(event.data)
