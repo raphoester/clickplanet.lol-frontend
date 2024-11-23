@@ -1,5 +1,5 @@
 services:
   frontend:
-    build: .
+    image: registry.digitalocean.com/clickplanet-frontend/frontend:latest
     ports:
       - "80:80"
