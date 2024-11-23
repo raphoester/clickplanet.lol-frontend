@@ -12,19 +12,19 @@ import pickerVertex from "./shaders/picker/vertex.glsl"
 // @ts-expect-error typescript does not know about vite-plugin-glsl
 import pickerFragment from "./shaders/picker/fragment.glsl"
 
-import pointGeometryDataSet from "../../../static/positions.json"
+import coordinatesDataSet from "../../../static/coordinates.json"
 
 const pointGeometryData = function () {
-    const tmpPos = pointGeometryDataSet as {
+    const tmpCoordinates = coordinatesDataSet as {
         positions: number[];
         uvs: number[];
         length: number;
     }
 
     return {
-        positions: new Float32Array(tmpPos.positions),
-        uvs: new Float32Array(tmpPos.uvs),
-        size: tmpPos.length
+        positions: new Float32Array(tmpCoordinates.positions),
+        uvs: new Float32Array(tmpCoordinates.uvs),
+        size: tmpCoordinates.length
     }
 }();
 
