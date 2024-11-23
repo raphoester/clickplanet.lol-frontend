@@ -1,22 +1,25 @@
-import {countryContext} from "./CountryContext.tsx";
-import {useContext, ChangeEvent, useState} from "react";
-import {Countries} from "./countries.ts";
+import {ChangeEvent, useState} from "react";
+import {Countries, Country} from "./countries.ts";
 import "./Settings.css"
 
-export default function Settings() {
+type SettingsProps = {
+    country: Country,
+    setCountry: (country: Country) => void
+}
+
+export default function Settings(props: SettingsProps) {
     const [isOpen, setIsOpen] = useState(false)
     const togglePopup = () => {
         setIsOpen(!isOpen)
     }
 
-    const {country, setCountry} = useContext(countryContext);
     const handleCountrySelect = (event: ChangeEvent<HTMLSelectElement>) => {
         const selectedCountry = Countries.find(country =>
             country.code === event.target.value);
         if (!selectedCountry) {
             throw new Error(`Country not found for code ${event.target.value}`);
         }
-        setCountry(selectedCountry)
+        props.setCountry(selectedCountry);
     }
 
     return (
@@ -39,7 +42,7 @@ export default function Settings() {
                         <div className="country-settings settings-section">
                             <label htmlFor="country-select">Country</label>
                             <select
-                                defaultValue={country.code}
+                                defaultValue={props.country.code}
                                 onChange={handleCountrySelect}
                                 className="settings-country-select">
                                 {

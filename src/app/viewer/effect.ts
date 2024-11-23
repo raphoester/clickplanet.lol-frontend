@@ -6,6 +6,7 @@ import {actOnPick} from "./gpuPicking.ts";
 import {regions} from "./atlas.ts";
 import {Country} from "../countries.ts";
 import {OwnershipsGetter, TileClicker, UpdatesListener} from "../../backends/backend.ts";
+import {getCountryOfVisitor} from "./visitorCountry.ts";
 
 type Uniforms = {
     zoom: THREE.IUniform,
@@ -17,7 +18,6 @@ type Uniforms = {
 const textureLoader = new THREE.TextureLoader();
 
 export function effect(
-    country: Country,
     tileClicker: TileClicker,
     ownershipsGetter: OwnershipsGetter,
     updatesListener: UpdatesListener,
@@ -33,6 +33,8 @@ export function effect(
 
     const {pickingPoints, displayPoints, size} = createPoints(uniforms);
     console.log("running with", size, "points");
+
+    let country: Country = getCountryOfVisitor();
 
     function actOnPick_(
         event: MouseEvent,
@@ -108,13 +110,19 @@ export function effect(
     addDisplayObjects(scene, displayPoints)
     startAnimation(renderer, scene, camera, uniforms);
 
-    return () => {
-        // Cleaning up event listeners by replacing the eventTarget with a clone of itself
-        // Cannot use removeEventListener because the refs are not fixed (callbacks are created in the effect)
-        const newNode = eventTarget.cloneNode(true)
-        eventTarget.parentNode?.replaceChild(newNode, eventTarget)
-        cleanUpdatesListener()
-        cleanup()
+    return {
+        updateCountry: (newCountry: Country) => {
+            country = newCountry
+        },
+        country: country,
+        cleanup: () => {
+            // Cleaning up event listeners by replacing the eventTarget with a clone of itself
+            // Cannot use removeEventListener because the refs are not fixed (callbacks are created in the effect)
+            const newNode = eventTarget.cloneNode(true)
+            eventTarget.parentNode?.replaceChild(newNode, eventTarget)
+            cleanUpdatesListener()
+            cleanup()
+        }
     }
 }
 

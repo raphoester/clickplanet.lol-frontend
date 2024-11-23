@@ -18,7 +18,7 @@ export function setupScene() {
     renderer.setClearColor(0x000000);
     document.getElementById('three-container')!.appendChild(renderer.domElement);
 
-    scene.add(new THREE.AmbientLight(0xffffff, 3));
+    scene.add(new THREE.AmbientLight(0xffffff, 2));
 
     const cleanup = () => {
         renderer.dispose();
@@ -38,7 +38,7 @@ export function addDisplayObjects(
     scene.add(new THREE.Mesh(
         innerSphere(),
         new THREE.MeshStandardMaterial({
-            map: textureLoader.load('/static/earth/3_no_ice_clouds_8k.jpg'),
+            map: textureLoader.load('/static/earth/3_no_ice_clouds_16k.jpg'),
         })
     ))
 }
