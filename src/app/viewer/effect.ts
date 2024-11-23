@@ -11,7 +11,6 @@ type Uniforms = {
     zoom: THREE.IUniform,
     resolution: THREE.IUniform
     atlasTexture: THREE.IUniform
-    specularTexture: THREE.IUniform
     atlasTextureSize: THREE.IUniform
 }
 
@@ -30,7 +29,6 @@ export function effect(
         resolution: {value: new THREE.Vector2(window.innerWidth, window.innerHeight)},
         atlasTexture: {value: textureLoader.load('/static/countries/atlas.png')},
         atlasTextureSize: {value: new THREE.Vector2(13000, 12288)}, // TODO: retrieve the size from the texture itself
-        specularTexture: {value: textureLoader.load('/static/earth/2k_earth_specular_map.png')},
     };
 
     const {pickingPoints, displayPoints, size} = createPoints(uniforms);

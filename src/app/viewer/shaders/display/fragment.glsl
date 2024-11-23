@@ -1,10 +1,8 @@
 uniform sampler2D atlasTexture;
 uniform vec2 atlasTextureSize;
-uniform sampler2D specularTexture;
 
 flat in vec4 vRegionVector;
 varying float vHover;
-varying vec2 vUv;
 
 vec4 applyHover(vec4 color, float hover) {
     color.a = 0.7;
@@ -20,12 +18,6 @@ void main() {
     vec2 coordinates = gl_PointCoord - vec2(0.5);
     float dist = length(coordinates);
     if (dist > 0.5) discard;
-
-    // skip regions covered with water
-    float altitude = 1.0 - texture2D(specularTexture, vUv).r;
-    if (altitude < 0.5) {
-        discard;
-    }
 
     // Skip empty regions
     if (vRegionVector.z == 0.0 || vRegionVector.w == 0.0) {
