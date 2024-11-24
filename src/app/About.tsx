@@ -43,7 +43,7 @@ export default function About() {
                             <ul className="links">
                                 <li><a target="_blank" href="https://www.linkedin.com/in/raphael-oester/">LinkedIn</a>
                                 </li>
-                                <li><a target="_blank" href="https://x.com/raphael_oester">Twitter</a></li>
+                                <li><a target="_blank" href="https://x.com/raphael_oester">X</a></li>
                                 <li><a target="_blank" href="https://github.com/raphoester">GitHub</a></li>
                             </ul>
                         </div>
