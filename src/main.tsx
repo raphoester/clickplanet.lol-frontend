@@ -12,7 +12,7 @@ import App from "./app/App.tsx";
 
 const clickServiceClient = new ClickServiceClient({
     baseUrl: "",
-    // baseUrl: "http://192.168.100.3:8080",
+    // baseUrl: "http://localhost:8080",
     timeoutMs: 1000
 })
 

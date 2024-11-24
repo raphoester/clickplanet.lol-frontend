@@ -9,8 +9,10 @@ type SettingsProps = {
 
 export default function Settings(props: SettingsProps) {
     const [isOpen, setIsOpen] = useState(false)
-    const togglePopup = () => {
-        setIsOpen(!isOpen)
+    const togglePopup = (val: boolean) => {
+        return () => {
+            setIsOpen(val)
+        }
     }
 
     const handleCountrySelect = (event: ChangeEvent<HTMLSelectElement>) => {
@@ -23,13 +25,13 @@ export default function Settings(props: SettingsProps) {
 
     return (
         <>
-            <button onClick={togglePopup}
+            <button onClick={togglePopup(true)}
                     className="settings-opener-button">
                 Settings
             </button>
             {
                 isOpen &&
-                <div className="settings-modal" onClick={togglePopup}>
+                <div className="settings-modal" onClick={togglePopup(false)}>
                     <div className="settings-modal-card"
                          onClick={(e) => {
                              e.stopPropagation()
@@ -37,7 +39,10 @@ export default function Settings(props: SettingsProps) {
                         <div className="settings-modal-card-title">
                             <h2>Settings</h2>
                         </div>
-
+                        <div
+                            className="settings-modal-card-close"
+                            onClick={togglePopup(false)}
+                        ></div>
                         <div className="country-settings settings-section">
                             <label htmlFor="country-select">Country</label>
                             <select
