@@ -115,10 +115,19 @@ export function effect(
         updateWithLastState()
     }, 1000 * 60 * 10)
 
-    const cleanUpdatesListener = updatesListener.listenForUpdates((tile, countryCode) => {
-        const country = Countries.get(countryCode)!
-        leaderboard.registerClick(country)
-        updateTilesAccordingToNewBindings(new Map([[tile, countryCode]]))
+    const cleanUpdatesListener = updatesListener.listenForUpdates((tile, previousCountry, newCountry) => {
+        const country = Countries.get(newCountry)
+        if (!country) throw new Error(`Country not found for code ${newCountry}`)
+
+        let oldCountry: Country | undefined = undefined
+        if (previousCountry) {
+            oldCountry = Countries.get(previousCountry)
+            if (!oldCountry) throw new Error(`Country not found for code ${previousCountry}`)
+        }
+
+        console.log(newCountry, "received update", tile, country)
+        leaderboard.registerClick(oldCountry, country)
+        updateTilesAccordingToNewBindings(new Map([[tile, newCountry]]))
     })
 
     addDisplayObjects(scene, displayPoints)

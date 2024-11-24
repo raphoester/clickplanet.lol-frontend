@@ -11,7 +11,7 @@ import { Message, proto3 } from "@bufbuild/protobuf";
  */
 export class MapDensityResponse extends Message<MapDensityResponse> {
   /**
-   * @generated from field: int32 density = 1;
+   * @generated from field: uint32 density = 1;
    */
   density = 0;
 
@@ -23,7 +23,7 @@ export class MapDensityResponse extends Message<MapDensityResponse> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "clicks.v1.MapDensityResponse";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "density", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 1, name: "density", kind: "scalar", T: 13 /* ScalarType.UINT32 */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): MapDensityResponse {
@@ -91,8 +91,6 @@ export class ClickRequest extends Message<ClickRequest> {
  */
 export class Ownerships extends Message<Ownerships> {
   /**
-   * TODO: add country leaderboard
-   *
    * @generated from field: map<uint32, string> bindings = 1;
    */
   bindings: { [key: number]: string } = {};
@@ -139,6 +137,11 @@ export class TileUpdate extends Message<TileUpdate> {
    */
   countryId = "";
 
+  /**
+   * @generated from field: string previous_country_id = 3;
+   */
+  previousCountryId = "";
+
   constructor(data?: PartialMessage<TileUpdate>) {
     super();
     proto3.util.initPartial(data, this);
@@ -149,6 +152,7 @@ export class TileUpdate extends Message<TileUpdate> {
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 1, name: "tile_id", kind: "scalar", T: 13 /* ScalarType.UINT32 */ },
     { no: 2, name: "country_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "previous_country_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): TileUpdate {

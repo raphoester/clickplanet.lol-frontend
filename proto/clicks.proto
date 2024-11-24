@@ -3,7 +3,7 @@ syntax = "proto3";
 package clicks.v1;
 
 message MapDensityResponse {
-  int32 density = 1;
+  uint32 density = 1;
 }
 
 message ClickRequest {
@@ -13,10 +13,10 @@ message ClickRequest {
 
 message Ownerships {
   map<uint32, string> bindings = 1;
-  // TODO: add country leaderboard
 }
 
 message TileUpdate {
   uint32 tile_id = 1;
   string country_id = 2;
+  string previous_country_id = 3;
 }

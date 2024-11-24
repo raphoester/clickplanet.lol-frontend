@@ -3,7 +3,8 @@ import {v4 as UUIDv4} from 'uuid';
 
 export class FakeBackend implements TileClicker, OwnershipsGetter, UpdatesListener {
     private tileBindings: Map<number, string> = new Map()
-    private updateListeners: Map<string, (tile: number, countryCode: string) => void> = new Map()
+    private updateListeners: Map<string,
+        (tile: number, previousCountry: string | undefined, newCountry: string) => void> = new Map()
 
     constructor() {
         setInterval(() => {
@@ -14,8 +15,9 @@ export class FakeBackend implements TileClicker, OwnershipsGetter, UpdatesListen
     }
 
     public async clickTile(tileId: number, countryId: string) {
+        const prev = this.tileBindings.get(tileId)
         this.tileBindings.set(tileId, countryId)
-        this.updateListeners.forEach(l => l(tileId, countryId))
+        this.updateListeners.forEach(l => l(tileId, prev, countryId))
     }
 
     public async getCurrentOwnerships(): Promise<Ownerships> {
@@ -23,7 +25,7 @@ export class FakeBackend implements TileClicker, OwnershipsGetter, UpdatesListen
     }
 
     public listenForUpdates(
-        callback: (tile: number, countryCode: string) => void
+        callback: (tile: number, previousCountry: string | undefined, newCountry: string) => void
     ): () => void {
         const identifier = UUIDv4()
         this.updateListeners.set(identifier, callback)

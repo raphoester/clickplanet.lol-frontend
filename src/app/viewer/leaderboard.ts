@@ -13,13 +13,21 @@ export class Leaderboard {
         this.data = []
     }
 
-    public registerClick(country: Country) {
+    public registerClick(oldCountry: Country | undefined, country: Country) {
         const leaderboardIndex = this.data.findIndex(entry => entry.country.code === country.code)
         if (leaderboardIndex !== -1) {
             this.data[leaderboardIndex].tiles++
         } else {
             this.data.push({country, tiles: 1})
         }
+
+        if (oldCountry) {
+            const oldCountryIndex = this.data.findIndex(entry => entry.country.code === oldCountry.code)
+            if (oldCountryIndex !== -1) {
+                this.data[oldCountryIndex].tiles--
+            }
+        }
+
         this.commitUpdate()
     }
 
