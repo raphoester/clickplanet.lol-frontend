@@ -89,7 +89,6 @@ export function effect(
 
     const updateTilesAccordingToNewBindings = (bindings: Map<number, string>) => {
         if (bindings.size == 0) return
-
         const regionVectors = displayPoints.geometry.getAttribute('regionVector').array as Float32Array;
         bindings.forEach((countryCode, index) => {
             const arrayIdIndexedOnZero = index - 1
@@ -103,10 +102,18 @@ export function effect(
         displayPoints.geometry.getAttribute('regionVector').needsUpdate = true;
     }
 
-    ownershipsGetter.getCurrentOwnerships().then(ownerships => {
-        leaderboard.registerOwnerships(ownerships)
-        updateTilesAccordingToNewBindings(ownerships.bindings)
-    }).catch(console.error)
+    function updateWithLastState() {
+        ownershipsGetter.getCurrentOwnerships().then(ownerships => {
+            leaderboard.registerOwnerships(ownerships)
+            updateTilesAccordingToNewBindings(ownerships.bindings)
+        }).catch(console.error)
+    }
+
+    // run full update once at the beginning and then every 10 minutes
+    updateWithLastState()
+    setInterval(() => {
+        updateWithLastState()
+    }, 1000 * 60 * 10)
 
     const cleanUpdatesListener = updatesListener.listenForUpdates((tile, countryCode) => {
         const country = Countries.get(countryCode)!
