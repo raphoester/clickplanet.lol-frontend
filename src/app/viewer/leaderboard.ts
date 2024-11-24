@@ -62,6 +62,7 @@ export class Leaderboard {
 
     private commitUpdate() {
         const newData = [...this.data] // update the reference to trigger re-render
+        newData.sort((a, b) => b.tiles - a.tiles)
         this.update(newData)
     }
 }
