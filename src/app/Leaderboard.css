@@ -25,3 +25,7 @@
     height: 20px;
     margin: 0 8px;
 }
+
+.leaderboard-entry td {
+    margin: 0 3px;
+}
