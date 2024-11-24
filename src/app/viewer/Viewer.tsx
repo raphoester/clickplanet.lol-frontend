@@ -41,7 +41,7 @@ export default function Viewer(props: ViewerProps) {
     }, [props]);
 
     return <>
-        {/*nested container to not blow up when force-cleaning events from parent in cleanup*/}
+        {/*nested container to not blow up when force-deleting events from parent in cleanup*/}
         <div>
             <div id="three-container" style={{width: '100vw', height: '100vh'}}/>
         </div>
