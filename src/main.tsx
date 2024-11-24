@@ -9,7 +9,6 @@ import {
 import {StrictMode} from "react";
 import {ClickServiceClient, HTTPBackend} from "./backends/httpBackend.ts";
 import App from "./app/App.tsx";
-import {FakeBackend} from "./backends/fakeBackend.ts";
 
 const clickServiceClient = new ClickServiceClient({
     baseUrl: "",
@@ -17,8 +16,8 @@ const clickServiceClient = new ClickServiceClient({
     timeoutMs: 1000
 })
 
-// const backend = new HTTPBackend(clickServiceClient)
-const backend = new FakeBackend()
+const backend = new HTTPBackend(clickServiceClient)
+// const backend = new FakeBackend()
 
 const router = createBrowserRouter([{
     path: "",

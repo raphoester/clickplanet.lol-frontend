@@ -7,6 +7,8 @@
     color: white;
     border: 1px solid white;
     background: rgba(150, 150, 150, 0.3);
+    height: 60%;
+    overflow: scroll;
 }
 
 .leaderboard-title {
