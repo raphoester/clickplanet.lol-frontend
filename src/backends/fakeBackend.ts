@@ -5,6 +5,14 @@ export class FakeBackend implements TileClicker, OwnershipsGetter, UpdatesListen
     private tileBindings: Map<number, string> = new Map()
     private updateListeners: Map<string, (tile: number, countryCode: string) => void> = new Map()
 
+    constructor() {
+        setInterval(() => {
+            const tileId = Math.floor(Math.random() * 100)
+            this.clickTile(tileId, "fr").then(() => {
+            })
+        }, 1000)
+    }
+
     public async clickTile(tileId: number, countryId: string) {
         this.tileBindings.set(tileId, countryId)
         this.updateListeners.forEach(l => l(tileId, countryId))

@@ -22,7 +22,10 @@ export function setupScene() {
 
     const cleanup = () => {
         renderer.dispose();
-        document.getElementById('three-container')!.innerHTML = '';
+        const container = document.getElementById('three-container')
+        if (container) {
+            container.innerHTML = "";
+        }
     }
 
     return {scene, camera, renderer, cleanup};

@@ -4,9 +4,10 @@ import {addDisplayObjects, setupScene} from "./scene.ts";
 import {createPoints} from "./points.ts";
 import {actOnPick} from "./gpuPicking.ts";
 import {regions} from "./atlas.ts";
-import {Country} from "../countries.ts";
+import {Countries, Country} from "../countries.ts";
 import {OwnershipsGetter, TileClicker, UpdatesListener} from "../../backends/backend.ts";
 import {getCountryOfVisitor} from "./visitorCountry.ts";
+import {Leaderboard} from "./leaderboard.ts";
 
 type Uniforms = {
     zoom: THREE.IUniform,
@@ -21,6 +22,7 @@ export function effect(
     tileClicker: TileClicker,
     ownershipsGetter: OwnershipsGetter,
     updatesListener: UpdatesListener,
+    updateLeaderboard: (data: { country: Country, tiles: number }[]) => void,
     eventTarget: HTMLElement,
 ) {
     const {scene, camera, renderer, cleanup} = setupScene();
@@ -51,6 +53,8 @@ export function effect(
         )
     });
 
+    const leaderboard = new Leaderboard(updateLeaderboard)
+
     eventTarget.addEventListener('click', (event: MouseEvent) => {
         actOnPick_(event, id => {
             const region = regions.get(country.code)
@@ -67,6 +71,7 @@ export function effect(
             arr[arrayIdIndexedOnZero * 4 + 3] = region.height
 
             displayPoints.geometry.getAttribute('regionVector').needsUpdate = true
+            // don't register click here or duplicate will be counted from the webhook updates
         });
     });
 
@@ -99,11 +104,13 @@ export function effect(
     }
 
     ownershipsGetter.getCurrentOwnerships().then(ownerships => {
+        leaderboard.registerOwnerships(ownerships)
         updateTilesAccordingToNewBindings(ownerships.bindings)
     }).catch(console.error)
 
     const cleanUpdatesListener = updatesListener.listenForUpdates((tile, countryCode) => {
-        console.log("updating tile", tile, "to", countryCode)
+        const country = Countries.get(countryCode)!
+        leaderboard.registerClick(country)
         updateTilesAccordingToNewBindings(new Map([[tile, countryCode]]))
     })
 
