@@ -1,6 +1,6 @@
 import {Ownerships, OwnershipsGetter, TileClicker, UpdatesListener} from "./backend.ts";
 import {
-    ClickRequest,
+    ClickRequest, OwnershipBatchRequest,
     Ownerships as OwnershipsProto, TileUpdate,
 } from "../gen/grpc/clicks_pb.ts";
 import {Message} from "@bufbuild/protobuf";
@@ -72,9 +72,38 @@ export class HTTPBackend implements TileClicker, OwnershipsGetter, UpdatesListen
         }
     }
 
+    public async getCurrentOwnershipsInInterval(
+        batchSize: number,
+        interval: number,
+        maxIndex: number,
+        callback: (ownerships: Ownerships) => void) {
+
+        let cursor = 0
+        const intervalObj = setInterval(async () => {
+            const payload = new OwnershipBatchRequest({
+                endTileId: cursor + batchSize,
+                startTileId: cursor,
+            })
+
+            const binary = await this.client.fetch("POST", "/api/ownerships-by-batch", payload)
+            const message = OwnershipsProto.fromBinary(binary!)
+
+            callback({
+                bindings: new Map<number, string>(
+                    Object.entries(message.bindings).map(([k, v]) => [parseInt(k), v]))
+            })
+
+            cursor += batchSize
+            if (cursor >= maxIndex) {
+                clearInterval(intervalObj)
+            }
+        }, interval)
+
+    }
+
     public listenForUpdates(callback: (tile: number, previousCountry: string | undefined, newCountry: string) => void): () => void {
-        const websocket = new WebSocket(`wss://${window.location.host}/ws/listen`)
-        // const websocket = new WebSocket(`ws://localhost:8080/ws/listen`)
+        // const websocket = new WebSocket(`wss://${window.location.host}/ws/listen`)
+        const websocket = new WebSocket(`ws://localhost:8080/ws/listen`)
         websocket.binaryType = "arraybuffer";
         websocket.addEventListener('message', (event) => {
             const binary = new Uint8Array(event.data)

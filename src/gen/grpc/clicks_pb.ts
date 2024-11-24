@@ -172,3 +172,46 @@ export class TileUpdate extends Message<TileUpdate> {
   }
 }
 
+/**
+ * @generated from message clicks.v1.OwnershipBatchRequest
+ */
+export class OwnershipBatchRequest extends Message<OwnershipBatchRequest> {
+  /**
+   * @generated from field: uint32 start_tile_id = 1;
+   */
+  startTileId = 0;
+
+  /**
+   * @generated from field: uint32 end_tile_id = 2;
+   */
+  endTileId = 0;
+
+  constructor(data?: PartialMessage<OwnershipBatchRequest>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "clicks.v1.OwnershipBatchRequest";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "start_tile_id", kind: "scalar", T: 13 /* ScalarType.UINT32 */ },
+    { no: 2, name: "end_tile_id", kind: "scalar", T: 13 /* ScalarType.UINT32 */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): OwnershipBatchRequest {
+    return new OwnershipBatchRequest().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): OwnershipBatchRequest {
+    return new OwnershipBatchRequest().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): OwnershipBatchRequest {
+    return new OwnershipBatchRequest().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: OwnershipBatchRequest | PlainMessage<OwnershipBatchRequest> | undefined, b: OwnershipBatchRequest | PlainMessage<OwnershipBatchRequest> | undefined): boolean {
+    return proto3.util.equals(OwnershipBatchRequest, a, b);
+  }
+}
+

@@ -20,3 +20,8 @@ message TileUpdate {
   string country_id = 2;
   string previous_country_id = 3;
 }
+
+message OwnershipBatchRequest {
+  uint32 start_tile_id = 1;
+  uint32 end_tile_id = 2;
+}

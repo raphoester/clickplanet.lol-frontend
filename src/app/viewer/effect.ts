@@ -102,18 +102,18 @@ export function effect(
         displayPoints.geometry.getAttribute('regionVector').needsUpdate = true;
     }
 
-    function updateWithLastState() {
-        ownershipsGetter.getCurrentOwnerships().then(ownerships => {
+    const maxTiles = 257946
+    const interval = 1000
+    const tilesPerBatch = 10_000
+    ownershipsGetter.getCurrentOwnershipsInInterval(
+        tilesPerBatch,
+        interval,
+        maxTiles,
+        (ownerships) => {
             leaderboard.registerOwnerships(ownerships)
             updateTilesAccordingToNewBindings(ownerships.bindings)
-        }).catch(console.error)
-    }
-
-    // run full update once at the beginning and then every 10 minutes
-    updateWithLastState()
-    setInterval(() => {
-        updateWithLastState()
-    }, 1000 * 60 * 10)
+        },
+    )
 
     const cleanUpdatesListener = updatesListener.listenForUpdates((tile, previousCountry, newCountry) => {
         const country = Countries.get(newCountry)
