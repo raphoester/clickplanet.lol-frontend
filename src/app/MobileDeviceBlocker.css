@@ -1,0 +1,48 @@
+.mobile-blocker-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(135deg, #f83a3a, #76ff59);
+    color: #ffffff;
+    font-family: "Comic Sans MS", cursive, sans-serif;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+}
+
+.mobile-blocker-container h1 {
+    font-size: 3rem;
+    animation: funky-text 1s infinite alternate;
+    padding: 20px;
+}
+
+.mobile-blocker-container-subtitle {
+    font-size: 1.5rem;
+    text-align: center;
+    max-width: 600px;
+    margin: 10px;
+}
+
+.mobile-blocker-container-subtext {
+    font-size: 1rem;
+    text-align: center;
+    max-width: 600px;
+    margin-top: 100px;
+}
+
+.mobile-blocker-container img {
+    width: 100%;
+    max-width: 200px;
+    margin-top: 20px;
+    animation: bounce 1s infinite alternate;
+}
+
+@keyframes funky-text {
+    from {
+        transform: rotate(-5deg) scale(1);
+    }
+    to {
+        transform: rotate(5deg) scale(1.1);
+    }
+}

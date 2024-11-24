@@ -27,7 +27,8 @@ export default function Settings(props: SettingsProps) {
         <>
             <button onClick={togglePopup(true)}
                     className="settings-opener-button">
-                Settings
+                <img src={`/static/countries/svg/${props.country.code}.svg`} alt={`flag of ${props.country.name}`}/>
+                <div>Change country</div>
             </button>
             {
                 isOpen &&

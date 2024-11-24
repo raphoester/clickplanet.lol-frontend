@@ -5,6 +5,7 @@ import Settings from "../Settings.tsx";
 import {Country} from "../countries.ts";
 import Loader from "../Loader.tsx";
 import Leaderboard from "../Leaderboard.tsx";
+import About from "../About.tsx";
 
 export type ViewerProps = {
     tileClicker: TileClicker
@@ -51,18 +52,19 @@ export default function Viewer(props: ViewerProps) {
 
     return <>
         {/*nested container to not blow up when force-deleting events from parent in cleanup*/}
-            <div>
-                <div id="three-container" style={{width: '100vw', height: '100vh'}}/>
-            </div>
-            <div>
-            </div>
-            {shouldShowLoader && <Loader/>}
-            {isReady && <Leaderboard
-                data={leaderboardData}
-            />}
-            {isReady && <Settings
-                setCountry={setCountryRef.current!}
-                country={country}
-            />}
+        <div>
+            <div id="three-container" style={{width: '100vw', height: '100vh'}}/>
+        </div>
+        <div>
+        </div>
+        {shouldShowLoader && <Loader/>}
+        {isReady && <Leaderboard
+            data={leaderboardData}
+        />}
+        {isReady && <Settings
+            setCountry={setCountryRef.current!}
+            country={country}
+        />}
+        <About/>
     </>
 };

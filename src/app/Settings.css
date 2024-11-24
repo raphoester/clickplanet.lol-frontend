@@ -13,9 +13,8 @@
 
 .settings-section {
     position: relative;
-    background: white;
     padding: 20px;
-    border: 1px solid #ccc;
+    border: 1px solid #4f7920;
     border-radius: 5px;
     width: 100%;
     max-width: 400px;
@@ -23,7 +22,7 @@
 
 .settings-modal-card {
     position: absolute;
-    background: white;
+    background: linear-gradient(135deg, #9faf9d, #dbefbc);
     padding: 20px;
     border: 1px solid #ccc;
     border-radius: 5px;
@@ -31,17 +30,42 @@
 }
 
 .settings-opener-button {
+    text-shadow: black 1px 1px 3px;
+    box-shadow: black 1px 1px 3px;
     position: absolute;
     top: 10px;
     right: 10px;
     z-index: 10;
     padding: 8px 12px;
+    width: 300px;
+    background: rgba(100, 100, 100, 0.3);
+    color: white;
+    border: 1px solid white;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    cursor: pointer;
+}
+
+.settings-opener-button img {
+    width: 30px;
+    height: auto;
+    margin: 0 8px;
+    vertical-align: center;
+}
+
+.settings-opener-button:hover {
+    background: rgba(136, 185, 128, 0.5);
+    transition: 0.1s;
 }
 
 .country-settings select {
     width: 100%;
     padding: 10px;
     margin: 10px 0;
+    background: #dfe8df;
+    color: #2a1a1f;
 }
 
 .settings-modal-card-title {
@@ -61,10 +85,5 @@
     -webkit-linear-gradient(45deg, transparent 0%, transparent 46%, black 46%, black 56%, transparent 56%, transparent 100%);
     width: 20px;
     height: 20px;
-    border: 3px solid white
-}
-
-.settings-modal-card-close:hover {
-    box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.5);
-    transition: 0.1s;
+    border: 1px solid transparent;
 }
