@@ -7,18 +7,28 @@
     color: white;
     border: 1px solid white;
     background: rgba(86, 86, 86, 0.34);
-    height: 60%;
+    max-height: 60%;
     overflow: auto;
 }
 
-.leaderboard-title {
-    margin-bottom: 10px;
-    margin-top: 5px;
-    color: #2a1a1f;
+.leaderboard-header {
     -webkit-text-stroke-width: 0.3px;
     -webkit-text-stroke-color: white;
     font-size: 30px;
     text-align: center;
+    cursor: pointer;
+}
+
+.leaderboard-title {
+    color: #2a1a1f;
+    margin: 0 auto;
+}
+
+.leaderboard-caption {
+    margin-top: 0;
+    color: white;
+    font-size: 15px;
+
 }
 
 .leaderboard-entry {
