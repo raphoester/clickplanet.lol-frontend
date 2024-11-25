@@ -26,6 +26,7 @@ export function effect(
     eventTarget: HTMLElement,
 ) {
     const {scene, camera, renderer, cleanup} = setupScene();
+    console.log("Camera object : " + JSON.stringify(camera, null, 2))
     const uniforms: Uniforms = {
         zoom: {value: 1.0},
         resolution: {value: new THREE.Vector2(window.innerWidth, window.innerHeight)},
@@ -128,6 +129,8 @@ export function effect(
         updateTilesAccordingToNewBindings(new Map([[tile, newCountry]]))
     })
 
+    
+
     addDisplayObjects(scene, displayPoints)
     startAnimation(renderer, scene, camera, uniforms);
 
@@ -157,6 +160,19 @@ function startAnimation(
     controls.minZoom = 1;
     controls.maxZoom = 50;
     controls.panSpeed = 0.1;
+    // Gives a smooth effect to the action of rotating the sphere with the mouse
+    controls.enableDamping = true;
+
+    controls.addEventListener('change', () => {
+        if(camera.zoom === 1) {
+            controls.autoRotate = true
+        } else {
+            controls.autoRotate = false
+        }
+
+        // Decreases the speed at which the user can rotate the sphere with the mouse the more he zooms in
+        controls.rotateSpeed = (1 / camera.zoom) / 1.5;
+    });
 
     const animate = () => {
         requestAnimationFrame(animate);
