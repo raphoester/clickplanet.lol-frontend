@@ -2,7 +2,6 @@ services:
   frontend:
     image: registry.digitalocean.com/clickplanet-frontend/frontend:latest
     ports:
-      - "80:80"
       - "443:443"
     volumes:
       - type: bind
@@ -11,3 +10,6 @@ services:
       - type: bind
         source: ./tls/privkey.pem
         target: /etc/letsencrypt/live/clickplanet.lol/privkey.pem
+      - type: bind
+        source: ./nginx/prod.conf
+        target: /etc/nginx/conf.d/nginx.conf
