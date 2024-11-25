@@ -1,0 +1,29 @@
+services:
+  frontend:
+    container_name: cp-frontend
+    image: registry.digitalocean.com/clickplanet-frontend/frontend:latest
+    ports:
+      - "80:80"
+    volumes:
+      - type: bind
+        source: ./local.conf
+        target: /etc/nginx/conf.d/nginx.conf
+
+  backend:
+    image: clickplanet-back:local
+    container_name: cp-backend
+    volumes:
+      - type: bind
+        source: ./backend.yaml
+        target: /home/app/config/config.yaml
+    command: [ "./api", "-config", "/home/app/config/config.yaml" ]
+    depends_on:
+      - redis
+
+  # for the backend to work, need to load the lua script located in the backend repo:
+  # docker exec -i cp-redis /bin/sh -c "(redis-cli -x script load < /static/setAndPublish.lua) > /static/setAndPublish.sha1"
+  redis:
+    container_name: cp-redis
+    image: redis:7.4.1-alpine3.20
+    volumes:
+      - ../../static:/static
