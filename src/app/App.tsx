@@ -8,14 +8,12 @@ export default function App(props: AppProps) {
 
     return <>
         {detectMobile() && <Warning
-            title={"MOBILE VERSION WARNING"}
+            title={"IPHONES NOT SUPPORTED"}
             messages={[
-                `This site has been designed and is optimized for computers.`,
-                `The mobile version is being implemented, but it is not finished yet. 
-                You are free to use it, but it may not work as expected.`,
-                `In particular, the initial loading of the map might take a while, and contain a lot of glitches.`,
-                `The leaderboard is also pretty ugly and takes too much space.`,
-                `Thanks for your understanding.`
+                `This site is very malfunctioning on mobile devices.`,
+                `IPhones in particular have very strict limitations on memory usage.`,
+                `It kinda works on Android but not everytime.`,
+                `To get the best experience, use a laptop or a desktop computer.`
             ]}
         />}
 
@@ -38,7 +36,6 @@ function detectMobile() {
         /iPhone/i,
         /iPad/i,
         /iPod/i,
-        /BlackBerry/i,
         /Windows Phone/i
     ];
 

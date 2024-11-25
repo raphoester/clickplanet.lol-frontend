@@ -60,7 +60,6 @@ export function effect(
             const region = regions.get(country.code)
             if (!region) throw new Error(`Region not found for country ${country.code}`)
 
-            console.log("clicked on", id)
             tileClicker.clickTile(id, country.code).catch(console.error)
 
             const arrayIdIndexedOnZero = id - 1
@@ -125,7 +124,6 @@ export function effect(
             if (!oldCountry) throw new Error(`Country not found for code ${previousCountry}`)
         }
 
-        console.log(newCountry, "received update", tile, country)
         leaderboard.registerClick(oldCountry, country)
         updateTilesAccordingToNewBindings(new Map([[tile, newCountry]]))
     })
