@@ -33,4 +33,13 @@ export class FakeBackend implements TileClicker, OwnershipsGetter, UpdatesListen
             this.updateListeners.delete(identifier)
         }
     }
+
+    public async getCurrentOwnershipsInInterval(
+        batchSize: number,
+        interval: number,
+        maxIndex: number,
+        callback: (ownerships: Ownerships) => void) {
+
+        throw new Error(`Not implemented, ${batchSize}, ${interval}, ${maxIndex}, ${callback}`)
+    }
 }
