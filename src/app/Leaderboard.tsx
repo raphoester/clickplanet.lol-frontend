@@ -16,23 +16,23 @@ export default function Leaderboard(props: LeaderboardProps) {
             <tbody>
             {props.data.map((entry, index) => {
                 return <tr key={index} className="leaderboard-entry">
-                            <div>
-                                <td>{index + 1}</td>
-                                <td><img
-                                    className="leaderboard-entry-flag"
-                                    src={`static/countries/svg/${entry.country.code.toLowerCase()}.svg`}
-                                    alt={`flag of ${entry.country.name}`}
-                                    title={entry.country.name}
-                                />
-                                </td>
-                                <td>{(() => {
-                                    const sliced = entry.country.name.slice(0, 20)
-                                    return sliced.length === 20 ? sliced + "..." : sliced
-                                })()}</td>
-                            </div>
+                    <td>
+                        <span>{index + 1}</span>
+                        <span><img
+                            className="leaderboard-entry-flag"
+                            src={`static/countries/svg/${entry.country.code.toLowerCase()}.svg`}
+                            alt={`flag of ${entry.country.name}`}
+                            title={entry.country.name}
+                        />
+                        </span>
+                        <span>{(() => {
+                            const sliced = entry.country.name.slice(0, 20)
+                            return sliced.length === 20 ? sliced + "..." : sliced
+                        })()}</span>
+                    </td>
 
-                            <td className="leaderboard-tiles">{entry.tiles}</td>
-                        </tr>
+                    <td className="leaderboard-tiles">{entry.tiles}</td>
+                </tr>
             })}
             </tbody>
         </table>
