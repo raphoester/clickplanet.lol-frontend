@@ -39,7 +39,7 @@
     border: 1px solid transparent;
     border-radius: 5px;
     width: 400px;
-    height: 70%;
+    max-height: 80%;
     overflow: scroll;
     background: linear-gradient(135deg, #9faf9d, #dbefbc);
     color: #2a1a1f;

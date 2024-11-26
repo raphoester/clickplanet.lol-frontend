@@ -1,0 +1,38 @@
+.bmc-button {
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    color: black;
+    background-color: #a4b79f;
+    border-radius: 5px;
+    border: 1px solid transparent;
+    padding: 0.8rem;
+    font-size: 1rem;
+    letter-spacing: 0.6px;
+    box-shadow: 0 1px 2px rgba(190, 190, 190, 0.5);
+    font-family: "Comic Sans MS", sans-serif;
+    margin-bottom: 1rem;
+}
+
+.bmc-button:active,
+.bmc-button:hover {
+    box-shadow: 0 1px 2px 2px rgba(190, 190, 190, 0.5);
+    background-color: #ff813f;
+    opacity: 0.85;
+    transition: 0.2s;
+    color: #ffffff;
+    text-shadow: 1px 1px 2px rgba(50, 50, 50, 0.5);
+}
+
+.bmc-button-img {
+    height: 2vh;
+    box-shadow: none;
+    border: none;
+    vertical-align: middle;
+}
+
+.bmc-button-text {
+    margin-left: 15px;
+    font-size: 1.1rem;
+    vertical-align: middle;
+}

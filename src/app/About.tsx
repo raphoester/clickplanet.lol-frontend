@@ -1,5 +1,6 @@
 import {useState} from "react";
 import "./About.css"
+import BuyMeACoffee from "./BuyMeACoffee.tsx";
 
 export default function About() {
     const [isOpen, setIsOpen] = useState(false)
@@ -34,18 +35,18 @@ export default function About() {
                                     <img alt="picture of Raphaël Oester"
                                          src="/static/raphael.png"
                                          className="about-modal-pfp"/>
+                                    <div className="about-modal-author-donate">
+                                    </div>
                                     <p>I'm a freelance Go backend dev,<br/>and btw I'm looking for new mission :)</p>
                                 </div>
                             </div>
-                            <p>
-
-                            </p>
                             <ul className="links">
                                 <li><a target="_blank" href="https://www.linkedin.com/in/raphael-oester/">LinkedIn</a>
                                 </li>
                                 <li><a target="_blank" href="https://x.com/raphael_oester">X</a></li>
                                 <li><a target="_blank" href="https://github.com/raphoester">GitHub</a></li>
                             </ul>
+                            <BuyMeACoffee/>
                         </div>
 
                     </div>
