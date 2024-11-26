@@ -3,6 +3,7 @@ services:
     image: registry.digitalocean.com/clickplanet-frontend/frontend:latest
     ports:
       - "443:443"
+      - "80:80"
     volumes:
       - type: bind
         source: ./tls/fullchain.pem
