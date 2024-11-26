@@ -1,6 +1,8 @@
 import Viewer, {ViewerProps} from "./viewer/Viewer.tsx";
 
 import Warning from "./Warning.tsx";
+import Banner from "./Banner.tsx";
+import DiscordButton from "./DiscordButton.tsx";
 
 export type AppProps = ViewerProps
 
@@ -17,6 +19,12 @@ export default function App(props: AppProps) {
             ]}
         />}
 
+        <Banner
+            text="Chat in real time with other players!"
+            cta={<DiscordButton
+                message="Join our official Discord server"/>}
+        >
+        </Banner>
         <Viewer
             tileClicker={props.tileClicker}
             ownershipsGetter={props.ownershipsGetter}

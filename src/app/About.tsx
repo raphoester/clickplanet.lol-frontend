@@ -1,6 +1,7 @@
 import {useState} from "react";
 import "./About.css"
 import BuyMeACoffee from "./BuyMeACoffee.tsx";
+import DiscordButton from "./DiscordButton.tsx";
 
 export default function About() {
     const [isOpen, setIsOpen] = useState(false)
@@ -30,6 +31,7 @@ export default function About() {
                                 <p>Think of it as Pixel Wars with flags. When you conquer
                                     a territory, it belongs to your country until someone from another country clicks
                                     on it.</p>
+                                <DiscordButton/>
                                 <div className={"about-modal-author"}>
                                     <h4>Created by Raphaël Oester</h4>
                                     <img alt="picture of Raphaël Oester"
