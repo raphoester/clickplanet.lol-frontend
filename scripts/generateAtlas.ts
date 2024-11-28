@@ -3,7 +3,7 @@ import * as path from "node:path";
 import * as Smith from "spritesmith";
 
 const args = process.argv.slice(2);
-const spritesDir = args[0] || './static/countries/png100px';
+const spritesDir = args[0] || './static/countries/png1000px';
 const dest = args[1] || './static/countries';
 
 const pngFiles = fs.readdirSync(spritesDir).filter(file => file.endsWith('.png')).map(file => path.join(spritesDir, file));

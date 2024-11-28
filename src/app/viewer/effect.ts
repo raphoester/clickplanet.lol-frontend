@@ -129,7 +129,6 @@ export function effect(
         updateTilesAccordingToNewBindings(new Map([[tile, newCountry]]))
     })
 
-    
 
     addDisplayObjects(scene, displayPoints)
     startAnimation(renderer, scene, camera, uniforms);
@@ -164,7 +163,7 @@ function startAnimation(
     controls.enableDamping = true;
 
     controls.addEventListener('change', () => {
-        if(camera.zoom === 1) {
+        if (camera.zoom === 1) {
             controls.autoRotate = true
         } else {
             controls.autoRotate = false
