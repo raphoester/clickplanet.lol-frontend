@@ -76,7 +76,8 @@ export class HTTPBackend implements TileClicker, OwnershipsGetter, UpdatesListen
         batchSize: number,
         interval: number,
         maxIndex: number,
-        callback: (ownerships: Ownerships) => void) {
+        callback: (ownerships: Ownerships) => void,
+    ) {
 
         let cursor = 0
         const intervalObj = setInterval(async () => {
@@ -87,6 +88,7 @@ export class HTTPBackend implements TileClicker, OwnershipsGetter, UpdatesListen
 
             const binary = await this.client.fetch("POST", "/api/ownerships-by-batch", payload)
             const message = OwnershipsProto.fromBinary(binary!)
+
 
             callback({
                 bindings: new Map<number, string>(

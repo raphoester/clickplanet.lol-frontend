@@ -30,7 +30,7 @@ export function effect(
     const uniforms: Uniforms = {
         zoom: {value: 1.0},
         resolution: {value: new THREE.Vector2(window.innerWidth, window.innerHeight)},
-        atlasTexture: {value: textureLoader.load('/static/countries/atlas.png')},
+        atlasTexture: {value: textureLoader.load(`/static/countries/atlas.png?ts=${Date.now()}`)},
         atlasTextureSize: {value: new THREE.Vector2(13000, 12288)}, // TODO: retrieve the size from the texture itself
     };
 
@@ -93,7 +93,8 @@ export function effect(
         bindings.forEach((countryCode, index) => {
             const arrayIdIndexedOnZero = index - 1
             const region = regions.get(countryCode);
-            if (!region) throw new Error(`Region not found for country ${countryCode}`);
+            if (!region) return
+
             regionVectors[arrayIdIndexedOnZero * 4] = region.x;
             regionVectors[arrayIdIndexedOnZero * 4 + 1] = region.y;
             regionVectors[arrayIdIndexedOnZero * 4 + 2] = region.width;
@@ -102,18 +103,22 @@ export function effect(
         displayPoints.geometry.getAttribute('regionVector').needsUpdate = true;
     }
 
-    const maxTiles = 257946
-    const interval = 1000
-    const tilesPerBatch = 10_000
-    ownershipsGetter.getCurrentOwnershipsInInterval(
-        tilesPerBatch,
-        interval,
-        maxTiles,
-        (ownerships) => {
-            leaderboard.registerOwnerships(ownerships)
-            updateTilesAccordingToNewBindings(ownerships.bindings)
-        },
-    )
+
+    // wait for the first render to be done, otherwise some batches get lost
+    setTimeout(() => {
+        const interval = 500
+        const tilesPerBatch = 10_000
+        ownershipsGetter.getCurrentOwnershipsInInterval(
+            tilesPerBatch,
+            interval,
+            size,
+            (ownerships) => {
+                leaderboard.registerOwnerships(ownerships)
+                updateTilesAccordingToNewBindings(ownerships.bindings)
+            },
+        )
+    }, 1_000)
+
 
     const cleanUpdatesListener = updatesListener.listenForUpdates((tile, previousCountry, newCountry) => {
         const country = Countries.get(newCountry)
@@ -163,11 +168,7 @@ function startAnimation(
     controls.enableDamping = true;
 
     controls.addEventListener('change', () => {
-        if (camera.zoom === 1) {
-            controls.autoRotate = true
-        } else {
-            controls.autoRotate = false
-        }
+        controls.autoRotate = camera.zoom === 1;
 
         // Decreases the speed at which the user can rotate the sphere with the mouse the more he zooms in
         controls.rotateSpeed = (1 / camera.zoom) / 1.5;
