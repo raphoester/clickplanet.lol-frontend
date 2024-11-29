@@ -29,11 +29,3 @@
     background: #c5d6c3;
     transition: 0.1s;
 }
-
-.select-with-search-option:active {
-    background: #91c98a;
-}
-
-.select-with-search-option[selected] {
-    background: #91c98a;
-}
