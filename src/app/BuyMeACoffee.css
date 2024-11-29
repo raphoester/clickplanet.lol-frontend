@@ -5,18 +5,17 @@
     color: black;
     background-color: #a4b79f;
     border-radius: 5px;
-    border: 1px solid transparent;
     padding: 0.8rem;
     font-size: 1rem;
     letter-spacing: 0.6px;
     box-shadow: 0 1px 2px rgba(190, 190, 190, 0.5);
     font-family: "Comic Sans MS", sans-serif;
     margin-bottom: 1rem;
+    border: 1px solid #342a25;
 }
 
 .bmc-button:active,
 .bmc-button:hover {
-    box-shadow: 0 1px 2px 2px rgba(190, 190, 190, 0.5);
     background-color: #ff813f;
     opacity: 0.85;
     transition: 0.2s;

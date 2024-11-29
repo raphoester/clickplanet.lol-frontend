@@ -40,6 +40,13 @@ export class FakeBackend implements TileClicker, OwnershipsGetter, UpdatesListen
         maxIndex: number,
         callback: (ownerships: Ownerships) => void) {
 
-        throw new Error(`Not implemented, ${batchSize}, ${interval}, ${maxIndex}, ${callback}`)
+        let index = 0
+        while (index < maxIndex) {
+            const end = Math.min(index + batchSize, maxIndex)
+            const slice = new Map(Array.from(this.tileBindings.entries()).slice(index, end))
+            callback({bindings: slice})
+            index = end
+            await new Promise(r => setTimeout(r, interval))
+        }
     }
 }

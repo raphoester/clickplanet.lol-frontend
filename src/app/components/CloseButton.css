@@ -1,0 +1,13 @@
+.close-button {
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    background-color: #bac9b5;
+    color: #342a25;
+    border: 1px solid #342a25;
+}
+
+.close-button:hover {
+    background-color: #e4ecdb;
+    transition: background-color 0.3s;
+}

@@ -26,7 +26,6 @@ export function effect(
     eventTarget: HTMLElement,
 ) {
     const {scene, camera, renderer, cleanup} = setupScene();
-    console.log("Camera object : " + JSON.stringify(camera, null, 2))
     const uniforms: Uniforms = {
         zoom: {value: 1.0},
         resolution: {value: new THREE.Vector2(window.innerWidth, window.innerHeight)},
