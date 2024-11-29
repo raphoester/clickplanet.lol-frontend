@@ -4,6 +4,7 @@ import {useState} from "react";
 
 
 type LeaderboardProps = {
+    tilesCount: number,
     data: {
         country: Country,
         tiles: number
@@ -21,7 +22,15 @@ export default function Leaderboard(props: LeaderboardProps) {
             <h2 className="leaderboard-title">Leaderboard</h2>
             <p className="leaderboard-caption">(click to {isOpen ? "collapse" : "expand"})</p>
         </div>
-        {isOpen && <table>
+        {isOpen && <table className="leaderboard-table">
+            <thead>
+            <tr>
+                <th>Country</th>
+                <th>% owned</th>
+                <th>Tiles</th>
+            </tr>
+            </thead>
+
             <tbody>
             {props.data.map((entry, index) => {
                 return <tr key={index} className="leaderboard-entry">
@@ -34,10 +43,16 @@ export default function Leaderboard(props: LeaderboardProps) {
                             title={entry.country.name}
                         />
                         </span>
-                        <span>{(() => {
-                            const sliced = entry.country.name.slice(0, 12)
-                            return sliced.length === 12 ? sliced + "..." : sliced
+                        <span className="leaderboard-entry-countryname">{(() => {
+                            const sliced = entry.country.name.slice(0, 20)
+                            return sliced.length === 20 ? sliced + "..." : sliced
                         })()}</span>
+
+                    </td>
+                    <td>
+                        <span className="leaderboard-entry-percentage">
+                            {(entry.tiles / props.tilesCount * 100).toFixed(2)}%
+                        </span>
                     </td>
                     <td className="leaderboard-tiles">{entry.tiles}</td>
                 </tr>

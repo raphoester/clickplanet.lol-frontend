@@ -11,7 +11,7 @@ import {ClickServiceClient, HTTPBackend} from "./backends/httpBackend.ts";
 import App from "./app/App.tsx";
 
 const clickServiceClient = new ClickServiceClient({
-    baseUrl: "",
+    baseUrl: "https://clickplanet.lol",
     // baseUrl: "http://localhost:8080",
     timeoutMs: 1000
 })

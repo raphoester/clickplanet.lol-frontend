@@ -143,6 +143,7 @@ export function effect(
             country = newCountry
         },
         country: country,
+        tilesCount: size,
         cleanup: () => {
             // Cleaning up event listeners by replacing the eventTarget with a clone of itself
             // Cannot use removeEventListener because the refs are not fixed (callbacks are created in the effect)

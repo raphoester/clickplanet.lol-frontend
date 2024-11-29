@@ -6,7 +6,7 @@
     padding: 8px 12px;
     color: white;
     border: 1px solid white;
-    background: rgba(86, 86, 86, 0.34);
+    background: rgba(80, 80, 80, 0.8);
     max-height: 60%;
     overflow: auto;
 }
@@ -19,6 +19,10 @@
     cursor: pointer;
 }
 
+.leaderboard-table {
+    border-collapse: separate;
+}
+
 .leaderboard-title {
     color: #2a1a1f;
     margin: 0 auto;
@@ -28,11 +32,9 @@
     margin-top: 0;
     color: white;
     font-size: 15px;
-
 }
 
 .leaderboard-entry {
-    display: flex;
     justify-content: space-between;
     margin-bottom: 4px;
     width: 400px;
@@ -48,13 +50,14 @@
     margin: 0 3px;
     text-shadow: black 1px 1px 3px;
     font-size: 20px;
+    padding: 0 10px;
 }
 
 .leaderboard-tiles {
     width: max-content;
     justify-self: end;
-
 }
+
 
 * {
     scrollbar-color: #888 transparent;

@@ -7,7 +7,6 @@ import DiscordButton from "./DiscordButton.tsx";
 export type AppProps = ViewerProps
 
 export default function App(props: AppProps) {
-
     return <>
         {detectMobile() && <Warning
             title={"IPHONES NOT SUPPORTED"}

@@ -15,9 +15,9 @@ export type ViewerProps = {
 export default function Viewer(props: ViewerProps) {
     const [country, setCountry] = useState<Country>({name: "France", code: "fr"});
     const setCountryRef = useRef<(country: Country) => void>();
+    const tilesCountRef = useRef(0)
 
     const [leaderboardData, setLeaderboardData] = useState<{ country: Country, tiles: number }[]>([])
-
     const [isReady, setIsReady] = useState(false);
 
     useEffect(() => {
@@ -25,7 +25,8 @@ export default function Viewer(props: ViewerProps) {
         const {
             updateCountry,
             country,
-            cleanup
+            tilesCount,
+            cleanup,
         } = effect(
             props.tileClicker,
             props.ownershipsGetter,
@@ -34,6 +35,7 @@ export default function Viewer(props: ViewerProps) {
             eventTarget
         )
 
+        tilesCountRef.current = tilesCount
         setCountry(country)
         setCountryRef.current = (country: Country) => {
             console.log("setting country", country)
@@ -55,6 +57,7 @@ export default function Viewer(props: ViewerProps) {
         </div>
         {isReady && <Leaderboard
             data={leaderboardData}
+            tilesCount={tilesCountRef.current}
         />}
         {isReady && <Settings
             setCountry={setCountryRef.current!}
