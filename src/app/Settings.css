@@ -60,14 +60,6 @@
     transition: 0.1s;
 }
 
-.settings-country-select {
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    background: #dfe8df;
-    color: #2a1a1f;
-}
-
 .settings-modal-card-title {
     font-size: 20px;
     margin-bottom: 10px;
