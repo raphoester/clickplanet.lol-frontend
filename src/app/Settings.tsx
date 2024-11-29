@@ -1,6 +1,7 @@
-import {ChangeEvent, useState} from "react";
+import {useState} from "react";
 import {Countries, Country} from "./countries.ts";
 import "./Settings.css"
+import SelectWithSearch from "./components/SelectWithSearch.tsx";
 
 type SettingsProps = {
     country: Country,
@@ -13,14 +14,6 @@ export default function Settings(props: SettingsProps) {
         return () => {
             setIsOpen(val)
         }
-    }
-
-    const handleCountrySelect = (event: ChangeEvent<HTMLSelectElement>) => {
-        const selectedCountry = Countries.get(event.target.value);
-        if (!selectedCountry) {
-            throw new Error(`Country not found for code ${event.target.value}`);
-        }
-        props.setCountry(selectedCountry);
     }
 
     return (
@@ -46,22 +39,13 @@ export default function Settings(props: SettingsProps) {
                         ></div>
                         <div className="country-settings settings-section">
                             <label htmlFor="country-select">Country</label>
-                            <select
-                                defaultValue={props.country.code}
-                                onChange={handleCountrySelect}
-                                className="settings-country-select">
-                                {
-                                    Array.from(Countries.values()).map(
-                                        (c) => (
-                                            <option
-                                                key={c.code}
-                                                value={c.code}
-                                            >{c.name}
-                                            </option>
-                                        )
-                                    )
-                                }
-                            </select>
+                            <SelectWithSearch
+                                onChange={(country) => {
+                                    props.setCountry(country)
+                                }}
+                                selected={props.country}
+                                values={Array.from(Countries.values())}
+                            />
                         </div>
                     </div>
                 </div>
