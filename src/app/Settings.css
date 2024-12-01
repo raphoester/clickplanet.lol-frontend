@@ -1,81 +1,12 @@
-.settings-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 99;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.settings-country-section-label {
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
 }
 
 .settings-section {
-    position: relative;
-    padding: 20px;
-    border: 1px solid #4f7920;
-    border-radius: 5px;
-    width: 100%;
-    max-width: 400px;
-}
-
-.settings-modal-card {
-    position: absolute;
-    background: linear-gradient(135deg, #9faf9d, #dbefbc);
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    width: 400px;
-}
-
-.settings-opener-button {
-    text-shadow: black 1px 1px 3px;
-    box-shadow: black 1px 1px 3px;
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    z-index: 10;
-    padding: 8px 12px;
-    width: 300px;
-    background: rgba(100, 100, 100, 0.3);
-    color: white;
-    border: 1px solid white;
-    font-size: 20px;
-    display: flex;
-    align-items: center;
-    gap: 25px;
-    cursor: pointer;
-}
-
-.settings-opener-button img {
-    width: 30px;
-    height: auto;
-    margin: 0 8px;
-    vertical-align: center;
-}
-
-.settings-opener-button:hover {
-    background: rgba(136, 185, 128, 0.5);
-    transition: 0.1s;
-}
-
-.settings-modal-card-title {
-    font-size: 20px;
-    margin-bottom: 10px;
-    text-align: center;
-}
-
-.settings-modal-card-close {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    display: block;
-    cursor: pointer;
-    border-radius: 50%;
-    background: -webkit-linear-gradient(-45deg, transparent 0%, transparent 46%, black 46%, black 56%, transparent 56%, transparent 100%),
-    -webkit-linear-gradient(45deg, transparent 0%, transparent 46%, black 46%, black 56%, transparent 56%, transparent 100%);
-    width: 20px;
-    height: 20px;
-    border: 1px solid transparent;
+    margin-bottom: 2rem;
+    border: 2px solid #2d2d2d;
+    border-radius: 0.5rem;
+    padding: 2rem;
 }

@@ -1,0 +1,26 @@
+.block-button {
+    text-shadow: black 1px 1px 3px;
+    box-shadow: black 1px 1px 3px;
+    padding: 8px 12px;
+    width: 300px;
+    color: white;
+    background: rgba(100, 100, 100, 0.3);
+    border: 1px solid white;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+}
+
+.block-button:hover {
+    background: rgba(136, 185, 128, 0.5);
+    transition: 0.1s;
+}
+
+.block-button-img {
+    width: 30px;
+    height: auto;
+    margin: auto 8px;
+    vertical-align: center;
+}
+

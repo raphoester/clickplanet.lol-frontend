@@ -5,6 +5,7 @@ import Settings from "../Settings.tsx";
 import {Country} from "../countries.ts";
 import Leaderboard from "../Leaderboard.tsx";
 import About from "../About.tsx";
+import "./Viewer.css"
 
 export type ViewerProps = {
     tileClicker: TileClicker
@@ -42,7 +43,6 @@ export default function Viewer(props: ViewerProps) {
             setCountry(country)
             updateCountry(country)
         }
-
         setIsReady(true)
 
         return cleanup
@@ -55,14 +55,17 @@ export default function Viewer(props: ViewerProps) {
         </div>
         <div>
         </div>
-        {isReady && <Leaderboard
-            data={leaderboardData}
-            tilesCount={tilesCountRef.current}
-        />}
-        {isReady && <Settings
-            setCountry={setCountryRef.current!}
-            country={country}
-        />}
-        <About/>
+        {isReady && <>
+            <Leaderboard
+                data={leaderboardData}
+                tilesCount={tilesCountRef.current}
+            />
+            <div className="viewer-right-side-buttons">
+                <Settings
+                    setCountry={setCountryRef.current!}
+                    country={country}/>
+                <About/>
+            </div>
+        </>}
     </>
 };

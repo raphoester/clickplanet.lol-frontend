@@ -36,7 +36,7 @@ export default function SelectWithSearch(props: SelectWithSearchProps) {
         props.onChange(value)
     }
 
-    return <>
+    return <div className="select-with-search">
         <input
             type="text"
             placeholder={"Search..."}
@@ -52,7 +52,6 @@ export default function SelectWithSearch(props: SelectWithSearchProps) {
             }}
             size={5}
             className="select-with-search-select">
-
             {
                 filteredOptions.map(
                     (v) => (
@@ -70,5 +69,5 @@ export default function SelectWithSearch(props: SelectWithSearchProps) {
                 )
             }
         </select>
-    </>
+    </div>
 }

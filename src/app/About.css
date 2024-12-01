@@ -1,105 +1,20 @@
-.about-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 99;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.about-opener-button {
-    text-shadow: black 1px 1px 3px;
-    box-shadow: black 1px 1px 3px;
-    position: absolute;
-    top: 65px;
-    right: 10px;
-    z-index: 10;
-    padding: 8px 12px;
-    width: 300px;
-    color: white;
-    background: rgba(100, 100, 100, 0.3);
-    border: 1px solid white;
-    font-size: 20px;
-    cursor: pointer;
-}
-
-.about-opener-button:hover {
-    background: rgba(136, 185, 128, 0.5);
-    transition: 0.1s;
-}
-
-.about-modal-card {
-    position: absolute;
-    background: white;
-    padding: 20px;
-    border: 1px solid transparent;
-    border-radius: 5px;
-    width: 400px;
-    max-height: 80%;
-    overflow: scroll;
-    background: linear-gradient(135deg, #9faf9d, #dbefbc);
-    color: #2a1a1f;
-    box-shadow: 0 4px 10px rgb(9, 7, 7);
-    text-align: center;
-}
-
-.about-modal-card-close {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    display: block;
-    cursor: pointer;
-    border-radius: 50%;
-    background: -webkit-linear-gradient(-45deg, transparent 0%, transparent 46%, black 46%, black 56%, transparent 56%, transparent 100%),
-    -webkit-linear-gradient(45deg, transparent 0%, transparent 46%, black 46%, black 56%, transparent 56%, transparent 100%);
-    width: 20px;
-    height: 20px;
-    border: none;
-}
-
-.about-modal-header {
-    text-align: center;
-    font-size: 25px;
-    margin: 10px 0;
-    color: #000000;
-    font-family: "Luckiest Guy", sans-serif;
-    font-weight: 400;
-}
-
-.about-modal-card h1 {
-    font-size: 2rem;
-    text-align: center;
-    margin-bottom: 15px;
-    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
-}
-
-.about-modal-card p {
-    font-size: 1rem;
-    line-height: 1.5;
-    margin-bottom: 15px;
-}
-
 .about-modal-pfp {
     width: 100px;
     height: 100px;
 }
 
-.about-modal-card .links {
+.about-modal-links {
     list-style: none;
     padding: 0;
     text-align: center;
     margin-bottom: 20px;
 }
 
-.about-modal-card .links li {
+.about-modal-links li {
     margin: 5px 0;
 }
 
-.about-modal-card .links a {
+.about-modal-links a {
     text-decoration: none;
     color: #764134;
     font-weight: bold;

@@ -1,0 +1,9 @@
+.viewer-right-side-buttons {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    cursor: pointer;
+    flex-direction: column;
+    gap: 10px;
+}

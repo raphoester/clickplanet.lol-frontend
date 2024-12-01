@@ -1,17 +1,21 @@
+.select-with-search-search {
+    width: 100%;
+    font-size: 20px;
+    padding: 10px;
+    margin: 10px 0;
+    background: #cfe0cf;
+    color: #2a1a1f;
+    font-family: "Comic Sans MS", sans-serif;
+}
+
 .select-with-search-select {
     width: 100%;
     padding: 10px;
     margin: 10px 0;
-    background: #dfe8df;
+    background: #cfe0cf;
     color: #2a1a1f;
-}
-
-.select-with-search-search {
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    background: #dfe8df;
-    color: #2a1a1f;
+    font-size: 20px;
+    font-family: "Comic Sans MS", sans-serif;
 }
 
 .select-with-search-select:active {
@@ -21,7 +25,7 @@
 .select-with-search-option {
     padding: 10px;
     margin: 5px 0;
-    background: #dfe8df;
+    background: #cfe0cf;
     color: #2a1a1f;
 }
 
