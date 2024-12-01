@@ -103,20 +103,17 @@ export function effect(
     }
 
 
-    // wait for the first render to be done, otherwise some batches get lost
-    setTimeout(() => {
-        const tilesPerBatch = 10_000
-        ownershipsGetter.getCurrentOwnershipsByBatch(
-            tilesPerBatch,
-            size,
-            (ownerships) => {
-                leaderboard.registerOwnerships(ownerships)
-                updateTilesAccordingToNewBindings(ownerships.bindings)
-            },
-        ).catch((e) => {
-            console.error("Failed to fetch initial ownerships", e)
-        })
-    }, 1_000)
+    const tilesPerBatch = 10_000
+    ownershipsGetter.getCurrentOwnershipsByBatch(
+        tilesPerBatch,
+        size,
+        (ownerships) => {
+            leaderboard.registerOwnerships(ownerships)
+            updateTilesAccordingToNewBindings(ownerships.bindings)
+        },
+    ).catch((e) => {
+        console.error("Failed to fetch initial ownerships", e)
+    })
 
 
     const cleanUpdatesListener = updatesListener.listenForUpdates((tile, previousCountry, newCountry) => {

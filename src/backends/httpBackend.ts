@@ -20,21 +20,38 @@ export class ClickServiceClient {
         body?: Message
     ): Promise<Uint8Array | undefined> {
         const url = this.config.baseUrl + path
-        const res = await fetch(url, {
-            method: verb,
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: body ? JSON.stringify({
-                data: Array.from(body?.toBinary())
-            }) : null
-        })
+
+        let res: Response | undefined
+
+        for (let i = 0; i < 5; i++) {
+            try {
+                res = await fetch(url, {
+                    method: verb,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: body ? JSON.stringify({
+                        data: Array.from(body?.toBinary())
+                    }) : null,
+                    signal: AbortSignal.timeout(this.config.timeoutMs || 5000)
+                })
+            } catch (e) {
+                console.error(i, "Failed to fetch", e)
+            }
+            if (res) {
+                break
+            }
+        }
+
+        if (!res) {
+            throw new Error(`Failed to fetch ${verb} ${path}`)
+        }
 
         if (!res.ok) {
             throw new Error(`Failed to fetch ${verb} ${path}: ${res.statusText} ${await res.text()}`)
         }
 
-        const json = await res.json()
+        const json = await res!.json()
         const base64String = json.data
         if (!base64String) {
             return undefined

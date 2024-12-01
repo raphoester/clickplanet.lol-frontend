@@ -39,7 +39,6 @@ export class Leaderboard {
                 data.set(countryCode, data.get(countryCode)! + 1)
                 return
             }
-
             data.set(countryCode, 1)
         })
 
