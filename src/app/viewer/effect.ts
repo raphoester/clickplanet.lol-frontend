@@ -30,7 +30,7 @@ export function effect(
         zoom: {value: 1.0},
         resolution: {value: new THREE.Vector2(window.innerWidth, window.innerHeight)},
         atlasTexture: {value: textureLoader.load(`/static/countries/atlas.png?ts=${Date.now()}`)},
-        atlasTextureSize: {value: new THREE.Vector2(13000, 12288)}, // TODO: retrieve the size from the texture itself
+        atlasTextureSize: {value: new THREE.Vector2(1300, 1232)}, // TODO: retrieve the size from the texture itself
     };
 
     const {pickingPoints, displayPoints, size} = createPoints(uniforms);
