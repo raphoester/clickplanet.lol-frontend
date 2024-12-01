@@ -105,17 +105,17 @@ export function effect(
 
     // wait for the first render to be done, otherwise some batches get lost
     setTimeout(() => {
-        const interval = 500
         const tilesPerBatch = 10_000
-        ownershipsGetter.getCurrentOwnershipsInInterval(
+        ownershipsGetter.getCurrentOwnershipsByBatch(
             tilesPerBatch,
-            interval,
             size,
             (ownerships) => {
                 leaderboard.registerOwnerships(ownerships)
                 updateTilesAccordingToNewBindings(ownerships.bindings)
             },
-        )
+        ).catch((e) => {
+            console.error("Failed to fetch initial ownerships", e)
+        })
     }, 1_000)
 
 

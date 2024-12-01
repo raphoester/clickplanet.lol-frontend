@@ -34,9 +34,8 @@ export class FakeBackend implements TileClicker, OwnershipsGetter, UpdatesListen
         }
     }
 
-    public async getCurrentOwnershipsInInterval(
+    public async getCurrentOwnershipsByBatch(
         batchSize: number,
-        interval: number,
         maxIndex: number,
         callback: (ownerships: Ownerships) => void) {
 
@@ -46,7 +45,6 @@ export class FakeBackend implements TileClicker, OwnershipsGetter, UpdatesListen
             const slice = new Map(Array.from(this.tileBindings.entries()).slice(index, end))
             callback({bindings: slice})
             index = end
-            await new Promise(r => setTimeout(r, interval))
         }
     }
 }

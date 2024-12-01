@@ -72,40 +72,30 @@ export class HTTPBackend implements TileClicker, OwnershipsGetter, UpdatesListen
         }
     }
 
-    public async getCurrentOwnershipsInInterval(
+    public async getCurrentOwnershipsByBatch(
         batchSize: number,
-        interval: number,
         maxIndex: number,
         callback: (ownerships: Ownerships) => void,
     ) {
-
-        let cursor = 0
-        const intervalObj = setInterval(async () => {
+        for (let i = 0; i < maxIndex; i += batchSize) {
             const payload = new OwnershipBatchRequest({
-                endTileId: cursor + batchSize,
-                startTileId: cursor,
+                endTileId: i + batchSize,
+                startTileId: i,
             })
 
             const binary = await this.client.fetch("POST", "/api/ownerships-by-batch", payload)
             const message = OwnershipsProto.fromBinary(binary!)
 
-
             callback({
                 bindings: new Map<number, string>(
                     Object.entries(message.bindings).map(([k, v]) => [parseInt(k), v]))
             })
-
-            cursor += batchSize
-            if (cursor >= maxIndex) {
-                clearInterval(intervalObj)
-            }
-        }, interval)
-
+        }
     }
 
     public listenForUpdates(callback: (tile: number, previousCountry: string | undefined, newCountry: string) => void): () => void {
         const websocket = new WebSocket(`wss://${window.location.host}/ws/listen`)
-        // const websocket = new WebSocket(`ws://localhost:8080/ws/listen`)
+        // const websocket = new WebSocket(`wss://clickplanet.lol/ws/listen`)
         websocket.binaryType = "arraybuffer";
         websocket.addEventListener('message', (event) => {
             const binary = new Uint8Array(event.data)

@@ -9,12 +9,11 @@ export type Ownerships = {
 export interface OwnershipsGetter {
     getCurrentOwnerships(): Promise<Ownerships>
 
-    getCurrentOwnershipsInInterval(
+    getCurrentOwnershipsByBatch(
         batchSize: number,
-        interval: number,
         maxIndex: number,
         callback: (ownerships: Ownerships) => void
-    ): void
+    ): Promise<void>
 }
 
 export interface UpdatesListener {
