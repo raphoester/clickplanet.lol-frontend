@@ -25,7 +25,7 @@ export function effect(
     eventTarget: HTMLElement,
     countryState: Country
 ) {
-    const {scene, camera, renderer, cleanup} = setupScene();
+    const {scene, camera, cameraSize, renderer, cleanup} = setupScene();
     const uniforms: Uniforms = {
         zoom: {value: 1.0},
         resolution: {value: new THREE.Vector2(window.innerWidth, window.innerHeight)},
@@ -74,10 +74,25 @@ export function effect(
         });
     });
 
-    eventTarget.addEventListener('resize', () => {
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        uniforms.resolution.value.set(window.innerWidth, window.innerHeight);
-    });
+    const resizeListener = () => {
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+
+        const aspect = width / height;
+
+        camera.left = -cameraSize * aspect;
+        camera.right = cameraSize * aspect;
+        // not needed but kept in mind in case the camera is resized
+        // camera.top = cameraSize;
+        // camera.bottom = -cameraSize;
+        camera.updateProjectionMatrix();
+
+        renderer.setSize(width, height);
+
+        uniforms.resolution.value.set(width, height);
+    };
+    // resize is a window event and cannot be captured by the eventTarget
+    window.addEventListener('resize', resizeListener);
 
     // 0 means no region is selected, by default it's like that for the whole map
     const generateDefaultRegionVector = (size: number) => {
@@ -141,6 +156,8 @@ export function effect(
         country: country,
         tilesCount: size,
         cleanup: () => {
+            window.removeEventListener('resize', resizeListener);
+
             // Cleaning up event listeners by replacing the eventTarget with a clone of itself
             // Cannot use removeEventListener because the refs are not fixed (callbacks are created in the effect)
             const newNode = eventTarget.cloneNode(true)
