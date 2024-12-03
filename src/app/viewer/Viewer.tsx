@@ -6,6 +6,7 @@ import {Country} from "../countries.ts";
 import Leaderboard from "../Leaderboard.tsx";
 import About from "../About.tsx";
 import "./Viewer.css"
+import { useStorage } from './useStorage.ts';
 
 export type ViewerProps = {
     tileClicker: TileClicker
@@ -14,7 +15,9 @@ export type ViewerProps = {
 }
 
 export default function Viewer(props: ViewerProps) {
-    const [country, setCountry] = useState<Country>({name: "France", code: "fr"});
+
+    const { countryState, handleSetCountry } = useStorage()
+
     const setCountryRef = useRef<(country: Country) => void>();
     const tilesCountRef = useRef(0)
 
@@ -33,14 +36,15 @@ export default function Viewer(props: ViewerProps) {
             props.ownershipsGetter,
             props.updatesListener,
             (data) => setLeaderboardData(data),
-            eventTarget
+            eventTarget,
+            countryState
         )
 
         tilesCountRef.current = tilesCount
-        setCountry(country)
+        handleSetCountry(country)
         setCountryRef.current = (country: Country) => {
             console.log("setting country", country)
-            setCountry(country)
+            handleSetCountry(country)
             updateCountry(country)
         }
         setIsReady(true)
@@ -63,7 +67,7 @@ export default function Viewer(props: ViewerProps) {
             <div className="viewer-right-side-buttons">
                 <Settings
                     setCountry={setCountryRef.current!}
-                    country={country}/>
+                    country={countryState}/>
                 <About/>
             </div>
         </>}
