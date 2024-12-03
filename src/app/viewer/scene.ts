@@ -28,7 +28,7 @@ export function setupScene() {
         }
     }
 
-    return {scene, camera, renderer, cleanup};
+    return {scene, camera, cameraSize, renderer, cleanup};
 }
 
 const textureLoader = new THREE.TextureLoader();
