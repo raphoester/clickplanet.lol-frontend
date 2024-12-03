@@ -9,18 +9,14 @@ export const useStorage = () => {
   const defaultValue: Country = getCountryOfVisitor();
     if (typeof window !== 'undefined') {
       const storedValue = window.localStorage.getItem(key);
-        console.log('storedValue :', storedValue)
 
       return storedValue ? JSON.parse(storedValue) : defaultValue;
     }
     return defaultValue;
   });
 
-console.log('country :', countryState)
 
   useEffect(() => {
-
-    console.log('entrou no useEffect')
     if (typeof window !== 'undefined') {
       window.localStorage.setItem(key, JSON.stringify(countryState));
     }
