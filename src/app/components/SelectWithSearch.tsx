@@ -1,4 +1,4 @@
-import {ChangeEvent, useState} from "react";
+import { ChangeEvent, useState } from "react";
 import "./SelectWithSearch.css"
 import { useStorage } from "../viewer/useStorage";
 
@@ -14,12 +14,11 @@ type SelectWithSearchProps = {
 }
 
 export default function SelectWithSearch(props: SelectWithSearchProps) {
-    // const localStorageKey = 'clickplanet-country'
 
     const [search, setSearch] = useState("")
     const [selected, setSelected] = useState(props.selected)
 
-    const { handleSetCountry} = useStorage();
+    const { handleSetCountry } = useStorage();
 
     const filteredOptions = props.values.filter(
         (v) => v.name.toLowerCase().includes(search.toLowerCase())
@@ -39,8 +38,8 @@ export default function SelectWithSearch(props: SelectWithSearchProps) {
         setSelected(value)
         setSearch("")
         props.onChange(value)
-        
-        const toStorageValue = {name: value.name, code: value.code}
+
+        const toStorageValue = { name: value.name, code: value.code }
         handleSetCountry(toStorageValue)
     }
 
