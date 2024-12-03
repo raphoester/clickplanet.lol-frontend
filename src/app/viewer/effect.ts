@@ -6,7 +6,6 @@ import {actOnPick} from "./gpuPicking.ts";
 import {regions} from "./atlas.ts";
 import {Countries, Country} from "../countries.ts";
 import {OwnershipsGetter, TileClicker, UpdatesListener} from "../../backends/backend.ts";
-import {getCountryOfVisitor} from "./visitorCountry.ts";
 import {Leaderboard} from "./leaderboard.ts";
 
 type Uniforms = {
@@ -24,6 +23,7 @@ export function effect(
     updatesListener: UpdatesListener,
     updateLeaderboard: (data: { country: Country, tiles: number }[]) => void,
     eventTarget: HTMLElement,
+    countryState: Country
 ) {
     const {scene, camera, cameraSize, renderer, cleanup} = setupScene();
     const uniforms: Uniforms = {
@@ -36,7 +36,7 @@ export function effect(
     const {pickingPoints, displayPoints, size} = createPoints(uniforms);
     console.log("running with", size, "points");
 
-    let country: Country = getCountryOfVisitor();
+    let country: Country = countryState;
 
     function actOnPick_(
         event: MouseEvent,
