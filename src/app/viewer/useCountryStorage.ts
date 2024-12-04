@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react';
 import { Country } from '../countries';
 import { getCountryOfVisitor } from './visitorCountry';
 
-export const useStorage = () => {
+export const useCountryStorage = () => {
   const key = 'clickplanet-country';
 
   const [countryState, setCounty] = useState<Country>(() => {
-  const defaultValue: Country = getCountryOfVisitor();
+    const defaultValue: Country = getCountryOfVisitor();
     if (typeof window !== 'undefined') {
       const storedValue = window.localStorage.getItem(key);
 
@@ -26,5 +26,5 @@ export const useStorage = () => {
     setCounty(v);
   };
 
-  return { countryState, handleSetCountry};
+  return { countryState, handleSetCountry };
 };
