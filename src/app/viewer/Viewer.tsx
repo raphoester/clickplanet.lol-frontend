@@ -43,7 +43,6 @@ export default function Viewer(props: ViewerProps) {
         tilesCountRef.current = tilesCount
         handleSetCountry(country)
         setCountryRef.current = (country: Country) => {
-            console.log("setting country", country)
             handleSetCountry(country)
             updateCountry(country)
         }
@@ -51,6 +50,11 @@ export default function Viewer(props: ViewerProps) {
 
         return cleanup
     }, [props]);
+
+    const setCountry = (country: Country) => {
+        setCountryRef.current!(country)
+        handleSetCountry(country)
+    }
 
     return <>
         {/*nested container to not blow up when force-deleting events from parent in cleanup*/}
@@ -66,8 +70,10 @@ export default function Viewer(props: ViewerProps) {
             />
             <div className="viewer-right-side-buttons">
                 <Settings
-                    setCountry={setCountryRef.current!}
-                    country={countryState} />
+                    setCountry={setCountry}
+                    country={countryState}
+                />
+
                 <About />
             </div>
         </>}

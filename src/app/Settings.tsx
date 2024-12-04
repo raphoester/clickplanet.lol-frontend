@@ -1,4 +1,4 @@
-import {Countries, Country} from "./countries.ts";
+import { Countries, Country } from "./countries.ts";
 import SelectWithSearch from "./components/SelectWithSearch.tsx";
 import ModalManager from "./components/ModalManager.tsx";
 
