@@ -7,6 +7,7 @@ import Leaderboard from "../Leaderboard.tsx";
 import About from "../About.tsx";
 import "./Viewer.css"
 import { useCountryStorage } from './useCountryStorage.ts';
+import DiscordButton from '../components/DiscordButton.tsx';
 
 export type ViewerProps = {
     tileClicker: TileClicker
@@ -61,21 +62,23 @@ export default function Viewer(props: ViewerProps) {
         <div>
             <div id="three-container" style={{ width: '100vw', height: '100vh' }} />
         </div>
-        <div>
-        </div>
-        {isReady && <>
-            <Leaderboard
-                data={leaderboardData}
-                tilesCount={tilesCountRef.current}
-            />
-            <div className="viewer-right-side-buttons">
-                <Settings
-                    setCountry={setCountry}
-                    country={countryState}
+        <div className="side-pannel">
+            {isReady && <>
+                <Leaderboard
+                    data={leaderboardData}
+                    tilesCount={tilesCountRef.current}
                 />
-
-                <About />
-            </div>
-        </>}
+                <div className="side-pannel-actions">
+                    <div className="side-pannel-settings">
+                    <Settings
+                        setCountry={setCountry}
+                        country={countryState}
+                        />
+                    <About />
+                    </div>
+                    <DiscordButton />
+                </div>
+            </>}
+        </div>
     </>
 };
