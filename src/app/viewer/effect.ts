@@ -16,6 +16,21 @@ type Uniforms = {
 }
 
 const textureLoader = new THREE.TextureLoader();
+/**
+ * MouseEvent 'click' is instanceable from the console of the browser
+ * like following:
+ * ```js
+ * let event = new MouseEvent("click", {
+ *       bubbles: true,
+ *       cancelable: true,
+ *       clientX: canvas.getBoundingClientRect().width * Math.random(),
+ *       clientY: canvas.getBoundingClientRect().height * Math.random()
+ *   });
+ * ```
+ * 
+ * we need to verify a human is behind the new events
+ */
+let allowClickAfterMouseMove = false;
 
 export function effect(
     tileClicker: TileClicker,
@@ -47,6 +62,7 @@ export function effect(
     }
 
     eventTarget.addEventListener('mousemove', (event: MouseEvent) => {
+        allowClickAfterMouseMove = true;
         actOnPick_(event,
             id => updateHoverEffect(displayPoints.geometry, id),
             () => updateHoverEffect(displayPoints.geometry)
@@ -56,6 +72,8 @@ export function effect(
     const leaderboard = new Leaderboard(updateLeaderboard)
 
     eventTarget.addEventListener('click', (event: MouseEvent) => {
+        if (!allowClickAfterMouseMove) return;
+        allowClickAfterMouseMove = false;
         actOnPick_(event, id => {
             const region = regions.get(country.code)
             if (!region) throw new Error(`Region not found for country ${country.code}`)
