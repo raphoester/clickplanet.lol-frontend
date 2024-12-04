@@ -13,7 +13,6 @@ type SelectWithSearchProps = {
 }
 
 export default function SelectWithSearch(props: SelectWithSearchProps) {
-
     const [search, setSearch] = useState("")
     const [selected, setSelected] = useState(props.selected)
 
