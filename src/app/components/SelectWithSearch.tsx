@@ -1,6 +1,5 @@
 import { ChangeEvent, useState } from "react";
 import "./SelectWithSearch.css"
-import { useCountryStorage } from "../viewer/useCountryStorage";
 
 type Value = {
     code: string,
@@ -17,8 +16,6 @@ export default function SelectWithSearch(props: SelectWithSearchProps) {
 
     const [search, setSearch] = useState("")
     const [selected, setSelected] = useState(props.selected)
-
-    const { handleSetCountry } = useCountryStorage();
 
     const filteredOptions = props.values.filter(
         (v) => v.name.toLowerCase().includes(search.toLowerCase())
@@ -38,9 +35,6 @@ export default function SelectWithSearch(props: SelectWithSearchProps) {
         setSelected(value)
         setSearch("")
         props.onChange(value)
-
-        const toStorageValue = { name: value.name, code: value.code }
-        handleSetCountry(toStorageValue)
     }
 
     return <div className="select-with-search">
