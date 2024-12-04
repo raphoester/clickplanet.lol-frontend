@@ -1,12 +1,12 @@
-import {useEffect, useRef, useState} from 'react';
-import {effect} from "./effect.ts";
-import {OwnershipsGetter, TileClicker, UpdatesListener} from "../../backends/backend.ts";
+import { useEffect, useRef, useState } from 'react';
+import { effect } from "./effect.ts";
+import { OwnershipsGetter, TileClicker, UpdatesListener } from "../../backends/backend.ts";
 import Settings from "../Settings.tsx";
-import {Country} from "../countries.ts";
+import { Country } from "../countries.ts";
 import Leaderboard from "../Leaderboard.tsx";
 import About from "../About.tsx";
 import "./Viewer.css"
-import { useStorage } from './useStorage.ts';
+import { useCountryStorage } from './useCountryStorage.ts';
 
 export type ViewerProps = {
     tileClicker: TileClicker
@@ -16,7 +16,7 @@ export type ViewerProps = {
 
 export default function Viewer(props: ViewerProps) {
 
-    const { countryState, handleSetCountry } = useStorage()
+    const { countryState, handleSetCountry } = useCountryStorage()
 
     const setCountryRef = useRef<(country: Country) => void>();
     const tilesCountRef = useRef(0)
@@ -55,7 +55,7 @@ export default function Viewer(props: ViewerProps) {
     return <>
         {/*nested container to not blow up when force-deleting events from parent in cleanup*/}
         <div>
-            <div id="three-container" style={{width: '100vw', height: '100vh'}}/>
+            <div id="three-container" style={{ width: '100vw', height: '100vh' }} />
         </div>
         <div>
         </div>
@@ -67,8 +67,8 @@ export default function Viewer(props: ViewerProps) {
             <div className="viewer-right-side-buttons">
                 <Settings
                     setCountry={setCountryRef.current!}
-                    country={countryState}/>
-                <About/>
+                    country={countryState} />
+                <About />
             </div>
         </>}
     </>
