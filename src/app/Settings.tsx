@@ -27,7 +27,7 @@ export default function Settings(props: SettingsProps) {
             buttonProps={{
                 onClick: () => {
                 },
-                text: "Settings",
+                text: props.country.name,
                 imageUrl: `/static/countries/svg/${props.country.code}.svg`,
             }}
         />
