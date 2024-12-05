@@ -69,13 +69,11 @@ export default function Viewer(props: ViewerProps) {
                     tilesCount={tilesCountRef.current}
                 />
                 <div className="side-pannel-actions">
-                    <div className="side-pannel-settings">
                     <Settings
                         setCountry={setCountry}
                         country={countryState}
-                        />
+                    />
                     <About />
-                    </div>
                     <DiscordButton />
                 </div>
             </>}
