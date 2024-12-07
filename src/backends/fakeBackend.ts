@@ -39,7 +39,7 @@ export class FakeBackend implements TileClicker, OwnershipsGetter, UpdatesListen
         maxIndex: number,
         callback: (ownerships: Ownerships) => void) {
 
-        let index = 0
+        let index = 1
         while (index < maxIndex) {
             const end = Math.min(index + batchSize, maxIndex)
             const slice = new Map(Array.from(this.tileBindings.entries()).slice(index, end))

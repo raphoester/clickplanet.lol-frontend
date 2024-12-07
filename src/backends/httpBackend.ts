@@ -94,7 +94,7 @@ export class HTTPBackend implements TileClicker, OwnershipsGetter, UpdatesListen
         maxIndex: number,
         callback: (ownerships: Ownerships) => void,
     ) {
-        for (let i = 0; i < maxIndex; i += batchSize) {
+        for (let i = 1; i < maxIndex; i += batchSize) {
             const payload = new OwnershipBatchRequest({
                 endTileId: i + batchSize,
                 startTileId: i,
