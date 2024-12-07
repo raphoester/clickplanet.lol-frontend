@@ -1,7 +1,4 @@
 import Viewer, {ViewerProps} from "./viewer/Viewer.tsx";
-
-import Banner from "./components/Banner.tsx";
-import DiscordButton from "./components/DiscordButton.tsx";
 import OnLoadModal from "./components/OnLoadModal.tsx";
 import BuyMeACoffee from "./components/BuyMeACoffee.tsx";
 
@@ -9,13 +6,6 @@ export type AppProps = ViewerProps
 
 export default function App(props: AppProps) {
     return <>
-        <Banner
-            text="Chat in real time with other players!"
-            cta={<DiscordButton
-                message="Join our official Discord server"/>}>
-        </Banner>
-
-
         {Math.random() > 0.5 &&
             <OnLoadModal
                 title={"Hey there!"}

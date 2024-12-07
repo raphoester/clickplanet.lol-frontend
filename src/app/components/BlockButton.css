@@ -2,14 +2,14 @@
     text-shadow: black 1px 1px 3px;
     box-shadow: black 1px 1px 3px;
     padding: 8px 12px;
-    width: 300px;
+    width: 100%;
     color: white;
     background: rgba(100, 100, 100, 0.3);
-    border: 1px solid white;
     font-size: 20px;
     cursor: pointer;
     display: flex;
     justify-content: center;
+    border-radius: 15px;
 }
 
 .block-button:hover {
