@@ -1,4 +1,4 @@
-import { Countries, Country } from "./countries.ts";
+import {Countries, Country} from "./countries.ts";
 import SelectWithSearch from "./components/SelectWithSearch.tsx";
 import ModalManager from "./components/ModalManager.tsx";
 
@@ -14,7 +14,10 @@ export default function Settings(props: SettingsProps) {
         <ModalManager
             openByDefault={false}
             modalChildren={<div className="country-settings settings-section">
-                <label className="settings-country-section-label" htmlFor="country-select">Country</label>
+                <div className="settings-section-header">
+                    <label className="settings-country-section-label" htmlFor="country-select">Country</label>
+                </div>
+
                 <SelectWithSearch
                     onChange={(country) => {
                         props.setCountry(country)
