@@ -12,7 +12,7 @@ import App from "./app/App.tsx";
 
 const clickServiceClient = new ClickServiceClient({
     baseUrl: "https://clickplanet.lol",
-    timeoutMs: 5000
+    timeoutMs: 2000
 })
 
 const backend = new HTTPBackend(clickServiceClient, 100)

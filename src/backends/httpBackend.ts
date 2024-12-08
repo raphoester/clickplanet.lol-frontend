@@ -95,7 +95,7 @@ export class HTTPBackend implements TileClicker, OwnershipsGetter, UpdatesListen
             countryId: countryId,
         })
 
-        await this.client.fetch("POST", "/api/click", payload)
+        await this.client.fetch("POST", "/v2/rpc/click", payload)
     }
 
     public async getCurrentOwnershipsByBatch(
@@ -109,7 +109,7 @@ export class HTTPBackend implements TileClicker, OwnershipsGetter, UpdatesListen
                 startTileId: i,
             })
 
-            const binary = await this.client.fetch("POST", "/api/ownerships-by-batch", payload)
+            const binary = await this.client.fetch("POST", "/v2/rpc/ownerships-by-batch", payload)
             const message = OwnershipsProto.fromBinary(binary!)
 
             callback({
@@ -124,7 +124,7 @@ export class HTTPBackend implements TileClicker, OwnershipsGetter, UpdatesListen
         const host = this.client.config.baseUrl.replace("https://", "").replace("http://", "")
 
         const websocket = await initWebsocket({
-            url: `${protocol}://${host}/ws/listen`,
+            url: `${protocol}://${host}/v2/ws/listen`,
             existingWebsocket: undefined,
             timeoutMs: this.client.config.timeoutMs,
             numberOfRetries: 0,
