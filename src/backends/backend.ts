@@ -7,8 +7,6 @@ export type Ownerships = {
 }
 
 export interface OwnershipsGetter {
-    getCurrentOwnerships(): Promise<Ownerships>
-
     getCurrentOwnershipsByBatch(
         batchSize: number,
         maxIndex: number,
@@ -16,6 +14,16 @@ export interface OwnershipsGetter {
     ): Promise<void>
 }
 
+export type Update = {
+    tile: number,
+    previousCountry: string | undefined,
+    newCountry: string
+}
+
 export interface UpdatesListener {
-    listenForUpdates(callback: (tile: number, previousCountry: string | undefined, newCountry: string) => void): () => void
+    listenForUpdates(callback: (update: Update) => void): Promise<() => void>
+
+    listenForUpdatesBatch(
+        callback: (updates: Update[]) => void,
+    ): () => void
 }

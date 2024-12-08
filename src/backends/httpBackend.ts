@@ -1,9 +1,10 @@
-import {Ownerships, OwnershipsGetter, TileClicker, UpdatesListener} from "./backend.ts";
+import {Ownerships, OwnershipsGetter, TileClicker, Update, UpdatesListener} from "./backend.ts";
 import {
     ClickRequest, OwnershipBatchRequest,
     Ownerships as OwnershipsProto, TileUpdate,
 } from "../gen/grpc/clicks_pb.ts";
 import {Message} from "@bufbuild/protobuf";
+import {v4 as generateUUID} from 'uuid';
 
 type Config = {
     baseUrl: string
@@ -68,7 +69,24 @@ export class ClickServiceClient {
 }
 
 export class HTTPBackend implements TileClicker, OwnershipsGetter, UpdatesListener {
-    constructor(private client: ClickServiceClient) {
+    private pendingUpdates: Update[] = []
+    private updateBatchCallbacks: Map<string, ((update: Update[]) => void)> = new Map()
+
+    constructor(
+        private client: ClickServiceClient,
+        batchUpdateDurationMs: number,
+    ) {
+        this.listenForUpdates((update) => {
+            this.pendingUpdates.push(update)
+        })
+
+        setInterval(() => {
+            if (this.pendingUpdates.length > 0) {
+                const updates = this.pendingUpdates
+                this.pendingUpdates = []
+                this.updateBatchCallbacks.forEach(callback => callback(updates))
+            }
+        }, batchUpdateDurationMs)
     }
 
     public async clickTile(tileId: number, countryId: string) {
@@ -78,15 +96,6 @@ export class HTTPBackend implements TileClicker, OwnershipsGetter, UpdatesListen
         })
 
         await this.client.fetch("POST", "/api/click", payload)
-    }
-
-    public async getCurrentOwnerships(): Promise<Ownerships> {
-        const binary = await this.client.fetch("GET", "/api/ownerships", undefined)
-        const message = OwnershipsProto.fromBinary(binary!)
-        return {
-            bindings: new Map<number, string>(
-                Object.entries(message.bindings).map(([k, v]) => [parseInt(k), v]))
-        }
     }
 
     public async getCurrentOwnershipsByBatch(
@@ -110,20 +119,108 @@ export class HTTPBackend implements TileClicker, OwnershipsGetter, UpdatesListen
         }
     }
 
-    public listenForUpdates(callback: (tile: number, previousCountry: string | undefined, newCountry: string) => void): () => void {
-        const websocket = new WebSocket(`wss://${window.location.host}/ws/listen`)
-        // const websocket = new WebSocket(`wss://clickplanet.lol/ws/listen`)
+    public async listenForUpdates(callback: (update: Update) => void): Promise<() => void> {
+        const protocol = this.client.config.baseUrl.startsWith("https") ? "wss" : "ws"
+        const host = this.client.config.baseUrl.replace("https://", "").replace("http://", "")
+
+        const websocket = await initWebsocket({
+            url: `${protocol}://${host}/ws/listen`,
+            existingWebsocket: undefined,
+            timeoutMs: this.client.config.timeoutMs,
+            numberOfRetries: 0,
+        });
+
         websocket.binaryType = "arraybuffer";
-        websocket.addEventListener('message', (event) => {
+        websocket.onmessage = (event) => {
             const binary = new Uint8Array(event.data)
             const message = TileUpdate.fromBinary(binary)
-            callback(
-                message.tileId,
-                message.previousCountryId === "" ? undefined : message.previousCountryId,
-                message.countryId,
-            )
-        })
+            callback({
+                tile: message.tileId,
+                previousCountry: message.previousCountryId === "" ? undefined : message.previousCountryId,
+                newCountry: message.countryId,
+            })
+        }
 
         return () => websocket.close
     }
+
+    public listenForUpdatesBatch(
+        callback: (updates: Update[]) => void,
+    ): () => void {
+        const id = generateUUID()
+        this.updateBatchCallbacks.set(id, callback)
+        return () => this.updateBatchCallbacks.delete(id)
+    }
+}
+
+function initWebsocket(
+    {
+        url,
+        existingWebsocket,
+        timeoutMs,
+        numberOfRetries
+    }: {
+        url: string,
+        existingWebsocket: WebSocket | undefined,
+        timeoutMs: number | undefined,
+        numberOfRetries: number,
+    }
+): Promise<WebSocket> {
+    timeoutMs = timeoutMs ? timeoutMs : 1500;
+    numberOfRetries = numberOfRetries ? numberOfRetries : 0;
+    let hasReturned = false;
+    const promise = new Promise<WebSocket>((resolve, reject) => {
+        setTimeout(function () {
+            if (!hasReturned) {
+                console.info('opening websocket timed out: ' + url);
+                rejectInternal();
+            }
+        }, timeoutMs);
+
+        if (!existingWebsocket || existingWebsocket.readyState != existingWebsocket.OPEN) {
+            if (existingWebsocket) {
+                existingWebsocket.close();
+            }
+            const websocket = new WebSocket(url);
+            websocket.onopen = function () {
+                if (hasReturned) {
+                    websocket.close();
+                } else {
+                    console.info('websocket opened ' + url);
+                    resolve(websocket);
+                }
+            };
+            websocket.onclose = function () {
+                console.info('websocket closed ' + url);
+                rejectInternal();
+            };
+            websocket.onerror = function () {
+                console.info('websocket err ' + url);
+                rejectInternal();
+            };
+        } else {
+            resolve(existingWebsocket);
+        }
+
+        function rejectInternal() {
+            if (numberOfRetries <= 0) {
+                reject();
+            } else if (!hasReturned) {
+                hasReturned = true;
+                console.info('retrying connection to websocket url: ' + url + ', remaining retries: ' + (numberOfRetries - 1));
+                initWebsocket({
+                    url: url,
+                    existingWebsocket: undefined,
+                    timeoutMs: timeoutMs,
+                    numberOfRetries: numberOfRetries - 1,
+                }).then(resolve, reject);
+            }
+        }
+    });
+    promise.then(function () {
+        hasReturned = true;
+    }, function () {
+        hasReturned = true;
+    });
+    return promise;
 }

@@ -27,8 +27,6 @@ export class Leaderboard {
                 this.data[oldCountryIndex].tiles--
             }
         }
-
-        this.commitUpdate()
     }
 
     public registerOwnerships(ownerships: Ownerships) {
@@ -64,10 +62,9 @@ export class Leaderboard {
                 this.data.push(entry)
             }
         }
-        this.commitUpdate()
     }
 
-    private commitUpdate() {
+    public commitUpdate() {
         const newData = [...this.data] // update the reference to trigger re-render
         newData.sort((a, b) => b.tiles - a.tiles)
         this.update(newData)

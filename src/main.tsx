@@ -11,13 +11,12 @@ import {ClickServiceClient, HTTPBackend} from "./backends/httpBackend.ts";
 import App from "./app/App.tsx";
 
 const clickServiceClient = new ClickServiceClient({
-    baseUrl: "",
-    // baseUrl: "https://clickplanet.lol",
+    baseUrl: "https://clickplanet.lol",
     timeoutMs: 5000
 })
 
-const backend = new HTTPBackend(clickServiceClient)
-// const backend = new FakeBackend()
+const backend = new HTTPBackend(clickServiceClient, 100)
+// const backend = new FakeBackend(500)
 
 const router = createBrowserRouter([{
     path: "",

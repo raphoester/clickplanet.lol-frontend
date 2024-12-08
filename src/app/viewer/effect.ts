@@ -5,7 +5,7 @@ import {createPoints} from "./points.ts";
 import {actOnPick} from "./gpuPicking.ts";
 import {regions} from "./atlas.ts";
 import {Countries, Country} from "../countries.ts";
-import {OwnershipsGetter, TileClicker, UpdatesListener} from "../../backends/backend.ts";
+import {OwnershipsGetter, TileClicker, Update, UpdatesListener} from "../../backends/backend.ts";
 import {Leaderboard} from "./leaderboard.ts";
 
 type Uniforms = {
@@ -128,6 +128,7 @@ export function effect(
         size,
         (ownerships) => {
             leaderboard.registerOwnerships(ownerships)
+            leaderboard.commitUpdate() // recompute the leaderboard after each batch
             updateTilesAccordingToNewBindings(ownerships.bindings)
         },
     ).catch((e) => {
@@ -135,19 +136,25 @@ export function effect(
     })
 
 
-    const cleanUpdatesListener = updatesListener.listenForUpdates((tile, previousCountry, newCountry) => {
-        const country = Countries.get(newCountry)
-        if (!country) throw new Error(`Country not found for code ${newCountry}`)
+    const cleanUpdatesListener = updatesListener.listenForUpdatesBatch(
+        (updates: Update[]) => {
+            const bindings = new Map<number, string>()
+            updates.forEach(u => {
+                const country = Countries.get(u.newCountry)
+                if (!country) throw new Error(`Country not found for code ${u.newCountry}`)
 
-        let oldCountry: Country | undefined = undefined
-        if (previousCountry) {
-            oldCountry = Countries.get(previousCountry)
-            if (!oldCountry) throw new Error(`Country not found for code ${previousCountry}`)
-        }
+                let oldCountry: Country | undefined = undefined
+                if (u.previousCountry) {
+                    oldCountry = Countries.get(u.previousCountry)
+                    if (!oldCountry) throw new Error(`Country not found for code ${u.previousCountry}`)
+                }
 
-        leaderboard.registerClick(oldCountry, country)
-        updateTilesAccordingToNewBindings(new Map([[tile, newCountry]]))
-    })
+                leaderboard.registerClick(oldCountry, country)
+                bindings.set(u.tile, u.newCountry)
+            })
+            updateTilesAccordingToNewBindings(bindings)
+            leaderboard.commitUpdate() // commit after each batch
+        })
 
 
     addDisplayObjects(scene, displayPoints)

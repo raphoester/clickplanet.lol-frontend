@@ -10,11 +10,6 @@ export default function App(props: AppProps) {
             <OnLoadModal
                 title={"Hey there!"}
                 children={<>
-                    {/*todo: re enable that when i have put ads */}
-                    {/*<h3>Are you using an ad blocker ?</h3>*/}
-                    {/*<p>That's fine, I do the same...</p>*/}
-                    {/*<p>But the servers are quite expensive to run.</p>*/}
-                    {/*<p>So if you like the game, please consider buying me a coffee :)</p>*/}
                     <h3>Do you like the game ?</h3>
                     <p>It's free and open-source.</p>
                     <p>But the servers are quite expensive to run.</p>
