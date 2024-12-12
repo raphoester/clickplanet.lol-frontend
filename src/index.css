@@ -19,7 +19,7 @@ h5,
 h6 {
     color: white;
     font-weight: normal;
-    text-shadow: -1px 1px 0px #000000;
+    text-shadow: -1px 1px 0 #000000;
 }
 
 h1 {
@@ -35,7 +35,7 @@ h2 {
 h3,
 h4 {
     text-align: center;
-    margin: 16px auto 0px auto;
+    margin: 16px auto 0 auto;
 }
 
 h4 {
@@ -67,8 +67,8 @@ th {
 table {
     width: 98%;
     font-size: 20px;
-    padding: 0px;
-    text-shadow: -1px 1px 0px #000000;
+    padding: 0;
+    text-shadow: -1px 1px 0 #000000;
     color: white;
 }
 
@@ -81,7 +81,7 @@ table {
     border: none;
     height: 56px;
     font-size: 28px;
-    text-shadow: -1px 1px 0px #000000;
+    text-shadow: -1px 1px 0 #000000;
     font-family: "Luckiest Guy", sans-serif;
 }
 
@@ -150,11 +150,12 @@ table {
         width: fit-content;
         font-size: 14px;
         height: 40px;
-        padding: 6px 16px 0px 16px;
+        padding: 6px 16px 0 16px;
         border-radius: 16px;
     }
+
     .button-mini {
         padding-top: 4px;
     }
-  }
+}
   

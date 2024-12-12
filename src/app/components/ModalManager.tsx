@@ -7,6 +7,7 @@ type ModalManagerProps = {
     modalTitle: string;
     modalChildren: ReactNode;
     buttonProps: BlockButtonProps;
+    closeButtonText?: string;
 }
 
 export default function ModalManager(props: ModalManagerProps) {
@@ -34,6 +35,7 @@ export default function ModalManager(props: ModalManagerProps) {
                 title={props.modalTitle}
                 children={props.modalChildren}
                 onClose={togglePopup(false)}
+                closeButtonText={props.closeButtonText}
             />}
         </>
     )

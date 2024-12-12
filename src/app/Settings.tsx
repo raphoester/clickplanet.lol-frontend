@@ -1,6 +1,7 @@
 import {Countries, Country} from "./countries.ts";
 import SelectWithSearch from "./components/SelectWithSearch.tsx";
 import ModalManager from "./components/ModalManager.tsx";
+import "./Settings.css"
 
 type SettingsProps = {
     country: Country,
@@ -22,6 +23,7 @@ export default function Settings(props: SettingsProps) {
             </div>}
             modalTitle={"Country"}
             buttonProps={{
+                className: "button button-settings",
                 onClick: () => {
                 },
                 text: props.country.name,

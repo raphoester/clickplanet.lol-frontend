@@ -4,6 +4,7 @@
     justify-content: center;
     text-decoration: none;
     background-color: #5865f2;
+    height: 56px;
 }
 
 .button-discord:hover {
@@ -17,4 +18,4 @@
         padding: 16px 8px 0px 8px;
         width: 172px;
     }
-  }
+}

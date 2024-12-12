@@ -6,6 +6,7 @@ export type ModalProps = {
     title?: string;
     children: ReactNode;
     onClose: () => void;
+    closeButtonText?: string;
 }
 
 export default function Modal(props: ModalProps) {
@@ -21,7 +22,10 @@ export default function Modal(props: ModalProps) {
                 </div>
             }
             {props.children}
-            <CloseButton onClick={props.onClose}/>
+            <CloseButton
+                onClick={props.onClose}
+                text={props.closeButtonText}
+            />
         </div>
     </div>)
 }
