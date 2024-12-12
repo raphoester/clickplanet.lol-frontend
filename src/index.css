@@ -24,7 +24,7 @@ h6 {
 
 h1 {
     font-size: 42px;
-    margin: 16px 0 0 0;
+    margin: 12px 0 0 0;
 }
 
 h2 {
@@ -51,7 +51,7 @@ p {
 a {
     color: #FFFFFF;
     text-decoration: none;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: Helvetica, sans-serif;
 }
 
 a:hover {
@@ -65,7 +65,7 @@ th {
 }
 
 table {
-    width: 95%;
+    width: 98%;
     font-size: 20px;
     padding: 0px;
     text-shadow: -1px 1px 0px #000000;
@@ -86,7 +86,7 @@ table {
 }
 
 .button:hover {
-    background: #FFFFFF33;
+    background: #FFFFFF25;
     transition: 0.125s ease;
 }
 
@@ -106,12 +106,12 @@ table {
 
 * {
     box-sizing: border-box;
-    scrollbar-color: #606060 transparent;
+    scrollbar-color: #FFFFFF66 transparent;
     scrollbar-width: thin;
 }
 
 ::-webkit-scrollbar {
-    width: 8px;
+    width: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -119,14 +119,14 @@ table {
 }
 
 ::-webkit-scrollbar-thumb {
-    background-color: #606060;
+    background-color: #FFFFFF66;
     border-radius: 20px;
-    border: 3px solid transparent;
+    border: 2px solid transparent;
     background-clip: padding-box;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background-color: #666;
+    background-color: #FFFFFF66;
 }
 
 ::-webkit-scrollbar-button:start,

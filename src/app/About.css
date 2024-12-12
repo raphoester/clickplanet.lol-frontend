@@ -1,5 +1,5 @@
 .modal-about-author {
-    padding: 26px 0px 26px 0px;
+    padding: 18px 0px 18px 0px;
 }
 
 .modal-about-photo {
@@ -18,7 +18,7 @@
 
 @media only screen and (max-width: 768px) {
     .modal-about-author {
-        padding-top: 0px;
+        padding: 0px 0px 8px 0px;
     }
     .modal-about-social {
         padding: 0px 0 16px 0;

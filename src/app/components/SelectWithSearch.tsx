@@ -37,14 +37,6 @@ export default function SelectWithSearch(props: SelectWithSearchProps) {
     }
 
     return <div>
-        <input
-            type="text"
-            placeholder={"🔍 Search..."}
-            value={search}
-            onChange={handleSearchChange}
-            className="input-search"
-            autoComplete="off"
-        />
         <select
             value={selected.code}
             onChange={(e) => {
@@ -69,5 +61,13 @@ export default function SelectWithSearch(props: SelectWithSearchProps) {
                 )
             }
         </select>
+        <input
+            type="text"
+            placeholder={"🔍 Search..."}
+            value={search}
+            onChange={handleSearchChange}
+            className="input-search"
+            autoComplete="off"
+        />
     </div>
 }

@@ -11,9 +11,13 @@
     color: white;
 }
 
+.input-search:hover {
+    background-color: #303030;
+}
+
 .input-select {
     width: 100%;
-    height: 478px;
+    height: 458px;
     font-size: 24px;
     margin-bottom: 16px;
     border: none;
@@ -30,8 +34,12 @@
     color: white;
 }
 
+.input-select-option:checked {
+    background-color: #FFFFFF25;
+}
+
 .input-select-option:hover {
-    background-color: #FFFFFF33;
+    background-color: #FFFFFF25;
     transition: 0.125s ease;
     cursor: pointer;
 }
