@@ -166,61 +166,28 @@ function initWebsocket(
         numberOfRetries: number,
     }
 ): Promise<WebSocket> {
-    timeoutMs = timeoutMs ? timeoutMs : 1500;
-    numberOfRetries = numberOfRetries ? numberOfRetries : 0;
-    let hasReturned = false;
-    const promise = new Promise<WebSocket>((resolve, reject) => {
-        setTimeout(function () {
-            if (!hasReturned) {
-                console.info('opening websocket timed out: ' + url);
-                rejectInternal();
-            }
-        }, timeoutMs);
+    return new Promise((resolve, reject) => {
+        const websocket = existingWebsocket || new WebSocket(url);
 
-        if (!existingWebsocket || existingWebsocket.readyState != existingWebsocket.OPEN) {
-            if (existingWebsocket) {
-                existingWebsocket.close();
-            }
-            const websocket = new WebSocket(url);
-            websocket.onopen = function () {
-                if (hasReturned) {
-                    websocket.close();
-                } else {
-                    console.info('websocket opened ' + url);
-                    resolve(websocket);
-                }
-            };
-            websocket.onclose = function () {
-                console.info('websocket closed ' + url);
-                rejectInternal();
-            };
-            websocket.onerror = function () {
-                console.info('websocket err ' + url);
-                rejectInternal();
-            };
-        } else {
-            resolve(existingWebsocket);
-        }
+        websocket.onopen = () => {
+            console.log("Websocket connected");
+            resolve(websocket);
+        };
 
-        function rejectInternal() {
-            if (numberOfRetries <= 0) {
-                reject();
-            } else if (!hasReturned) {
-                hasReturned = true;
-                console.info('retrying connection to websocket url: ' + url + ', remaining retries: ' + (numberOfRetries - 1));
-                initWebsocket({
-                    url: url,
-                    existingWebsocket: undefined,
-                    timeoutMs: timeoutMs,
-                    numberOfRetries: numberOfRetries - 1,
-                }).then(resolve, reject);
+        websocket.onerror = (event) => {
+            console.error("Websocket error, retrying", event);
+            if (numberOfRetries > 0) {
+                setTimeout(() => {
+                    initWebsocket({
+                        url,
+                        existingWebsocket: websocket,
+                        timeoutMs,
+                        numberOfRetries: numberOfRetries - 1
+                    }).then(resolve, reject);
+                }, timeoutMs || 1000);
+            } else {
+                reject(event);
             }
-        }
+        };
     });
-    promise.then(function () {
-        hasReturned = true;
-    }, function () {
-        hasReturned = true;
-    });
-    return promise;
 }
