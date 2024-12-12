@@ -67,7 +67,7 @@ th {
 table {
     width: 95%;
     font-size: 20px;
-    padding: 16px 0 0 0;
+    padding: 0px;
     text-shadow: -1px 1px 0px #000000;
     color: white;
 }
@@ -157,3 +157,4 @@ table {
         padding-top: 4px;
     }
   }
+  

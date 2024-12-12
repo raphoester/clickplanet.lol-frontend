@@ -26,7 +26,7 @@ export default function Leaderboard(props: LeaderboardProps) {
             <h1>ClickPlanet</h1>
         </div>
         <div className="leaderboard-expand">
-            <button className="button button-mini" onClick={toggleLeaderboard}>{isOpen ? "Close" : "Champions"}</button>
+            <button className="button button-leaderboard" onClick={toggleLeaderboard}>{isOpen ? "Close" : "Champions"}</button>
         </div>
         {isOpen &&
             <div className="leaderboard-table-container">

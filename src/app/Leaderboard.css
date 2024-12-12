@@ -5,6 +5,10 @@
     gap: 16px;
 }
 
+.button-leaderboard {
+    width: 100%;    
+}
+
 .leaderboard-expand {
     display: flex;
     justify-content: center;
@@ -12,7 +16,7 @@
 }
 
 .leaderboard-table-container {
-    max-height: 368px;
+    max-height: 352px;
     overflow: auto;
 }
 
