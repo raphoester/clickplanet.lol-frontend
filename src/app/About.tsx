@@ -8,8 +8,8 @@ export default function About() {
         modalTitle={"ClickPlanet"}
         modalChildren={<>
                 <h3>The ultimate world war</h3>
-                <h4>"It’s like Pixel Wars but way more epic"</h4>
-                <p>ClickPlanet is a virtual battleground where you conquer territories for a country, one click at a time. Out-click rival nations, and dominate the map. <br/>Every territory is yours, until someone takes it back!</p>
+                <h4>It’s like Pixel Wars but way more epic</h4>
+                <p>ClickPlanet is a virtual battleground where you <br/>conquer territories for a country, click after click. <br/>Out-click rival nations, and dominate the map. <br/>Every territory is yours, until someone takes it back!</p>
                 <div className="modal-about-author">
                     <p className="center-align">Created by</p>
                     <div className="center-align">
@@ -18,7 +18,7 @@ export default function About() {
                             className="modal-about-photo"/>
                     </div>
                     <h3>Raphaël Oester</h3>
-                    <p className="center-align">Freelance Developer looking for a new mission</p>
+                    <p className="center-align">Freelance Developer open to new opportunities</p>
                     <div className="modal-about-social">
                         <a target="_blank" href="https://www.linkedin.com/in/raphael-oester/"><b>in</b></a>
                         <a target="_blank" href="https://x.com/raphael_oester"><b>X</b></a>

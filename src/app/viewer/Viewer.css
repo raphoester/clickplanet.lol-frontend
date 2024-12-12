@@ -12,6 +12,7 @@
 }
 
 .menu-actions {
+    margin-top: 8px;
     display: flex;
     flex-direction: column;
     gap: 8px;
@@ -32,6 +33,7 @@
     }
 
     .menu-actions {
+        margin-top: 0px;
         display: flex;
         flex-direction: row;
         justify-content: space-between;

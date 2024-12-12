@@ -25,7 +25,7 @@
 }
 
 .leaderboard-table-tiles {
-    color: #FFFFFF90;
+    color: #FFFFFF99;
     text-shadow: -1px 1px 0px #404040;
 }
 
@@ -33,7 +33,3 @@
     text-align: right;
 }
 
-.leaderboard-table-ellipsis {
-    min-width: 152px;
-    text-overflow: ellipsis;
-}

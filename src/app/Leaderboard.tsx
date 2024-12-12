@@ -26,7 +26,7 @@ export default function Leaderboard(props: LeaderboardProps) {
             <h1>ClickPlanet</h1>
         </div>
         <div className="leaderboard-expand">
-            <button className="button button-leaderboard" onClick={toggleLeaderboard}>{isOpen ? "Close" : "Champions"}</button>
+            <button className="button button-leaderboard" onClick={toggleLeaderboard}>{isOpen ? "Hide" : "Champions"}</button>
         </div>
         {isOpen &&
             <div className="leaderboard-table-container">
@@ -34,7 +34,7 @@ export default function Leaderboard(props: LeaderboardProps) {
                     <thead>
                         <tr>
                             <th></th>
-                            <th colSpan={3}>🏆</th>
+                            <th colSpan={3}>🌍</th>
                             <th className="leaderboard-table-number leaderboard-table-tiles">⚪️</th>
                             <th className="leaderboard-table-number">%</th>
                         </tr>
@@ -46,9 +46,9 @@ export default function Leaderboard(props: LeaderboardProps) {
                                 <td className="leaderboard-entry-index" >{index + 1}.</td>
                                 <td colSpan={3}>
                                     {(() => {
-                                        const max_length = 17;
+                                        const max_length = 18;
                                         const sliced = entry.country.name.slice(0, max_length)
-                                        return sliced.length === max_length ? sliced.trim() + "." : sliced
+                                        return sliced.length === max_length ? sliced.trim() + "" : sliced
                                     })()}
                                 </td>
                                 <td className="leaderboard-table-number leaderboard-table-tiles">{entry.tiles}</td>

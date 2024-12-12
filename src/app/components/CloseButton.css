@@ -4,6 +4,7 @@
 }
 
 .button-close:hover {
+    border: 1px solid transparent;
     transition: 0.125s ease;
 }
 
