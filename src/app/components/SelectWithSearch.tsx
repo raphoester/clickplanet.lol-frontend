@@ -36,13 +36,13 @@ export default function SelectWithSearch(props: SelectWithSearchProps) {
         props.onChange(value)
     }
 
-    return <div className="select-with-search">
+    return <div>
         <input
             type="text"
-            placeholder={"Search..."}
+            placeholder={"🔍 Search..."}
             value={search}
             onChange={handleSearchChange}
-            className="select-with-search-search"
+            className="input-search"
             autoComplete="off"
         />
         <select
@@ -51,12 +51,12 @@ export default function SelectWithSearch(props: SelectWithSearchProps) {
                 handleSelectChange(e)
             }}
             size={5}
-            className="select-with-search-select">
+            className="input-select">
             {
                 filteredOptions.map(
                     (v) => (
                         <option
-                            className={`select-with-search-option`}
+                            className={`input-select-option`}
                             onClick={() => {
                                 setSelected(v)
                                 props.onChange(v)

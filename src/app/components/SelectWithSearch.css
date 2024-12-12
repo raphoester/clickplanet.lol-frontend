@@ -1,35 +1,43 @@
-.select-with-search-search {
+.input-search {
     width: 100%;
-    font-size: 20px;
-    padding: 10px;
-    margin: 10px 0;
-    background: #cfe0cf;
-    color: #2a1a1f;
-    font-family: "Comic Sans MS", sans-serif;
+    height: 56px;
+    font-size: 24px;
+    border-radius: 16px;
+    padding: 10px 0 0 16px;
+    margin-bottom: 16px;
+    border: 2px solid transparent;
+    background-color: #202020;
+    font-family: "Luckiest Guy", sans-serif;
+    color: white;
 }
 
-.select-with-search-select {
+.input-select {
     width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    background: #cfe0cf;
-    color: #2a1a1f;
-    font-size: 20px;
-    font-family: "Comic Sans MS", sans-serif;
+    height: 478px;
+    font-size: 24px;
+    margin-bottom: 16px;
+    border: none;
+    border-radius: 16px;
+    background-color: transparent;
+    font-family: "Luckiest Guy", sans-serif;
 }
 
-.select-with-search-select:active {
-    border: 1px solid #91c98a;
+.input-select-option {
+    width: 100%;
+    height: 56px;
+    padding: 14px 0 0 16px;
+    background-color: transparent;
+    color: white;
 }
 
-.select-with-search-option {
-    padding: 10px;
-    margin: 5px 0;
-    background: #cfe0cf;
-    color: #2a1a1f;
+.input-select-option:hover {
+    background-color: #FFFFFF33;
+    transition: 0.125s ease;
+    cursor: pointer;
 }
 
-.select-with-search-option:hover {
-    background: #c5d6c3;
-    transition: 0.1s;
+@media only screen and (max-width: 768px) {
+    .input-select {
+        height: calc(100vh - 216px)    
+    }
 }
