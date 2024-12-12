@@ -8,12 +8,20 @@ export default function App(props: AppProps) {
     return <>
         {Math.random() > 0.5 &&
             <OnLoadModal
-                title={"Hey there!"}
+                title={"Dear earthlings"}
                 children={<>
-                    <h3>Do you like the game ?</h3>
-                    <p>It's free and open-source.</p>
-                    <p>But the servers are quite expensive to run.</p>
-                    <p>So if you enjoy your time here, please consider buying me a coffee :)</p>
+                    <div className="center-align">
+                        <img alt="ClickPlanet logo"
+                            src="/static/logo.svg"
+                            width="64px"
+                            height="auto"/>
+                    </div>
+                    <div className="modal-onload-text">
+                        <h3>Do you like ClickPlanet ?</h3>
+                        <p>It's free and open-source 🤗</p>
+                        <p>Sadly, the servers are expensive to run 😭</p>
+                        <p>Every contribution helps us keep this awesome platform running!</p>
+                    </div>
                     <BuyMeACoffee/>
                 </>}
             />

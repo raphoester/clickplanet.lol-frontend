@@ -1,13 +1,16 @@
-.close-button {
-    width: 30px;
-    height: 30px;
-    cursor: pointer;
-    background-color: #bac9b5;
-    color: #342a25;
-    border: 1px solid #342a25;
+.button-close {
+    width: 100%;
+    border: 1px solid #FFFFFF;
 }
 
-.close-button:hover {
-    background-color: #e4ecdb;
-    transition: background-color 0.3s;
+.button-close:hover {
+    transition: 0.125s ease;
+}
+
+@media only screen and (max-width: 768px) {
+    .button-close {
+        width: fit-content;
+        margin: auto;
+        padding-top: 4px;
+    }
 }

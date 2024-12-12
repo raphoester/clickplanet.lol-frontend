@@ -7,6 +7,6 @@ export type CloseButtonProps = {
 
 export default function CloseButton(props: CloseButtonProps) {
     return (
-        <button className={"close-button " + props.className} onClick={props.onClick}>X</button>
+        <button className="button button-close" onClick={props.onClick}>Close</button>
     )
 }

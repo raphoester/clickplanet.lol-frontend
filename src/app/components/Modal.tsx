@@ -17,16 +17,11 @@ export default function Modal(props: ModalProps) {
             }}>
             {props.title &&
                 <div className="modal-header">
-                    <h3 className="modal-header-text"
-                    >{props.title}</h3>
+                    <h2>{props.title}</h2>
                 </div>
             }
-            <CloseButton
-                className="modal-close"
-                onClick={props.onClose}/>
-            <div className="modal-content-children">
-                {props.children}
-            </div>
+            {props.children}
+            <CloseButton onClick={props.onClose}/>
         </div>
     </div>)
 }

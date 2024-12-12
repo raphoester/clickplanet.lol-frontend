@@ -10,10 +10,13 @@ export default function OnLoadModal(props: OnLoadModalProps) {
     const [isOpen, setIsOpen] = useState(true)
 
     return <>{
-        isOpen && <Modal
+        isOpen && 
+        <div className="modal-onload">
+            <Modal
             onClose={() => setIsOpen(false)}
             title={props.title}
             children={props.children}
-        />
+            />
+        </div>
     }</>
 }
