@@ -62,18 +62,18 @@ export default function Viewer(props: ViewerProps) {
         <div>
             <div id="three-container" style={{ width: '100vw', height: '100vh' }} />
         </div>
-        <div className="side-pannel">
+        <div className="menu">
             {isReady && <>
                 <Leaderboard
                     data={leaderboardData}
                     tilesCount={tilesCountRef.current}
                 />
-                <div className="side-pannel-actions">
+                <div className="menu-actions">
                     <Settings
                         setCountry={setCountry}
                         country={countryState}
                     />
-                    <About />
+                    <About/>
                     <DiscordButton />
                 </div>
             </>}
