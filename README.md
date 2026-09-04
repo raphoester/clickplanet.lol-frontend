@@ -1,3 +1,5 @@
+> **This repo has moved.** ClickPlanet is now a monorepo at [github.com/raphoester/clickplanet](https://github.com/raphoester/clickplanet) (this app lives under `apps/frontend`, with full history preserved). This repo is archived and read-only.
+
 # ClickPlanet
 
 A real-time multiplayer globe conquest game — click tiles on a 3D globe to claim them for your country, and watch the
